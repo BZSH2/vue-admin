@@ -1,0 +1,6 @@
+set -e
+if [ -f "node_modules/.bin/commitlint" ]; then
+  npx --no-install commitlint --edit "$1"
+else
+  npx commitlint --edit "$1"
+fi

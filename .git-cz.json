@@ -1,0 +1,77 @@
+{
+  "disableEmoji": true,
+  "list": [
+    "feat",
+    "fix",
+    "docs",
+    "style",
+    "refactor",
+    "perf",
+    "test",
+    "chore",
+    "build",
+    "ci",
+    "revert"
+  ],
+  "maxMessageLength": 200,
+  "minMessageLength": 3,
+  "questions": ["type", "scope", "subject", "body", "breaking", "issues", "lerna"],
+  "scopes": [],
+  "types": {
+    "feat": {
+      "description": "Features | 新功能",
+      "emoji": "✨",
+      "value": "feat"
+    },
+    "fix": {
+      "description": "Bug Fixes | Bug 修复",
+      "emoji": "�",
+      "value": "fix"
+    },
+    "docs": {
+      "description": "Documentation | 文档",
+      "emoji": "✏️",
+      "value": "docs"
+    },
+    "style": {
+      "description": "Styles | 代码风格（空格、分号等）",
+      "emoji": "💄",
+      "value": "style"
+    },
+    "refactor": {
+      "description": "Code Refactoring | 代码重构",
+      "emoji": "♻️",
+      "value": "refactor"
+    },
+    "perf": {
+      "description": "Performance Improvements | 性能优化",
+      "emoji": "⚡",
+      "value": "perf"
+    },
+    "test": {
+      "description": "Tests | 测试",
+      "emoji": "✅",
+      "value": "test"
+    },
+    "chore": {
+      "description": "Chore | 构建/工程依赖/工具",
+      "emoji": "🚀",
+      "value": "chore"
+    },
+    "build": {
+      "description": "Build System | 打包构建",
+      "emoji": "�",
+      "value": "build"
+    },
+    "ci": {
+      "description": "Continuous Integration | CI 配置",
+      "emoji": "�",
+      "value": "ci"
+    },
+    "revert": {
+      "description": "Revert | 回退",
+      "emoji": "⏪",
+      "value": "revert"
+    }
+  }
+}

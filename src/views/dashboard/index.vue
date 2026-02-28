@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { setLang } from '@/i18n'
-import { langDict } from '@/config';
+import { langDict } from '@/config'
 
 // import { postOpenApiJSON } from '@/api/google'
 
 function changeLang(code: string) {
   setLang(code)
+  const a = '测试'
 }
 
 onMounted(() => {
@@ -21,7 +22,13 @@ onMounted(() => {
     <div>{{ $t('哈哈哈哈') }}</div>
     <Icon name="aixin" />
     <h1>{{ $t('你好, 这是一个测试') }}</h1>
-    <div class="ai-dice1" v-for="item in langDict" :key="item.code" @click="changeLang(item.code)">{{ item.name }}</div>
+    <div
+      class="ai-dice1"
+      v-for="item in langDict"
+      :key="item.code"
+      @click="changeLang(item.code)"
+    >{{ item.name }}</div
+    >
   </div>
 </template>
 

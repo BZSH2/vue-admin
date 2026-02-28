@@ -2,6 +2,10 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## 在线预览
+
+- https://bzsh2.github.io/vue-admin/#/
+
 ## 快速开始
 
 - 环境要求
@@ -61,7 +65,7 @@ pnpm build
 - 使用建议
   - 首次生成后请在业务中逐步修正机器翻译
   - 新增/修改语言时先更新 `langDict` 再运行命令
-    
+
 ### 企业级翻译中台优先覆盖
 
 在企业与团队协作场景下，建议对“机翻不准”的内容由专业人员在内部“国际化中台”进行统一维护与校对。openI18n 可在运行时优先使用中台返回的已审核翻译，保证关键术语、品牌词与敏感文案的准确性。

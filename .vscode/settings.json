@@ -93,7 +93,7 @@
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json,tsconfig.json",
     "eslint.config.ts": ".editorconfig, .eslintignore,.prettierignore,.stylelintignore,.commitlintrc.*,.prettierrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,prettier.config.js,.oxlintrc.json,.oxfmtrc.json",
     "docker-compose.product.yml": ".dockerignore,nginx.conf",
-    "vite.config.ts": "unocss.config.ts,vitest.config.ts,postcss.config.js,tailwind.config.js,commitlint.config.ts,index.html, lint-staged.config.ts"
+    "vite.config.ts": "unocss.config.ts,vitest.config.ts,postcss.config.js,tailwind.config.js,commitlint.config.ts,index.html,lint-staged.config.ts,lint-staged.config.js"
   },
   "vue.editor.focusMode": false,
   "vue.editor.reactivityVisualization": true,
@@ -102,7 +102,7 @@
   "cSpell.userWords": [
     "vue3",
     "unocss",
-    "unplugin", 
+    "unplugin",
     "oxlint",
     "ependencies",
     "solt",

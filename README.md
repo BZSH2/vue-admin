@@ -2,32 +2,94 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+## 快速开始
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+- 环境要求
+  - Node：^20.19.0 或 ≥22.12.0（见 engines）
+  - 包管理器：pnpm（建议最新版）
+- 安装依赖
 
 ```sh
 pnpm install
 ```
+
+- 本地开发
+
+```sh
+pnpm dev
+```
+
+- 构建产物
+
+```sh
+pnpm build
+```
+
+## 常用脚本
+
+- 开发与构建
+  - pnpm dev：启动本地开发
+  - pnpm build：类型检查 + 产物构建
+  - pnpm preview：本地预览构建产物
+- 质量与规范
+  - pnpm lint：运行 ESLint 检查
+  - pnpm lint:fix：ESLint 自动修复
+  - pnpm lint:all：Oxlint + ESLint 全量检查
+  - pnpm typecheck：TypeScript 类型检查
+  - pnpm cz：规范化提交（cz-git）
+- 自动化
+  - pnpm openI18n：扫描并生成多语言 JSON
+  - pnpm openApi：依据 OpenAPI 生成 api 代码
+  - pnpm changelog：生成/更新 CHANGELOG.md
+
+## 国际化自动提取与生成（openI18n）
+
+通过一条命令扫描项目中的国际化键并为所有支持的语言生成占位翻译，便于快速起步与增量维护。
+
+- 使用命令
+  - 运行：`pnpm openI18n`
+- 工作流程
+  - 扫描范围：`src/**/*.vue` 的 template 中以下用法
+    - `$t('xxx')`、`v-t="'xxx'"`、`{{ $t('xxx') }}`
+  - 语言配置来源：在 [lang.ts](file:///d:/vue-admin/src/config/lang.ts) 中维护 `langDict`（如 zh-CN、en、ja 等）
+  - 输出位置：在 [src/i18n/lang](file:///d:/vue-admin/src/i18n/lang) 下生成各语言的 `*.json`
+  - 覆盖行为：命令会先清空 `src/i18n/lang` 再重新生成
+  - 翻译实现：依赖 `google-translate-api-x` 为新键生成机器翻译（网络可达时生效）
+- 关键实现
+  - 扫描与生成逻辑见 [openI18n/index.ts](file:///d:/vue-admin/openI18n/index.ts) 与 [extract.ts](file:///d:/vue-admin/openI18n/extract.ts)
+  - 语言列表来自 [src/config/lang.ts](file:///d:/vue-admin/src/config/lang.ts)
+- 使用建议
+  - 首次生成后请在业务中逐步修正机器翻译
+  - 新增/修改语言时先更新 `langDict` 再运行命令
+
+### i18n 使用示例
+
+- 视图中使用
+
+```vue
+<template>
+  <div>{{ $t('welcome.title') }}</div>
+  <button v-t="'actions.confirm'"></button>
+</template>
+```
+
+- 语言包结构（示例：en.json）
+
+```json
+{
+  "welcome": {
+    "title": "Welcome"
+  },
+  "actions": {
+    "confirm": "Confirm"
+  }
+}
+```
+
+- 注意事项
+  - 运行 openI18n 会清空并重新生成 `src/i18n/lang`，请务必将翻译内容纳入版本管理
+  - 机器翻译仅作占位与参考，生产建议手动校对
+  - 如果网络不可达，翻译会降级为 key 本身
 
 ### Compile and Hot-Reload for Development
 
@@ -71,3 +133,97 @@ pnpm test:e2e --debug
 ```sh
 pnpm lint
 ```
+
+## 目录结构
+
+- 核心目录
+  - src：业务代码、样式、路由、i18n 配置与语言包
+  - openI18n：i18n 键扫描与语言包生成工具
+  - openApi：OpenAPI 生成器与模板
+  - .github/workflows：CI/CD 工作流
+  - .husky：Git 钩子
+
+## OpenAPI 自动代码生成（openApi）
+
+从 OpenAPI 描述生成类型与接口请求封装，规范前后端契约并减少手写样板代码。
+
+- 使用命令
+  - 运行：`pnpm openApi`
+- 数据来源
+  - 当前示例通过 Apifox mock 接口获取 OpenAPI JSON
+  - 入参与模块组织见 [openApi/modules](file:///d:/vue-admin/openApi/modules) 与 [openApi/index.ts](file:///d:/vue-admin/openApi/index.ts)
+- 产物说明
+  - 输出目录：默认生成到 [src/api](file:///d:/vue-admin/src/api) 下，按服务名分目录
+  - 生成内容：TypeScript 类型定义、请求方法封装
+  - 模板位置： [templates](file:///d:/vue-admin/openApi/generate/generateTemplate/templates)（nunjucks，可自定义）
+- 核心实现
+  - 入口与调度：[openApi/generate/index.ts](file:///d:/vue-admin/openApi/generate/index.ts)
+  - 类型与请求生成：`generateTsType.ts`、`generateRequest.ts`
+- 使用建议
+  - 调整模板适配你的接口风格（如统一响应体、错误码处理）
+  - 多服务/多模块场景可在 `modules` 中分组管理
+
+### 自定义模板与模块
+
+- 模板目录
+  - [openApi/generate/generateTemplate/templates](file:///d:/vue-admin/openApi/generate/generateTemplate/templates)
+  - 可根据团队规范修改 `interface.njk`、`serviceController.njk` 等
+- 模块组织
+  - 在 [openApi/modules](file:///d:/vue-admin/openApi/modules) 中配置不同域/服务
+  - Apifox/后端提供的 OpenAPI JSON 可按模块组合返回
+
+## 自动化部署（GitHub Actions）
+
+已内置 GitHub Actions 工作流，push 到指定分支后自动构建并发布到 GitHub Pages。
+
+- 工作流文件
+  - [deploy.yml](file:///d:/vue-admin/.github/workflows/deploy.yml)
+- 触发条件
+  - 推送到 `master` 分支触发
+- 构建与发布
+  - Node 与 pnpm 环境初始化 → `pnpm install` → `pnpm build`
+  - 使用 `peaceiris/actions-gh-pages` 将 `dist` 发布到 `gh-pages` 分支
+- 必要配置
+  - 在仓库 Settings → Secrets 配置 `VUE_ADMIN`（GitHub Token）
+  - 在 Pages 中选择 `gh-pages` 作为发布分支
+  - 若为子路径部署（如 username.github.io/repo），请在 vite.config 中设置 `base` 并在路由中适配
+- 本地预览
+  - 构建后使用 `pnpm preview` 在本地验证发布内容
+
+## 提交前检查与规范
+
+提交时会自动执行 ESLint/格式化/类型检查，确保代码质量一致。
+
+- 提交钩子（Husky）
+  - pre-commit：执行 `npm run lint:all`（Oxlint + ESLint）与 `npm run typecheck`
+    - 钩子脚本见 [.husky/pre-commit](file:///d:/vue-admin/.husky/pre-commit)
+  - pre-push：自动生成并提交 `CHANGELOG.md`
+- 分段检查（lint-staged）
+  - 配置见 [lint-staged.config.ts](file:///d:/vue-admin/lint-staged.config.ts)
+  - JS/TS/Vue：`prettier → oxlint → eslint`
+  - 样式文件：`stylelint → prettier`
+  - Markdown/JSON：`prettier`
+- 常用命令
+  - 运行全部 Lint：`pnpm lint:all`
+  - 仅修复：`pnpm lint:fix`
+  - 交互式提交（规范化 commit）：`pnpm cz`
+
+## 提交规范与变更日志
+
+- 提交规范
+  - 使用 `pnpm cz` 发起规范化提交（集成 cz-git）
+  - commitlint 校验规范，避免不合规提交信息
+- 变更日志
+  - push 前会通过 `.husky/pre-push` 自动生成/更新 `CHANGELOG.md`
+  - 可手动执行 `pnpm changelog`
+
+## 常见问题
+
+- openI18n 翻译失败
+  - 检查网络连通性；失败时会使用 key 作为占位翻译
+  - 可多次运行命令增量生成
+- openApi 生成为空或结构异常
+  - 确认 Apifox/后端返回的 OpenAPI JSON 合规，查看 [openApi/index.ts](file:///d:/vue-admin/openApi/index.ts) 的接口配置
+  - 根据需要调整模板或 `modules` 组织方式
+- Node 版本不匹配
+  - 按 `package.json` 中 `engines` 要求使用 Node 20.19.0 或 22.12.0+

@@ -13,4 +13,4 @@ if git diff --cached --quiet -- CHANGELOG.md; then
   exit 0
 fi
 
-git commit -m "chore: update changelog" --no-verify
+# git commit -m "chore: update changelog" --no-verify

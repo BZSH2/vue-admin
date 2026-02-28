@@ -5,7 +5,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import pluginJsonc from 'eslint-plugin-jsonc'
 import jsoncParser from 'jsonc-eslint-parser'
 import typeScriptParser from '@typescript-eslint/parser'
-
+import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
   unocss as any,
@@ -120,11 +120,14 @@ export default defineConfig([
     },
     rules: {
       'no-console': 'off',
-      'max-lines-per-function': ['warn', {
-        max: 60,           // 增加到60行
-        skipComments: true, // 跳过注释行
-        skipBlankLines: true // 跳过空行
-      }],
+      'max-lines-per-function': [
+        'warn',
+        {
+          max: 60, // 增加到60行
+          skipComments: true, // 跳过注释行
+          skipBlankLines: true, // 跳过空行
+        },
+      ],
       'max-lines': ['warn', { max: 800 }],
       'vue/sort-keys': ['off'],
       'vue/v-on-event-hyphenation': [
@@ -272,6 +275,8 @@ export default defineConfig([
       },
     },
   },
+  // 关闭与 Prettier 冲突的格式化类规则
+  eslintConfigPrettier as any,
   globalIgnores([
     'dist/*',
     'node_modules/*',

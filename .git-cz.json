@@ -1,5 +1,5 @@
 {
-  "disableEmoji": true,
+  "disableEmoji": false,
   "list": [
     "feat",
     "fix",
@@ -25,7 +25,7 @@
     },
     "fix": {
       "description": "Bug Fixes | Bug 修复",
-      "emoji": "�",
+      "emoji": "🐛",
       "value": "fix"
     },
     "docs": {
@@ -60,12 +60,12 @@
     },
     "build": {
       "description": "Build System | 打包构建",
-      "emoji": "�",
+      "emoji": "📦",
       "value": "build"
     },
     "ci": {
       "description": "Continuous Integration | CI 配置",
-      "emoji": "�",
+      "emoji": "👷",
       "value": "ci"
     },
     "revert": {

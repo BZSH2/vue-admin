@@ -19,7 +19,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.vue",
-    "lint:style": "stylelint --fix  **/*.{css,less,scss.vue}",
+    "lint:style": "stylelint --fix \"**/*.{css,less,scss,vue}\"",
     "preview-https": "serve dist",
     "test": "vitest",
     "tsc": "vue-tsc --noEmit ",

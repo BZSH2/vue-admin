@@ -8,7 +8,7 @@ import { postdefaultpostOpenApiJson } from '@/api/openApiJSONshuju/__openAPI__de
 
 function changeLang(code: string) {
   setLang(code)
-  const a = '测试'
+  const a = '测试qq'
 }
 
 onMounted(() => {

@@ -166,6 +166,14 @@ pnpm lint
   - .github/workflows：CI/CD 工作流
   - .husky：Git 钩子
 
+## SVG 图标组件 (Icon)
+
+基于 `vite-plugin-svg-icons` 的全自动图标管理方案，无需繁琐的 Import。
+
+- **文档与示例**：[ICONS.md](file:///d:/demo/vue-admin/ICONS.md)
+- **添加图标**：将 `.svg` 文件放入 `src/icons/svg` 目录即可
+- **使用方式**：直接在模板中使用 `<Icon name="icon-name" />`
+
 ## OpenAPI 自动代码生成（openApi）
 
 从 OpenAPI 描述生成类型与接口请求封装，规范前后端契约并减少手写样板代码。
@@ -214,6 +222,20 @@ pnpm lint
   - 若为子路径部署（如 username.github.io/repo），请在 vite.config 中设置 `base` 并在路由中适配
 - 本地预览
   - 构建后使用 `pnpm preview` 在本地验证发布内容
+
+## AI 代码审查 (CodeRabbit)
+
+本项目推荐使用 [CodeRabbit AI](https://coderabbit.ai/) 进行自动化的 Pull Request 代码审查，提升代码质量并减少人工审查负担。
+
+- **核心功能**
+  - **自动摘要**：为 PR 生成详细的变更摘要与上下文说明
+  - **深度审查**：识别潜在 Bug、性能瓶颈与安全漏洞
+  - **交互式对话**：在评论区直接与 AI 讨论代码逻辑
+  - **一键建议**：提供可直接应用的改进代码块
+- **使用方式**
+  1. 访问 [CodeRabbit](https://coderabbit.ai/) 并为仓库安装 GitHub App
+  2. 发起 Pull Request 即可自动触发审查
+  3. 在 PR 评论区回复 `@coderabbitai` 进行进一步交互（如解释代码、请求优化建议）
 
 ## 提交前检查与规范
 

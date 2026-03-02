@@ -3,14 +3,17 @@ import {
   isSchemaObject,
   type ComponentsObject,
   type SchemaObject,
-  type ReferenceObject
+  type ReferenceObject,
 } from 'openapi3-ts/oas31'
 import { resolveTypeName } from './utils'
 import genFileFromTemplate from './generateTemplate'
+import { getProxyApi } from '../../build/config/proxy'
 
 // 扩展 SchemaObject 以包含 nullable
 type ExtendedSchemaObject = SchemaObject & { nullable?: boolean }
 
+const proxyApi = getProxyApi()
+console.log(proxyApi, 'zzzzzzzzzz')
 
 export interface TemplateType {
   type: 'interface' | 'enum' | 'union' | 'intersection' | 'array' | 'typeAlias' | 'basic'
@@ -149,7 +152,7 @@ function resolveToTemplateType(
       type: 'basic',
       typeName,
       dataType: 'any',
-      description: `循环引用类型: ${typeName}`
+      description: `循环引用类型: ${typeName}`,
     }
   }
 
@@ -161,7 +164,7 @@ function resolveToTemplateType(
       return handleReferenceType(schema, typeName, {
         allSchemas,
         context,
-        visitedRefs
+        visitedRefs,
       })
     }
 
@@ -170,7 +173,7 @@ function resolveToTemplateType(
         type: 'basic',
         typeName,
         dataType: 'any',
-        description: '无效的 Schema 类型'
+        description: '无效的 Schema 类型',
       }
     }
 
@@ -181,7 +184,9 @@ function resolveToTemplateType(
 
     // 3. 处理组合类型
     const combinationType = handleCombinationType(schema, typeName, allSchemas, context)
-    if (combinationType) {return combinationType}
+    if (combinationType) {
+      return combinationType
+    }
 
     // 4. 处理数组类型
     if (schema.type === 'array' && schema.items) {
@@ -204,9 +209,8 @@ function resolveToTemplateType(
       typeName,
       dataType: 'any',
       description: getDescription(schema),
-      isNullable: getNullable(schema)
+      isNullable: getNullable(schema),
     }
-
   } finally {
     visitedRefs.delete(typeName)
   }
@@ -229,14 +233,14 @@ function handleReferenceType(
     const refSchema = allSchemas[refName]
     return resolveToTemplateType(refSchema, refName, allSchemas, {
       ...context,
-      visitedRefs: new Set(visitedRefs)
+      visitedRefs: new Set(visitedRefs),
     })
   }
   return {
     type: 'typeAlias',
     typeName,
     typeDefinition: refName,
-    description: `引用类型: ${refName}`
+    description: `引用类型: ${refName}`,
   }
 }
 
@@ -248,7 +252,7 @@ function handleEnumType(schema: SchemaObject, typeName: string): TemplateType {
     description: getDescription(schema),
     enumValues: schema.enum,
     valueType,
-    example: schema.example
+    example: schema.example,
   }
 }
 
@@ -260,7 +264,7 @@ function handleCombinationType(
 ): TemplateType | null {
   if (schema.allOf && schema.allOf.length > 0) {
     const intersectionTypes = schema.allOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean) as string[]
 
     if (intersectionTypes.length > 0) {
@@ -270,14 +274,14 @@ function handleCombinationType(
         description: getDescription(schema),
         intersectionTypes,
         example: schema.example,
-        isNullable: getNullable(schema)
+        isNullable: getNullable(schema),
       }
     }
   }
 
   if (schema.oneOf && schema.oneOf.length > 0) {
     const unionTypes = schema.oneOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean) as string[]
 
     if (unionTypes.length > 0) {
@@ -287,14 +291,14 @@ function handleCombinationType(
         description: getDescription(schema),
         unionTypes,
         example: schema.example,
-        isNullable: getNullable(schema)
+        isNullable: getNullable(schema),
       }
     }
   }
 
   if (schema.anyOf && schema.anyOf.length > 0) {
     const unionTypes = schema.anyOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean) as string[]
 
     if (unionTypes.length > 0) {
@@ -304,7 +308,7 @@ function handleCombinationType(
         description: getDescription(schema),
         unionTypes,
         example: schema.example,
-        isNullable: getNullable(schema)
+        isNullable: getNullable(schema),
       }
     }
   }
@@ -324,7 +328,7 @@ function handleArrayType(
     description: getDescription(schema),
     itemType: itemType || 'any',
     example: schema.example,
-    isNullable: getNullable(schema)
+    isNullable: getNullable(schema),
   }
 }
 
@@ -338,15 +342,11 @@ function handleObjectType(
 
   // 处理 additionalProperties
   if (schema.additionalProperties) {
-    let additionalPropsType: string;
+    let additionalPropsType: string
     if (typeof schema.additionalProperties === 'boolean') {
-      additionalPropsType = 'any';
+      additionalPropsType = 'any'
     } else {
-      additionalPropsType = getTypeString(
-        schema.additionalProperties,
-        allSchemas,
-        context
-      );
+      additionalPropsType = getTypeString(schema.additionalProperties, allSchemas, context)
     }
 
     properties.push({
@@ -354,7 +354,7 @@ function handleObjectType(
       type: additionalPropsType || 'any',
       required: false,
       isIndexSignature: true,
-      keyType: 'string'
+      keyType: 'string',
     })
   }
 
@@ -365,7 +365,7 @@ function handleObjectType(
     properties,
     example: schema.example,
     isNullable: getNullable(schema),
-    isReadonly: schema.readOnly
+    isReadonly: schema.readOnly,
   }
 }
 
@@ -383,7 +383,7 @@ function handleBasicType(
     dataType: dataType || 'any',
     format: schema.format,
     example: schema.example,
-    isNullable: getNullable(schema)
+    isNullable: getNullable(schema),
   }
 }
 
@@ -404,13 +404,11 @@ function getProperties(
 
       properties.push({
         name: propName,
-        description: isSchemaObject(propSchema)
-          ? getDescription(propSchema)
-          : undefined,
+        description: isSchemaObject(propSchema) ? getDescription(propSchema) : undefined,
         type: propType || 'any',
         required: required.has(propName),
         isReadonly: isSchemaObject(propSchema) ? propSchema.readOnly : false,
-        example: isSchemaObject(propSchema) ? propSchema.example : undefined
+        example: isSchemaObject(propSchema) ? propSchema.example : undefined,
       })
     })
   }
@@ -442,7 +440,9 @@ function getTypeString(
 
   // 处理组合类型
   const combinationType = handleCombinationTypeString(schema, allSchemas, context)
-  if (combinationType) {return combinationType}
+  if (combinationType) {
+    return combinationType
+  }
 
   // 处理数组
   if (schema.type === 'array' && schema.items) {
@@ -472,7 +472,7 @@ function handleRefTypeString(schema: ReferenceObject, context: any): string {
 }
 
 function handleEnumTypeString(schema: SchemaObject): string {
-  const values = schema.enum!.map(value =>
+  const values = schema.enum!.map((value) =>
     typeof value === 'string' ? `"${value}"` : String(value)
   )
   return values.join(' | ')
@@ -485,21 +485,21 @@ function handleCombinationTypeString(
 ): string | null {
   if (schema.allOf && schema.allOf.length > 0) {
     const types = schema.allOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean)
     return `(${types.join(' & ')})`
   }
 
   if (schema.oneOf && schema.oneOf.length > 0) {
     const types = schema.oneOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean)
     return types.join(' | ')
   }
 
   if (schema.anyOf && schema.anyOf.length > 0) {
     const types = schema.anyOf
-      .map(item => getTypeString(item, allSchemas, context))
+      .map((item) => getTypeString(item, allSchemas, context))
       .filter(Boolean)
     return types.join(' | ')
   }
@@ -523,15 +523,11 @@ function handleObjectTypeString(
 ): string {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
     if (schema.additionalProperties) {
-      let additionalType: string;
+      let additionalType: string
       if (typeof schema.additionalProperties === 'boolean') {
-        additionalType = 'any';
+        additionalType = 'any'
       } else {
-        additionalType = getTypeString(
-          schema.additionalProperties,
-          allSchemas,
-          context
-        );
+        additionalType = getTypeString(schema.additionalProperties, allSchemas, context)
       }
       return `Record<string, ${additionalType || 'any'}>`
     }
@@ -539,7 +535,7 @@ function handleObjectTypeString(
   }
 
   const properties = getProperties(schema, allSchemas, context)
-  const propStrings = properties.map(prop => {
+  const propStrings = properties.map((prop) => {
     const optional = prop.required ? '' : '?'
     const readonly = prop.isReadonly ? 'readonly ' : ''
     return `  ${readonly}${prop.name}${optional}: ${prop.type};`
@@ -560,13 +556,33 @@ function handleBasicTypeString(schema: SchemaObject): string {
 }
 
 const NUMBER_TYPES = new Set([
-  'int64', 'integer', 'long', 'float', 'double', 'number', 'int',
-  'int32', 'int64', 'decimal'
+  'int64',
+  'integer',
+  'long',
+  'float',
+  'double',
+  'number',
+  'int',
+  'int32',
+  'int64',
+  'decimal',
 ])
 
 const STRING_TYPES = new Set([
-  'string', 'email', 'password', 'uri', 'url', 'uuid', 'byte', 'binary',
-  'hostname', 'ipv4', 'ipv6', 'date', 'date-time', 'datetime'
+  'string',
+  'email',
+  'password',
+  'uri',
+  'url',
+  'uuid',
+  'byte',
+  'binary',
+  'hostname',
+  'ipv4',
+  'ipv6',
+  'date',
+  'date-time',
+  'datetime',
 ])
 
 /**
@@ -590,7 +606,7 @@ function mapOpenApiTypeToTs(openApiType: string, format?: string): string {
 
   // 处理联合类型字符串
   if (typeof openApiType === 'string' && openApiType.includes('|')) {
-    const types = openApiType.split('|').map(t => mapOpenApiTypeToTs(t.trim(), format))
+    const types = openApiType.split('|').map((t) => mapOpenApiTypeToTs(t.trim(), format))
     return [...new Set(types)].join(' | ')
   }
 
@@ -616,32 +632,32 @@ function buildDependencyGraph(types: TemplateType[]) {
   const typeMap = new Map<string, TemplateType>()
   const dependencies = new Map<string, Set<string>>()
 
-  types.forEach(type => {
+  types.forEach((type) => {
     typeMap.set(type.typeName, type)
     dependencies.set(type.typeName, new Set())
 
     // 收集依赖
     if (type.type === 'interface' && type.properties) {
-      type.properties.forEach(prop => {
+      type.properties.forEach((prop) => {
         const deps = extractDependenciesFromType(prop.type)
-        deps.forEach(dep => dependencies.get(type.typeName)!.add(dep))
+        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
       })
     } else if (type.type === 'typeAlias' && type.typeDefinition) {
       const deps = extractDependenciesFromType(type.typeDefinition)
-      deps.forEach(dep => dependencies.get(type.typeName)!.add(dep))
+      deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
     } else if (type.type === 'union' && type.unionTypes) {
-      type.unionTypes.forEach(unionType => {
+      type.unionTypes.forEach((unionType) => {
         const deps = extractDependenciesFromType(unionType)
-        deps.forEach(dep => dependencies.get(type.typeName)!.add(dep))
+        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
       })
     } else if (type.type === 'intersection' && type.intersectionTypes) {
-      type.intersectionTypes.forEach(intersectionType => {
+      type.intersectionTypes.forEach((intersectionType) => {
         const deps = extractDependenciesFromType(intersectionType)
-        deps.forEach(dep => dependencies.get(type.typeName)!.add(dep))
+        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
       })
     } else if (type.type === 'array' && type.itemType) {
       const deps = extractDependenciesFromType(type.itemType)
-      deps.forEach(dep => dependencies.get(type.typeName)!.add(dep))
+      deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
     }
   })
 
@@ -666,7 +682,7 @@ function topologicalSort(
       temp.add(typeName)
 
       const deps = dependencies.get(typeName) || new Set()
-      deps.forEach(dep => {
+      deps.forEach((dep) => {
         if (typeMap.has(dep)) {
           visit(dep)
         }
@@ -682,7 +698,7 @@ function topologicalSort(
     }
   }
 
-  types.forEach(type => {
+  types.forEach((type) => {
     if (!visited.has(type.typeName)) {
       visit(type.typeName)
     }
@@ -702,9 +718,22 @@ function extractDependenciesFromType(typeString: string): string[] {
   const matches = typeString.match(typeRefRegex) || []
 
   // 过滤掉基础类型
-  const baseTypes = ['string', 'number', 'boolean', 'any', 'unknown', 'never', 'void', 'null', 'undefined', 'Date', 'Record', 'Array']
+  const baseTypes = [
+    'string',
+    'number',
+    'boolean',
+    'any',
+    'unknown',
+    'never',
+    'void',
+    'null',
+    'undefined',
+    'Date',
+    'Record',
+    'Array',
+  ]
 
-  matches.forEach(match => {
+  matches.forEach((match) => {
     if (!baseTypes.includes(match) && !dependencies.includes(match)) {
       dependencies.push(match)
     }
@@ -738,10 +767,10 @@ export function generateAllTypes(
   const list = getTemplateTypes(components)
   const sortedList = sortTypesByDependency(list)
 
-  const interfaces = sortedList.filter(t => t.type === 'interface')
-  const enums = sortedList.filter(t => t.type === 'enum')
-  const typeAliases = sortedList.filter(
-    t => ['union', 'intersection', 'array', 'basic', 'typeAlias'].includes(t.type)
+  const interfaces = sortedList.filter((t) => t.type === 'interface')
+  const enums = sortedList.filter((t) => t.type === 'enum')
+  const typeAliases = sortedList.filter((t) =>
+    ['union', 'intersection', 'array', 'basic', 'typeAlias'].includes(t.type)
   )
 
   return { interfaces, enums, typeAliases }
@@ -751,16 +780,17 @@ export function generateAllTypes(
 export function getInterfaceTP(components: ComponentsObject) {
   const { interfaces } = generateAllTypes(components)
 
-  return interfaces.map(interfaceData => ({
+  return interfaces.map((interfaceData) => ({
     typeName: interfaceData.typeName,
     type: 'interface',
     description: interfaceData.description,
-    required: interfaceData.properties?.filter(p => p.required).map(p => p.name) || [],
-    props: interfaceData.properties?.map(prop => ({
-      name: prop.name,
-      type: prop.type,
-      description: prop.description,
-      required: prop.required
-    })) || []
+    required: interfaceData.properties?.filter((p) => p.required).map((p) => p.name) || [],
+    props:
+      interfaceData.properties?.map((prop) => ({
+        name: prop.name,
+        type: prop.type,
+        description: prop.description,
+        required: prop.required,
+      })) || [],
   }))
 }

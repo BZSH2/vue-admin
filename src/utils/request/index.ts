@@ -3,7 +3,7 @@ import { getToken, clearToken } from '@/utils/token'
 
 // 创建 axios 实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // 使用 Vite 的环境变量
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/', // 使用 Vite 的环境变量
   timeout: 10000, // 请求超时时间
 })
 

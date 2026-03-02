@@ -4,6 +4,14 @@
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "stylelint.vscode-stylelint",
-    "streetsidesoftware.code-spell-checker"
+    "streetsidesoftware.code-spell-checker",
+    "antfu.theme-vitesse",
+    "antfu.iconify",
+    "lokalise.i18n-ally",
+    "bradlc.vscode-tailwindcss",
+    "antfu.unocss",
+    "usernamehw.errorlens",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig"
   ]
 }

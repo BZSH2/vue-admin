@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { setLang } from '@/i18n'
 import { langDict } from '@/config'
+import { getPetById } from '@/api/Pet/petsAPI/pet'
+import { postdefaultpostOpenApiJson } from '@/api/openApiJSONshuju/__openAPI__default'
 
 // import { postOpenApiJSON } from '@/api/google'
 
@@ -10,6 +12,14 @@ function changeLang(code: string) {
 }
 
 onMounted(() => {
+  getPetById({ id: '1' }).then((res) => {
+    console.log('aaaaaaaaaaaaaaaa', res)
+  })
+  postdefaultpostOpenApiJson({
+    coke: '[{"prefix":"pets","service":[]},{"prefix":"store","service":[]}] ',
+  }).then((res) => {
+    console.log('postdefaultpostOpenApiJson', res)
+  })
   // postOpenApiJSON({
   //   coke: '[{"prefix":"pets","service":[]},{"prefix":"store","service":[]}] ',
   // })
@@ -27,7 +37,7 @@ onMounted(() => {
       v-for="item in langDict"
       :key="item.code"
       @click="changeLang(item.code)"
-    >{{ item.name }}</div
+      >{{ item.name }}</div
     >
   </div>
 </template>

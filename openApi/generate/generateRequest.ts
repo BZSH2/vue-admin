@@ -8,9 +8,12 @@ import {
   type ReferenceObject,
   type ResponsesObject,
   type PathItemObject,
-  isReferenceObject
+  isReferenceObject,
 } from 'openapi3-ts/oas31'
 import { resolveTypeName } from './utils'
+import { getProxyApi } from '../../build/config/proxy'
+
+const proxyApi = getProxyApi()
 
 /**
  * API 参数接口定义
@@ -110,21 +113,40 @@ export default function GenerateRequest(
   apiData: OpenAPIObject,
   namespace?: string
 ) {
-  if (!apiData.paths) {return}
+  if (!apiData.paths) {
+    return
+  }
 
   // 用于存储按 Tag 分组的 API 操作列表
   const controllerMap = new Map<string, ApiOperation[]>()
 
   // 遍历所有路径
   for (const [url, pathItem] of Object.entries(apiData.paths)) {
-    if (!pathItem) {continue}
+    if (!pathItem) {
+      continue
+    }
+
+    // 处理代理前缀逻辑
+    let proxyPrefix = ''
+    if (apiData.servers && apiData.servers.length > 0) {
+      const serverUrl = apiData.servers[0].url
+      // 遍历 proxyApi，查找是否匹配 serverUrl
+      for (const [target, prefix] of Object.entries(proxyApi)) {
+        if (serverUrl.startsWith(target)) {
+          proxyPrefix = prefix
+          break
+        }
+      }
+    }
 
     const methods = ['get', 'post', 'put', 'delete', 'patch'] as const
 
     // 遍历所有 HTTP 方法
     for (const method of methods) {
       const operation = pathItem[method] as OperationObject
-      if (!operation) {continue}
+      if (!operation) {
+        continue
+      }
 
       // 1. 获取 Tag（用于文件分组）
       const tag = getTag(operation)
@@ -142,10 +164,10 @@ export default function GenerateRequest(
       // 4. 解析操作详情
       const apiOp = parseOperation({
         method,
-        url,
+        url: `${proxyPrefix}${url}`,
         op: { ...operation, parameters: mergedParameters } as OperationObject,
         functionName,
-        namespace
+        namespace,
       })
 
       // 5. 添加到 Map 中
@@ -168,7 +190,7 @@ export default function GenerateRequest(
     genFileFromTemplate(`${resolveTypeName(fileName)}.ts`, 'serviceController', fileOutput, {
       genType: 'ts',
       requestImportStatement: "import request from '@/utils/request'", // TODO: 可配置化
-      list
+      list,
     })
   })
 }
@@ -177,7 +199,7 @@ export default function GenerateRequest(
  * 获取操作的 Tag，默认为 'default'
  */
 function getTag(operation: OperationObject): string {
-  return (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default'
+  return operation.tags && operation.tags.length > 0 ? operation.tags[0] : 'default'
 }
 
 /**
@@ -193,9 +215,7 @@ function getFunctionName(
   let name = operationId || `${method}${tag}${url.replace(/[\W_]+/g, '')}`
 
   // 转换为驼峰命名，并移除非法字符
-  name = name
-    .replace(/[^a-zA-Z0-9_$]/g, '-')
-    .replace(/[-_]+(.)/g, (_, c) => c.toUpperCase())
+  name = name.replace(/[^a-zA-Z0-9_$]/g, '-').replace(/[-_]+(.)/g, (_, c) => c.toUpperCase())
 
   // 确保首字母小写
   return name.charAt(0).toLowerCase() + name.slice(1)
@@ -224,7 +244,7 @@ function mergeParameters(
     // 或者简单的去重：只保留第一次出现的？
     // 标准行为是：Operation 覆盖 Path。
     // 我们可以使用 Map 来辅助去重，以 key 为键，后面的覆盖前面的
-    return index === arr.findIndex(item => getParameterKey(item) === key)
+    return index === arr.findIndex((item) => getParameterKey(item) === key)
   })
 }
 
@@ -237,7 +257,6 @@ function getParameterKey(p: ParameterObject | ReferenceObject): string {
   }
   return `${p.in}:${p.name}`
 }
-
 
 /**
  * 解析单个 Operation 对象，提取生成代码所需的信息
@@ -253,8 +272,10 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
     // 注意：前面的 mergeParameters 可能已经做了一次，这里再次确保安全
     const paramMap = new Map<string, ParameterObject>()
 
-    op.parameters.forEach(param => {
-      if (isReferenceObject(param)) {return} // TODO: 暂不支持 Reference 类型的参数解析
+    op.parameters.forEach((param) => {
+      if (isReferenceObject(param)) {
+        return
+      } // TODO: 暂不支持 Reference 类型的参数解析
       paramMap.set(`${param.in}:${param.name}`, param as ParameterObject)
     })
 
@@ -264,7 +285,7 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
         type: getParamType(p.schema, namespace),
         required: p.required || false,
         description: p.description,
-        alias: p.name
+        alias: p.name,
       }
 
       if (p.in === 'query') {
@@ -296,7 +317,7 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
     body,
     file,
     hasFormData,
-    responseType: getResponseType(op.responses, namespace)
+    responseType: getResponseType(op.responses, namespace),
   }
 }
 
@@ -315,7 +336,7 @@ function parseRequestBody(op: OperationObject, namespace?: string) {
       if (content['application/json']) {
         const schema = content['application/json'].schema
         body = {
-          type: getParamType(schema, namespace)
+          type: getParamType(schema, namespace),
         }
       }
       // 处理 FormData (文件上传)
@@ -323,7 +344,7 @@ function parseRequestBody(op: OperationObject, namespace?: string) {
         hasFormData = true
         const schema = content['multipart/form-data'].schema
         if (schema && !isReferenceObject(schema) && schema.properties) {
-           file = parseFormDataFile(schema)
+          file = parseFormDataFile(schema)
         }
       }
     }
@@ -336,16 +357,18 @@ function parseRequestBody(op: OperationObject, namespace?: string) {
  */
 function parseFormDataFile(schema: SchemaObject): ApiFile[] {
   const file: ApiFile[] = []
-  if (!schema.properties) {return file}
+  if (!schema.properties) {
+    return file
+  }
 
-  for(const [key, prop] of Object.entries(schema.properties)) {
-     // 识别二进制字段
-     if(!isReferenceObject(prop) && prop.type === 'string' && prop.format === 'binary') {
-        file.push({
-          title: key,
-          required: schema.required?.includes(key) || false
-        })
-     }
+  for (const [key, prop] of Object.entries(schema.properties)) {
+    // 识别二进制字段
+    if (!isReferenceObject(prop) && prop.type === 'string' && prop.format === 'binary') {
+      file.push({
+        title: key,
+        required: schema.required?.includes(key) || false,
+      })
+    }
   }
   return file
 }
@@ -355,12 +378,14 @@ function parseFormDataFile(schema: SchemaObject): ApiFile[] {
  * 优先取 200/201/default 的 JSON 响应
  */
 function getResponseType(responses?: ResponsesObject, namespace?: string): string {
-  if (!responses) {return 'any'}
+  if (!responses) {
+    return 'any'
+  }
 
   const success = responses['200'] || responses['201'] || responses['default']
   if (success && !isReferenceObject(success)) {
     if (success.content && success.content['application/json']) {
-       return getParamType(success.content['application/json'].schema, namespace)
+      return getParamType(success.content['application/json'].schema, namespace)
     }
   }
   return 'any'
@@ -370,7 +395,9 @@ function getResponseType(responses?: ResponsesObject, namespace?: string): strin
  * 将 OpenAPI Schema 类型映射为 TypeScript 类型字符串
  */
 function getParamType(schema?: SchemaObject | ReferenceObject, namespace?: string): string {
-  if (!schema) {return 'any'}
+  if (!schema) {
+    return 'any'
+  }
 
   // 处理引用类型
   if (isReferenceObject(schema)) {
@@ -389,14 +416,14 @@ function getParamType(schema?: SchemaObject | ReferenceObject, namespace?: strin
     string: 'string',
     boolean: 'boolean',
     number: 'number',
-    object: 'any' // 对于未定义的 object，暂且用 any，或者可以尝试递归生成 interface
+    object: 'any', // 对于未定义的 object，暂且用 any，或者可以尝试递归生成 interface
   }
 
   if (schema.type && typeof schema.type === 'string' && typeMap[schema.type]) {
     // 特殊处理：枚举 enum
     if (schema.enum) {
-       // 简化的枚举处理：联合类型
-       return schema.enum.map(e => typeof e === 'string' ? `'${e}'` : e).join(' | ')
+      // 简化的枚举处理：联合类型
+      return schema.enum.map((e) => (typeof e === 'string' ? `'${e}'` : e)).join(' | ')
     }
     return typeMap[schema.type]
   }

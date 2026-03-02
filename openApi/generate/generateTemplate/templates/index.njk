@@ -1,0 +1,13 @@
+// @ts-ignore
+/* eslint-disable */
+// API 更新时间：{{ updateTime }}
+// API 唯一标识：{{ apiId }}
+{% for file in files %}
+import * as {{ file }} from './{{ file }}'
+{% endfor %}
+
+export default {
+{% for file in files %}
+  {{ file }},
+{% endfor %}
+}

@@ -176,9 +176,11 @@ pnpm lint
   - 当前示例通过 Apifox mock 接口获取 OpenAPI JSON
   - 入参与模块组织见 [openApi/modules](file:///d:/vue-admin/openApi/modules) 与 [openApi/index.ts](file:///d:/vue-admin/openApi/index.ts)
 - 产物说明
-  - 输出目录：默认生成到 [src/api](file:///d:/vue-admin/src/api) 下，按服务名分目录
+  - 输出目录：默认生成到 [src/api](file:///d:/demo/vue-admin/src/api) 下，按服务名分目录
   - 生成内容：TypeScript 类型定义、请求方法封装
-  - 模板位置： [templates](file:///d:/vue-admin/openApi/generate/generateTemplate/templates)（nunjucks，可自定义）
+  - 模板位置： [templates](file:///d:/demo/vue-admin/openApi/generate/generateTemplate/templates)（nunjucks，可自定义）
+- 更多配置
+  - [OpenAPI 入参结构与本地跨域指南](https://github.com/BZSH2/vue-admin/blob/master/openApi/generate/入参数据结构.md)
 - 核心实现
   - 入口与调度：[openApi/generate/index.ts](file:///d:/vue-admin/openApi/generate/index.ts)
   - 类型与请求生成：`generateTsType.ts`、`generateRequest.ts`

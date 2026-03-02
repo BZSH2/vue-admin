@@ -10,7 +10,7 @@ import {
   type PathItemObject,
   isReferenceObject,
 } from 'openapi3-ts/oas31'
-import { resolveTypeName } from './utils'
+import { resolveTypeName, writeFile } from './utils'
 import { getProxyApi } from '../../build/config/proxy'
 
 const proxyApi = getProxyApi()
@@ -179,19 +179,37 @@ export default function GenerateRequest(
   }
 
   // 生成文件
+  const generatedFiles: string[] = []
   controllerMap.forEach((list, tag) => {
     // 处理多级 Tag 目录结构 (e.g. "auth/admin" -> auth 目录下 admin.ts)
     const tagParts = tag.split('/')
     const fileName = tagParts.pop() || 'index'
     const subDir = tagParts.join('/')
     const fileOutput = path.join(output, subDir)
+    const resolvedFileName = resolveTypeName(fileName)
+
+    generatedFiles.push(resolvedFileName)
 
     // 调用模板引擎生成文件
-    genFileFromTemplate(`${resolveTypeName(fileName)}.ts`, 'serviceController', fileOutput, {
+    genFileFromTemplate(`${resolvedFileName}.ts`, 'serviceController', fileOutput, {
       genType: 'ts',
       requestImportStatement: "import request from '@/utils/request'", // TODO: 可配置化
       list,
     })
+  })
+
+  // 生成 index.ts
+  generateIndexFile(output, generatedFiles)
+}
+
+/**
+ * 生成统一导出文件 index.ts
+ */
+function generateIndexFile(output: string, files: string[]) {
+  genFileFromTemplate('index.ts', 'index', output, {
+    files,
+    updateTime: new Date().toLocaleString(),
+    apiId: Date.now(),
   })
 }
 

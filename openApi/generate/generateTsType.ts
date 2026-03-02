@@ -13,7 +13,6 @@ import { getProxyApi } from '../../build/config/proxy'
 type ExtendedSchemaObject = SchemaObject & { nullable?: boolean }
 
 const proxyApi = getProxyApi()
-console.log(proxyApi, 'zzzzzzzzzz')
 
 export interface TemplateType {
   type: 'interface' | 'enum' | 'union' | 'intersection' | 'array' | 'typeAlias' | 'basic'

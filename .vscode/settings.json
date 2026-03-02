@@ -88,13 +88,15 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "*.ts": "$(capture).test.ts, $(capture).test.tsx, $(capture).spec.ts, $(capture).spec.tsx, $(capture).d.ts",
-    "*.tsx": "$(capture).test.ts, $(capture).test.tsx, $(capture).spec.ts, $(capture).spec.tsx,$(capture).d.ts",
-    "*.env": "$(capture).env.*",
-    "README.md": "README*,CHANGELOG*,LICENSE,CNAME,Dockerfile",
-    "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json,tsconfig.json",
-    "eslint.config.ts": ".editorconfig, .eslintignore,.prettierignore,.stylelintignore,.commitlintrc.*,.prettierrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,prettier.config.js,.oxlintrc.json,.oxfmtrc.json",
-    "docker-compose.product.yml": ".dockerignore,nginx.conf",
-    "vite.config.ts": "unocss.config.ts,vitest.config.ts,postcss.config.js,tailwind.config.js,commitlint.config.ts,index.html,lint-staged.config.ts,lint-staged.config.js"
+    "*.tsx": "$(capture).test.ts, $(capture).test.tsx, $(capture).spec.ts, $(capture).spec.tsx, $(capture).d.ts",
+    "*.js": "$(capture).js.map, $(capture).spec.js, $(capture).test.js",
+    "*.vue": "$(capture).js, $(capture).ts, $(capture).css, $(capture).scss, $(capture).less, $(capture).styl, $(capture).spec.js, $(capture).spec.ts, $(capture).test.js, $(capture).test.ts, $(capture).story.vue, $(capture).story.js, $(capture).story.ts",
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, .browserslistrc, .node-version, .nvmrc, .gitattributes, .gitignore, .gitpod.yml, .editorconfig, tsconfig.*, jsconfig.*, cspell.json",
+    "README.md": "CHANGELOG*, LICENSE, CNAME, Dockerfile",
+    ".env": ".env.*, .envrc, env.d.ts",
+    "vite.config.*": "vitest.config.*, playwright.config.*, uno.config.*, index.html",
+    "eslint.config.*": ".prettierignore, .prettierrc.json, .stylelintignore, .oxlintrc.json, .oxfmtrc.json, stylelint.config.*, commitlint.config.*, lint-staged.config.*",
+    "docker-compose.product.yml": ".dockerignore,nginx.conf"
   },
   "vue.editor.focusMode": false,
   "vue.editor.reactivityVisualization": true,

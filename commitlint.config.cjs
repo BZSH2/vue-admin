@@ -28,8 +28,8 @@ module.exports = {
       { value: 'refactor', name: 'refactor: ♻️  重构 | Code Refactoring', emoji: ':recycle:' },
       { value: 'perf', name: 'perf:     ⚡  性能 | Performance Improvements', emoji: ':zap:' },
       { value: 'test', name: 'test:     ✅  测试 | Tests', emoji: ':white_check_mark:' },
-      { value: 'chore', name: 'chore:    �  构建/工具 | Chore', emoji: ':rocket:' },
-      { value: 'build', name: 'build:    �  构建系统 | Build System', emoji: ':package:' },
+      { value: 'chore', name: 'chore:    🚀  构建/工具 | Chore', emoji: ':rocket:' },
+      { value: 'build', name: 'build:    📦  构建系统 | Build System', emoji: ':package:' },
       {
         value: 'ci',
         name: 'ci:       👷  持续集成 | Continuous Integration',

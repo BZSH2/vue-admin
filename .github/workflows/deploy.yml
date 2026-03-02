@@ -5,6 +5,15 @@ on:
     branches:
       - master # 设置触发部署的分支为 main
 
+# 并发控制：取消正在进行的旧构建，只运行最新的
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# 权限配置：只赋予必要的权限
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest # 使用 Ubuntu 最新版本运行工作流
@@ -12,29 +21,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取完整提交记录，有利于 changelog 或 git 相关的操作
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        # version 会自动读取 package.json 中的 packageManager
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # 设定 Node.js 版本为 16 (根据你的项目需要选择版本)
+          node-version: '22'
+          cache: 'pnpm' # 启用 pnpm 缓存，加速依赖安装
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile # 严格依据 lock 文件安装
 
-      - name: Install dependencies (如果需要构建)
-        run: pnpm install
-
-      - name: Build project (如果需要构建)
+      - name: Build project
         run: pnpm build
 
-      - name: Deploy # 部署
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          force_orphan: true # 原 force
-          # 清理文件（false表示清理）
-          keep_files: false # 原 clean=true
-          publish_branch: gh-pages # 部署后提交到那个分支
-          # 路径参数更新
-          publish_dir: dist # 原 folder/target-folder
-          # destination_dir: .   # 目标子目录（默认为仓库根目录）
+          force_orphan: true
+          keep_files: false
+          publish_branch: gh-pages
+          publish_dir: dist
           github_token: ${{ secrets.VUE_ADMIN }}

@@ -20,23 +20,21 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: latest  # 或指定版本如 8.15.0
 
       - name: Install dependencies (如果需要构建)
         run: pnpm install
 
       - name: Build project (如果需要构建)
         run: pnpm build
-          
+
       - name: Deploy # 部署
         uses: peaceiris/actions-gh-pages@v4
         with:
-          force_orphan: true  # 原 force
+          force_orphan: true # 原 force
           # 清理文件（false表示清理）
-          keep_files: false  # 原 clean=true
+          keep_files: false # 原 clean=true
           publish_branch: gh-pages # 部署后提交到那个分支
           # 路径参数更新
-          publish_dir: dist  # 原 folder/target-folder
+          publish_dir: dist # 原 folder/target-folder
           # destination_dir: .   # 目标子目录（默认为仓库根目录）
           github_token: ${{ secrets.VUE_ADMIN }}

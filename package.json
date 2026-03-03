@@ -70,13 +70,10 @@
     "@types/reserved-words": "^0.1.4",
     "@typescript-eslint/parser": "^8.54.0",
     "@unocss/eslint-config": "^66.6.0",
-    "@unocss/eslint-plugin": "^66.6.0",
     "@unocss/vite": "^66.6.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitejs/plugin-vue-jsx": "^5.1.3",
-    "@vitest/eslint-plugin": "^1.6.6",
     "@vue/compiler-sfc": "^3.5.27",
-    "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
     "changelogen": "^0.6.0",
@@ -84,10 +81,7 @@
     "cz-git": "^1.12.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-format": "^1.3.1",
     "eslint-plugin-jsonc": "^2.21.0",
-    "eslint-plugin-oxlint": "~1.42.0",
-    "eslint-plugin-playwright": "^2.5.1",
     "eslint-plugin-vue": "~10.7.0",
     "esno": "^4.8.0",
     "glob": "^13.0.1",
@@ -102,6 +96,8 @@
     "nunjucks": "^3.2.4",
     "openapi3-ts": "^4.5.0",
     "oxlint": "~1.42.0",
+    "postcss": "^8.5.6",
+    "postcss-html": "^1.8.0",
     "prettier": "3.8.1",
     "reserved-words": "^0.1.2",
     "rimraf": "^6.1.3",
@@ -117,9 +113,13 @@
     "unplugin-vue-components": "^31.0.0",
     "vite": "^7.3.1",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vite-plugin-vue-devtools": "^8.0.5",
     "vitest": "^4.0.18",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^3.2.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.6"
+    }
   }
 }

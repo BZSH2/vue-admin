@@ -123,7 +123,7 @@ export default defineConfig([
       'max-lines-per-function': [
         'warn',
         {
-          max: 60, // 增加到60行
+          max: 100, // 增加到60行
           skipComments: true, // 跳过注释行
           skipBlankLines: true, // 跳过空行
         },

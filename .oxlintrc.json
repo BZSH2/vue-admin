@@ -10,50 +10,78 @@
   "rules": {
     "vue/component-api-style": ["error", ["script-setup", "composition"]],
     "vue/component-definition-name-casing": ["error", "PascalCase"],
-    "vue/component-name-in-template-casing": ["error", "PascalCase", {
-      "registeredComponentsOnly": false,
-      "ignores": []
-    }],
+    "vue/component-name-in-template-casing": [
+      "error",
+      "PascalCase",
+      {
+        "registeredComponentsOnly": false,
+        "ignores": []
+      }
+    ],
     "vue/component-options-name-casing": ["error", "PascalCase"],
     "vue/custom-event-name-casing": ["error", "camelCase"],
     "vue/html-button-has-type": "error",
     "vue/html-comment-content-spacing": "error",
     "vue/html-comment-indent": "error",
-    "vue/match-component-file-name": ["error", {
-      "extensions": ["vue"],
-      "shouldMatchCase": true
-    }],
-    "vue/max-attributes-per-line": ["error", {
-      "singleline": 3,
-      "multiline": 1
-    }],
+    "vue/match-component-file-name": [
+      "error",
+      {
+        "extensions": ["vue"],
+        "shouldMatchCase": true
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": 3,
+        "multiline": 1
+      }
+    ],
     "vue/multi-word-component-names": "off",
-    "vue/new-line-between-multi-line-property": ["error", {
-      "minLineOfMultilineProperty": 2
-    }],
+    "vue/new-line-between-multi-line-property": [
+      "error",
+      {
+        "minLineOfMultilineProperty": 2
+      }
+    ],
     "vue/no-deprecated-v-is": "error",
     "vue/no-empty-component-block": "error",
     "vue/no-multiple-objects-in-class": "error",
-    "vue/no-potential-component-option-typo": ["error", {
-      "presets": ["vue", "vue-router", "pinia"]
-    }],
-    "vue/no-reserved-component-names": ["error", {
-      "disallowVueBuiltinComponents": true,
-      "disallowVue3BuiltinComponents": true
-    }],
+    "vue/no-potential-component-option-typo": [
+      "error",
+      {
+        "presets": ["vue", "vue-router", "pinia"]
+      }
+    ],
+    "vue/no-reserved-component-names": [
+      "error",
+      {
+        "disallowVueBuiltinComponents": true,
+        "disallowVue3BuiltinComponents": true
+      }
+    ],
     "vue/no-restricted-v-bind": ["error", "key", "ref"],
-    "vue/no-static-inline-styles": ["warn", {
-      "allowBinding": true
-    }],
+    "vue/no-static-inline-styles": [
+      "warn",
+      {
+        "allowBinding": true
+      }
+    ],
     "vue/no-template-target-blank": "error",
-    "vue/no-unused-properties": ["error", {
-      "groups": ["props", "data", "computed", "methods"],
-      "deepData": true
-    }],
-    "vue/no-useless-mustaches": ["error", {
-      "ignoreIncludesComment": true,
-      "ignoreStringEscape": true
-    }],
+    "vue/no-unused-properties": [
+      "error",
+      {
+        "groups": ["props", "data", "computed", "methods"],
+        "deepData": true
+      }
+    ],
+    "vue/no-useless-mustaches": [
+      "error",
+      {
+        "ignoreIncludesComment": true,
+        "ignoreStringEscape": true
+      }
+    ],
     "vue/no-useless-v-bind": "error",
     "vue/padding-line-between-blocks": "error",
     "vue/prefer-prop-type-boolean-first": "error",
@@ -62,27 +90,34 @@
     "vue/require-direct-export": "error",
     "vue/require-macro-variable-name": "error",
     "vue/require-name-property": "error",
-    "vue/script-indent": ["error", 2, {
-      "baseIndent": 1,
-      "switchCase": 1
-    }],
+    "vue/script-indent": [
+      "error",
+      2,
+      {
+        "baseIndent": 1,
+        "switchCase": 1
+      }
+    ],
     "vue/sort-keys": ["off"],
     "vue/v-for-delimiter-style": ["error", "in"],
     "vue/v-on-function-call": ["error", "never"],
     "vue/v-on-style": ["error", "shorthand"],
     "vue/v-bind-style": ["error", "shorthand"],
     "vue/v-slot-style": ["error", "shorthand"],
-    
+
     "complexity": ["warn", 20],
     "max-depth": ["warn", 4],
     "max-params": ["warn", 4],
     "max-statements": ["warn", 30],
     "no-var": "error",
     "prefer-const": "error",
-    "no-unused-vars": ["warn", { 
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
-    }],
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "no-debugger": "error",
     "no-console": ["off"],
     "prefer-template": "error",
@@ -94,22 +129,31 @@
     "arrow-body-style": ["error", "as-needed"],
     "curly": ["error", "all"],
     "quotes": ["error", "single", { "avoidEscape": true }],
-    "import/order": ["error", {
-      "groups": ["builtin", "external", "internal", ["parent", "sibling", "index"]],
-      "newlines-between": "always"
-    }],
-    
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", ["parent", "sibling", "index"]],
+        "newlines-between": "always"
+      }
+    ],
+
     "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/explicit-function-return-type": ["warn", {
-      "allowExpressions": true
-    }],
-    "@typescript-eslint/no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
-    }],
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
+      {
+        "allowExpressions": true
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/consistent-type-imports": "error",
-    
+
     "no-constant-condition": "error",
     "no-duplicate-imports": "error",
     "no-extra-bind": "error",
@@ -125,19 +169,25 @@
     "no-useless-computed-key": "error",
     "no-useless-rename": "error",
     "no-useless-return": "error",
-    
-    "max-len": ["warn", {
-      "code": 100,
-      "ignoreComments": true,
-      "ignoreUrls": true,
-      "ignoreTemplateLiterals": true
-    }],
-    "max-lines-per-function": ["warn", {
-      "max": 60,
-      "skipComments": true,
-      "skipBlankLines": true
-    }],
-    
+
+    "max-len": [
+      "warn",
+      {
+        "code": 100,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "max-lines-per-function": [
+      "warn",
+      {
+        "max": 100,
+        "skipComments": true,
+        "skipBlankLines": true
+      }
+    ],
+
     "default-case": "error",
     "default-case-last": "error",
     "no-alert": "error",

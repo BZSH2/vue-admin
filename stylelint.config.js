@@ -7,10 +7,6 @@ export default {
   ],
   overrides: [
     {
-      files: ['.js', '.jsx', '.ts'].flatMap((ext) => [`*${ext}`, `**/*${ext}`]),
-      customSyntax: '@stylelint/postcss-css-in-js',
-    },
-    {
       files: ['.vue', '.htm', '.html'].flatMap((ext) => [`*${ext}`, `**/*${ext}`]),
       customSyntax: 'postcss-html',
     },

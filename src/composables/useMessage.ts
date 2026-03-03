@@ -10,6 +10,7 @@ import type { VNode, RendererNode, RendererElement } from 'vue'
 import 'element-plus/es/components/message/style/css'
 import 'element-plus/es/components/message-box/style/css'
 import 'element-plus/es/components/notification/style/css'
+import { settingConfig } from '@/config'
 
 export type StatusType = 'success' | 'warning' | 'info' | 'error'
 
@@ -39,7 +40,7 @@ export interface NotificationProps {
 export function $baseMessage(
   message: string,
   type: StatusType = 'success',
-  duration: number = 3000,
+  duration: number = settingConfig.messageDuration,
   options?: MessageOptions
 ): void {
   ElMessage({
@@ -82,13 +83,19 @@ export function $baseConfirm({
     ...args,
   })
     .then(() => {
-      if (onOk) {onOk()}
+      if (onOk) {
+        onOk()
+      }
     })
     .catch((action: Action) => {
       if (action === 'cancel') {
-        if (onCancel) {onCancel()}
+        if (onCancel) {
+          onCancel()
+        }
       } else {
-        if (onClose) {onClose()}
+        if (onClose) {
+          onClose()
+        }
       }
     })
 }
@@ -114,7 +121,7 @@ export function $baseNotify(
   const {
     type = 'info',
     position = 'top-right',
-    duration = 4500,
+    duration = settingConfig.messageDuration,
     dangerouslyUseHTMLString = false,
     ...rest
   } = options || {}
@@ -162,8 +169,8 @@ export function $asyncBaseConfirm(props: ConfirmProps): Promise<boolean> {
  * 如果你喜欢用 useMessage() 的方式调用，也可以保留这个导出
  */
 export const useMessage = () => ({
-    $baseMessage,
-    $baseConfirm,
-    $baseNotify,
-    $asyncBaseConfirm,
-  })
+  $baseMessage,
+  $baseConfirm,
+  $baseNotify,
+  $asyncBaseConfirm,
+})

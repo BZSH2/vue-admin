@@ -7,9 +7,9 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { createViteProxy } from './build'
-import globConfig from './src/config/index'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import { config } from './src/config'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -59,7 +59,7 @@ export default defineConfig(({ mode, command }) => {
       },
     },
     server: {
-      port: globConfig.devPort,
+      port: config.devPort,
       host: true,
       proxy: command === 'serve' ? createViteProxy() : undefined,
     },

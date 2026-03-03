@@ -1,4 +1,4 @@
-export default {
+export const settingConfig = {
   title: 'Vue Admin',
   titleSeparator: ' - ',
   /**
@@ -21,4 +21,12 @@ export default {
    * 主题色
    */
   primaryColor: '#1684fc',
+  /**
+   * 白名单路由
+   */
+  routesWhiteList: ['/login', '/404', '/403'],
+  /**
+   * intelligence(前端导出路由)和 all(后端导出路由)两种方式
+   */
+  authentication: 'all',
 }

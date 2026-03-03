@@ -4,15 +4,15 @@ import { createPinia } from 'pinia'
 import 'virtual:svg-icons-register'
 
 import App from './App.vue'
-import router from './router'
+import { router, setupRouter } from './router'
 import i18n from '@/i18n'
-
 import './styles/index.scss'
 
-const app = createApp(App)
+function setupApp() {
+  const app = createApp(App)
+  setupRouter(app)
+  app.use(createPinia()).use(i18n)
+  app.mount('#app')
+}
 
-app.use(createPinia())
-app.use(router)
-app.use(i18n)
-
-app.mount('#app')
+setupApp()

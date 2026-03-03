@@ -1,7 +1,7 @@
 /**
  * @description 导出vue/cli配置，以下所有配置修改需要重启项目
  */
-export default {
+export const config = {
   /**
    * 开发以及部署时的URL
    * hash模式时在不确定二级目录名称的情况下建议使用""代表相对路径或者"/二级目录/"

@@ -12,14 +12,15 @@ function changeLang(code: string) {
 }
 
 onMounted(() => {
-  getPetById({ id: '1' }).then((res) => {
-    console.log('aaaaaaaaaaaaaaaa', res)
-  })
-  postdefaultpostOpenApiJson({
-    coke: '[{"prefix":"pets","service":[]},{"prefix":"store","service":[]}] ',
-  }).then((res) => {
-    console.log('postdefaultpostOpenApiJson', res)
-  })
+  $baseMessage('这是一条消息')
+  // getPetById({ id: '1' }).then((res) => {
+  //   console.log('aaaaaaaaaaaaaaaa', res)
+  // })
+  // postdefaultpostOpenApiJson({
+  //   coke: '[{"prefix":"pets","service":[]},{"prefix":"store","service":[]}] ',
+  // }).then((res) => {
+  //   console.log('postdefaultpostOpenApiJson', res)
+  // })
   // postOpenApiJSON({
   //   coke: '[{"prefix":"pets","service":[]},{"prefix":"store","service":[]}] ',
   // })

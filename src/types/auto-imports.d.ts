@@ -6,7 +6,10 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const $asyncBaseConfirm: typeof import('../composables/useMessage').$asyncBaseConfirm
+  const $baseConfirm: typeof import('../composables/useMessage').$baseConfirm
   const $baseMessage: typeof import('../composables/useMessage').$baseMessage
+  const $baseNotify: typeof import('../composables/useMessage').$baseNotify
   const EffectScope: typeof import('vue').EffectScope
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
@@ -73,6 +76,7 @@ declare global {
   const useCssVars: typeof import('vue').useCssVars
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
+  const useMessage: typeof import('../composables/useMessage').useMessage
   const useModel: typeof import('vue').useModel
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
@@ -88,4 +92,7 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { StatusType, ConfirmProps, NotificationProps } from '../composables/useMessage'
+  import('../composables/useMessage')
 }

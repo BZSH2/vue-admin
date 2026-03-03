@@ -53,7 +53,7 @@ export default function pinyin(
       case 'normal':
       default:
         return {
-          nonZh: 'split',
+          nonZh: 'consecutive',
           separator: ' ',
           toneType: 'none',
         } as const
@@ -67,7 +67,7 @@ export default function pinyin(
   }
 
   try {
-    return pinyinUtil(text, (finalConfig as any)).trim()
+    return pinyinUtil(text, finalConfig as any).trim()
   } catch {
     console.warn('[pinyin] 转换失败，返回原文:', text)
     return text

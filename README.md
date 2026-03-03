@@ -41,6 +41,7 @@ pnpm build
   - pnpm lint:all：Oxlint + ESLint 全量检查
   - pnpm typecheck：TypeScript 类型检查
   - pnpm cz：规范化提交（cz-git）
+  - pnpm test：运行单元测试 ([文档](file:///d:/demo/vue-admin/TESTS.md))
 - 自动化
   - pnpm openI18n：扫描并生成多语言 JSON
   - pnpm openApi：依据 OpenAPI 生成 api 代码

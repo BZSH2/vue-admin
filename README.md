@@ -54,8 +54,10 @@ pnpm build
 - 使用命令
   - 运行：`pnpm openI18n`
 - 工作流程
-  - 扫描范围：`src/**/*.vue` 的 template 中以下用法
-    - `$t('xxx')`、`v-t="'xxx'"`、`{{ $t('xxx') }}`
+  - 扫描范围：`src/**/*.vue` 中的以下用法
+    - **Template**: `$t('xxx')`、`v-t="'xxx'"`、`{{ $t('xxx') }}`
+    - **Script**: `$t('xxx')`、`t('xxx')`、`I18n.t('xxx')`
+    - **Custom Block**: `<i18n>` 块中的 JSON 内容
   - 语言配置来源：在 [lang.ts](file:///d:/vue-admin/src/config/lang.ts) 中维护 `langDict`（如 zh-CN、en、ja 等）
   - 输出位置：在 [src/i18n/lang](file:///d:/vue-admin/src/i18n/lang) 下生成各语言的 `*.json`
   - 覆盖行为：命令会先清空 `src/i18n/lang` 再重新生成
@@ -88,13 +90,41 @@ pnpm build
 
 ### i18n 使用示例
 
-- 视图中使用
+- **视图中使用 (Template)**
 
 ```vue
 <template>
   <div>{{ $t('welcome.title') }}</div>
   <button v-t="'actions.confirm'"></button>
 </template>
+```
+
+- **脚本中使用 (Script)**
+
+```ts
+// Composition API
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+const msg = t('message.hello')
+
+// Global I18n instance (outside components)
+import i18n from '@/i18n'
+const msg2 = i18n.global.t('message.world')
+```
+
+- **自定义块中使用 (Custom Block)**
+
+```vue
+<i18n>
+{
+  "en": {
+    "hello": "hello world!"
+  },
+  "zh-CN": {
+    "hello": "你好，世界！"
+  }
+}
+</i18n>
 ```
 
 - 语言包结构（示例：en.json）

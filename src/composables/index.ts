@@ -1,1 +1,1 @@
-export { $baseMessage } from './useMessage'
+export { $baseMessage, $baseConfirm, $baseNotify, $asyncBaseConfirm } from './useMessage'

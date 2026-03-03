@@ -21,7 +21,7 @@ export default defineConfig(({ mode, command }) => {
       vue(),
       vueJsx(),
       AutoImport({
-        imports: ['vue', 'vue-router', 'pinia'],
+        imports: ['vue', 'vue-router', 'pinia', 'vue-i18n'],
         resolvers: [ElementPlusResolver()],
         // 设置 d.ts 文件输出路径
         dirs: ['src/composables', '!src/composables/index.ts'],
@@ -42,7 +42,7 @@ export default defineConfig(({ mode, command }) => {
         // 指定symbolId格式
         symbolId: 'icon-[dir]-[name]',
       }),
-       VueI18nPlugin({
+      VueI18nPlugin({
         include: [
           path.resolve(process.cwd(), 'src/i18n/lang/**/*.json'), // 语言文件路径
         ],
@@ -50,12 +50,12 @@ export default defineConfig(({ mode, command }) => {
         compositionOnly: true,
         fullInstall: true,
         defaultSFCLang: 'yaml', // 支持SFC自定义块
-        globalSFCScope: true
-      })
+        globalSFCScope: true,
+      }),
     ],
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     server: {

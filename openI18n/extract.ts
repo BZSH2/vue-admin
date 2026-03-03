@@ -19,14 +19,14 @@ export class I18nExtractor {
     // 匹配 v-t="'key'"
     directive: /v-t="['"]([^'"]+)['"]/g,
     // 匹配 {{ $t('key') }}
-    interpolation: /\{\{\s*\$t\(\s*['"]([^'"]+)['"]\s*\)\s*\}\}/g
+    interpolation: /\{\{\s*\$t\(\s*['"]([^'"]+)['"]\s*\)\s*\}\}/g,
   }
 
   // 扫描Vue文件
   scanVueFiles(pattern: string = 'src/**/*.vue'): I18nKey[] {
     const files = glob.sync(pattern)
 
-    files.forEach(file => {
+    files.forEach((file) => {
       const content = fs.readFileSync(file, 'utf-8')
       this.extractFromVueFile(content, file)
     })
@@ -44,17 +44,77 @@ export class I18nExtractor {
 
     // 提取script
     if (descriptor.script?.content) {
-      // 暂时跳过 script 中的提取，后续如需实现可在此添加逻辑
-      // this.extractFromScript(descriptor.script.content, filePath)
+      this.extractFromScript(descriptor.script.content, filePath)
+    }
+
+    // 提取scriptSetup
+    if (descriptor.scriptSetup?.content) {
+      this.extractFromScript(descriptor.scriptSetup.content, filePath)
     }
 
     // 提取SFC自定义块
     if (descriptor.customBlocks) {
-      // descriptor.customBlocks.forEach(block => {
-      //   if (block.type === 'i18n') {
-      //     this.extractFromCustomBlock(block.content, filePath)
-      //   }
-      // })
+      descriptor.customBlocks.forEach((block) => {
+        if (block.type === 'i18n') {
+          this.extractFromCustomBlock(block.content, filePath)
+        }
+      })
+    }
+  }
+
+  private extractFromScript(content: string, filePath: string) {
+    // 匹配 t('key') 或 $t('key') 或 i18n.t('key')
+    const scriptRegex = /(?:^|\s|\W)(?:\$t|t|I18n\.t)\(\s*['"]([^'"]+)['"]\s*\)/g
+    const matches = [...content.matchAll(scriptRegex)]
+
+    matches.forEach((match) => {
+      const key = match[1]
+      if (key && !this.keys.has(key)) {
+        this.keys.set(key, {
+          key,
+          value: key,
+          file: filePath,
+          line: 0, // 脚本行号暂不精确计算
+        })
+      }
+    })
+  }
+
+  private extractFromCustomBlock(content: string, filePath: string) {
+    try {
+      const data = JSON.parse(content)
+      // 假设第一层是 locale key，如 "en", "zh-CN"
+      // 我们遍历所有 locale，提取其中的 key
+      Object.keys(data).forEach((locale) => {
+        const localeData = data[locale]
+        if (typeof localeData === 'object' && localeData !== null) {
+          this.traverseObject(localeData, filePath)
+        }
+      })
+    } catch (e) {
+      // 忽略非JSON格式的自定义块
+    }
+  }
+
+  private traverseObject(obj: any, filePath: string, prefix = '') {
+    if (typeof obj === 'object' && obj !== null) {
+      Object.keys(obj).forEach((key) => {
+        const value = obj[key]
+        const currentKey = prefix ? `${prefix}.${key}` : key
+        if (typeof value === 'object' && value !== null) {
+          this.traverseObject(value, filePath, currentKey)
+        } else {
+          // 添加到 keys 集合中
+          if (!this.keys.has(currentKey)) {
+            this.keys.set(currentKey, {
+              key: currentKey,
+              value: String(value), // 使用找到的值作为默认值（虽然不同locale值不同，这里取其中一个即可）
+              file: filePath,
+              line: 0,
+            })
+          }
+        }
+      })
     }
   }
 
@@ -66,17 +126,17 @@ export class I18nExtractor {
       const matches = [
         ...line.matchAll(this.regex.functionCall),
         ...line.matchAll(this.regex.directive),
-        ...line.matchAll(this.regex.interpolation)
+        ...line.matchAll(this.regex.interpolation),
       ]
 
-      matches.forEach(match => {
+      matches.forEach((match) => {
         const key = match[1]
         if (key && !this.keys.has(key)) {
           this.keys.set(key, {
             key,
             value: key, // 初始值设为key本身
             file: filePath,
-            line: index + 1
+            line: index + 1,
           })
         }
       })
@@ -126,7 +186,9 @@ export class I18nExtractor {
         if (index === keys.length - 1) {
           current[k] = translatedText
         } else {
-          if (!current[k]) {current[k] = {}}
+          if (!current[k]) {
+            current[k] = {}
+          }
           current = current[k]
         }
       })
@@ -145,7 +207,9 @@ export class I18nExtractor {
     const keys = key.split('.')
     let current = obj
     for (const k of keys) {
-      if (current === undefined || current === null) {return false}
+      if (current === undefined || current === null) {
+        return false
+      }
       current = current[k]
     }
     return current !== undefined
@@ -153,13 +217,18 @@ export class I18nExtractor {
 
   // 深度合并对象
   private deepMerge(target: any, source: any): any {
-    if (typeof target !== 'object' || target === null || typeof source !== 'object' || source === null) {
+    if (
+      typeof target !== 'object' ||
+      target === null ||
+      typeof source !== 'object' ||
+      source === null
+    ) {
       return source
     }
 
     const result = { ...target }
 
-    Object.keys(source).forEach(key => {
+    Object.keys(source).forEach((key) => {
       if (key in target) {
         result[key] = this.deepMerge(target[key], source[key])
       } else {

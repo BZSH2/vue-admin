@@ -19,24 +19,26 @@
     "yaml"
   ],
   "stylelint.validate": ["css", "less", "postcss", "scss", "vue", "sass"],
-  "stylelint.customSyntax": "postcss-html",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.fixAll.oxc": "explicit",
-    "source.fixAll.stylelint": "explicit",
+    "source.fixAll.stylelint": "always",
     "source.organizeImports": "never"
-  },
-  "files.associations": {
-    "*.css": "css"
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.tsdk": "node_modules/typescript/lib",
   "prettier.endOfLine": "lf",
-  "[javascript,vue,typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
   },
-  "[css,scss,sass,less]": {
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "[sass]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "[less]": {
     "editor.defaultFormatter": "stylelint.vscode-stylelint"
   },
   "references.preferredLocation": "peek",

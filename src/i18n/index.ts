@@ -3,7 +3,6 @@ import { createI18n } from 'vue-i18n'
 import { messages } from './merge.ts'
 import { defaultLang, type LanguageType } from '@/config'
 
-
 // 获取用户浏览器首选语言
 function getBrowserLocale() {
   return navigator.language
@@ -20,7 +19,7 @@ export function saveLocale(locale: LanguageType) {
 }
 
 // 加载语言设置
-function loadLocale() {
+export function loadLocale() {
   try {
     return localStorage.getItem('locale') || getBrowserLocale() || defaultLang
   } catch (e) {
@@ -60,7 +59,6 @@ export function onLangChange(callback: (lang: LanguageType) => void) {
   )
   return watchStop
 }
-
 
 // 创建 i18n 实例
 const i18n = createI18n({

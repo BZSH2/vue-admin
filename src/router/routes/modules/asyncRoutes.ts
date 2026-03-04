@@ -22,6 +22,17 @@ const asyncRoutes: Route.RouteRecord[] = [
           noKeepAlive: false,
         },
       },
+      {
+        path: '/icons',
+        name: 'Icons',
+        component: () => import('@/views/icons/index.vue'),
+        meta: {
+          title: '图标',
+          noClosable: true,
+          isLevel1: true,
+          noKeepAlive: false,
+        },
+      },
     ],
   },
 ]

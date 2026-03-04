@@ -10,6 +10,6 @@ declare namespace Lang {
     /** 语言名称 */
     name: string
     /** 语言标志 */
-    flag: string
+    flag?: string
   }
 }

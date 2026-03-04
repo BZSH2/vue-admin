@@ -4,17 +4,25 @@ interface Props {
   name: string
   /** 类名  */
   className?: string
+  /** 图标大小 */
+  size?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: '',
+  size: 12,
 })
 
 const iconName = computed(() => `#icon-${props.name}`)
 </script>
 
 <template>
-  <svg class="svg-icon" :class="[`icon-${name}`, className]" aria-hidden="true">
+  <svg
+    class="svg-icon"
+    :class="[`icon-${name}`, className]"
+    :style="{ fontSize: `${size}px` }"
+    aria-hidden="true"
+  >
     <use :xlink:href="iconName" />
   </svg>
 </template>

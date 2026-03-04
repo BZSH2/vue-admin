@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/utils/request'
 
-/** 支付订单 POST /apiPets/orders/{orderId}/payment */
+/** 支付订单 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/{orderId}/payment */
 export function createOrderPayment(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -13,7 +13,7 @@ export function createOrderPayment(
 ) {
   const { orderId, ...queryParams } = params
   return request<any>({
-    url: `/apiPets/orders/${orderId}/payment`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/${orderId}/payment`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json-patch+json',

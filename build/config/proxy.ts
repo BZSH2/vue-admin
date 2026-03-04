@@ -9,7 +9,7 @@ import type { ProxyOptions } from 'vite'
  */
 export function createViteProxy(): Record<string, ProxyOptions> | undefined {
   return {
-    '/apiPets': {
+    'https://m1.apifoxmock.com/m1/7814952-7562684-default': {
       // 代理目标地址，请替换为实际的后端服务地址
       target: 'https://m1.apifoxmock.com/m1/7815334-7563082-default',
       changeOrigin: true, // 如果target是域名，建议开启此选项

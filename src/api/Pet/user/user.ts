@@ -2,10 +2,10 @@
 /* eslint-disable */
 import request from '@/utils/request'
 
-/** 创建用户 POST /apiPets/users */
+/** 创建用户 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/users */
 export function createUser(body: user.User, options?: { [key: string]: any }) {
   return request<any>({
-    url: `/apiPets/users`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json-patch+json',
@@ -14,7 +14,7 @@ export function createUser(body: user.User, options?: { [key: string]: any }) {
     ...(options || {}),
   })
 }
-/** 获取用户 GET /apiPets/users/{username} */
+/** 获取用户 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/users/{username} */
 export function getUserByName(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -25,7 +25,7 @@ export function getUserByName(
 ) {
   const { username, ...queryParams } = params
   return request<user.User>({
-    url: `/apiPets/users/${username}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users/${username}`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -33,7 +33,7 @@ export function getUserByName(
     ...(options || {}),
   })
 }
-/** 更新用户 PUT /apiPets/users/{username} */
+/** 更新用户 PUT https://m1.apifoxmock.com/m1/7814952-7562684-default/users/{username} */
 export function updateUser(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -45,7 +45,7 @@ export function updateUser(
 ) {
   const { username, ...queryParams } = params
   return request<any>({
-    url: `/apiPets/users/${username}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users/${username}`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json-patch+json',
@@ -57,7 +57,7 @@ export function updateUser(
     ...(options || {}),
   })
 }
-/** 删除用户 DELETE /apiPets/users/{username} */
+/** 删除用户 DELETE https://m1.apifoxmock.com/m1/7814952-7562684-default/users/{username} */
 export function deleteUser(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -68,7 +68,7 @@ export function deleteUser(
 ) {
   const { username, ...queryParams } = params
   return request<any>({
-    url: `/apiPets/users/${username}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users/${username}`,
     method: 'DELETE',
     params: {
       ...queryParams,
@@ -76,7 +76,7 @@ export function deleteUser(
     ...(options || {}),
   })
 }
-/** 登录 GET /apiPets/login */
+/** 登录 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/login */
 export function loginUser(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -89,7 +89,7 @@ export function loginUser(
 ) {
   const { ...queryParams } = params
   return request<string>({
-    url: `/apiPets/login`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/login`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -97,10 +97,10 @@ export function loginUser(
     ...(options || {}),
   })
 }
-/** 登出 GET /apiPets/logout */
+/** 登出 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/logout */
 export function logoutUser(options?: { [key: string]: any }) {
   return request<any>({
-    url: `/apiPets/logout`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/logout`,
     method: 'GET',
     ...(options || {}),
   })

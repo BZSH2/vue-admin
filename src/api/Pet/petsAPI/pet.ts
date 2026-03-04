@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/utils/request'
 
-/** 获取宠物 GET /apiPets/pets/{id} */
+/** 获取宠物 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/{id} */
 export function getPetById(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -13,7 +13,7 @@ export function getPetById(
 ) {
   const { id, ...queryParams } = params
   return request<petsAPI.Pet>({
-    url: `/apiPets/pets/${id}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${id}`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -21,7 +21,7 @@ export function getPetById(
     ...(options || {}),
   })
 }
-/** 更新宠物 PUT /apiPets/pets/{id} */
+/** 更新宠物 PUT https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/{id} */
 export function updatePet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -33,7 +33,7 @@ export function updatePet(
 ) {
   const { id, ...queryParams } = params
   return request<petsAPI.Pet>({
-    url: `/apiPets/pets/${id}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${id}`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json-patch+json',
@@ -45,7 +45,7 @@ export function updatePet(
     ...(options || {}),
   })
 }
-/** 删除宠物 DELETE /apiPets/pets/{id} */
+/** 删除宠物 DELETE https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/{id} */
 export function deletePet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -58,7 +58,7 @@ export function deletePet(
 ) {
   const { id, ...queryParams } = params
   return request<any>({
-    url: `/apiPets/pets/${id}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${id}`,
     method: 'DELETE',
     params: {
       ...queryParams,
@@ -66,7 +66,7 @@ export function deletePet(
     ...(options || {}),
   })
 }
-/** 列出宠物 GET /apiPets/pets */
+/** 列出宠物 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/pets */
 export function findPetsByStatus(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -79,7 +79,7 @@ export function findPetsByStatus(
 ) {
   const { ...queryParams } = params
   return request<petsAPI.Pet[]>({
-    url: `/apiPets/pets`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -87,10 +87,10 @@ export function findPetsByStatus(
     ...(options || {}),
   })
 }
-/** 创建宠物 POST /apiPets/pets */
+/** 创建宠物 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/pets */
 export function addPet(body: petsAPI.Pet, options?: { [key: string]: any }) {
   return request<any>({
-    url: `/apiPets/pets`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json-patch+json',
@@ -99,7 +99,7 @@ export function addPet(body: petsAPI.Pet, options?: { [key: string]: any }) {
     ...(options || {}),
   })
 }
-/** 上传宠物图片 POST /apiPets/pets/{petId}/images */
+/** 上传宠物图片 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/{petId}/images */
 export function uploadFile(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -112,7 +112,7 @@ export function uploadFile(
 ) {
   const { id, petId, ...queryParams } = params
   return request<petsAPI.ApiResponse>({
-    url: `/apiPets/pets/${petId}/images`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${petId}/images`,
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',

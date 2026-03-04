@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/utils/request'
 
-/** 列出现有库存 GET /apiPets/inventories */
+/** 列出现有库存 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/inventories */
 export function getInventory(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -13,7 +13,7 @@ export function getInventory(
 ) {
   const { ...queryParams } = params
   return request<any>({
-    url: `/apiPets/inventories`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/inventories`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -21,10 +21,10 @@ export function getInventory(
     ...(options || {}),
   })
 }
-/** 创建订单 POST /apiPets/orders */
+/** 创建订单 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/orders */
 export function placeOrder(body: storeAPI.Order, options?: { [key: string]: any }) {
   return request<storeAPI.Order>({
-    url: `/apiPets/orders`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json-patch+json',
@@ -33,7 +33,7 @@ export function placeOrder(body: storeAPI.Order, options?: { [key: string]: any 
     ...(options || {}),
   })
 }
-/** 获取订单 GET /apiPets/orders/{id} */
+/** 获取订单 GET https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/{id} */
 export function getOrderById(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -44,7 +44,7 @@ export function getOrderById(
 ) {
   const { id, ...queryParams } = params
   return request<storeAPI.Order>({
-    url: `/apiPets/orders/${id}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/${id}`,
     method: 'GET',
     params: {
       ...queryParams,
@@ -52,7 +52,7 @@ export function getOrderById(
     ...(options || {}),
   })
 }
-/** 删除订单 DELETE /apiPets/orders/{id} */
+/** 删除订单 DELETE https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/{id} */
 export function deleteOrder(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -63,7 +63,7 @@ export function deleteOrder(
 ) {
   const { id, ...queryParams } = params
   return request<any>({
-    url: `/apiPets/orders/${id}`,
+    url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/${id}`,
     method: 'DELETE',
     params: {
       ...queryParams,

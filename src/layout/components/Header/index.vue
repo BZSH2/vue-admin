@@ -15,7 +15,7 @@ const breadcrumbs = computed(() =>
 <template>
   <ElBreadcrumb separator="/">
     <ElBreadcrumbItem v-for="(b, i) in breadcrumbs" :key="i">
-      <RouterLink :to="b.path">{{ b.title }}</RouterLink>
+      <RouterLink :to="b.path">{{ $t(b.title) }}</RouterLink>
     </ElBreadcrumbItem>
   </ElBreadcrumb>
   <div class="spacer" />

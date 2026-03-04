@@ -5,7 +5,7 @@ import path from 'path'
 import { languages } from '../src/config/index.ts'
 
 const extractor = new I18nExtractor()
-const keys = extractor.scanVueFiles()
+const keys = [...extractor.scanVueFiles(), ...extractor.scanTsFiles('src/**/*.{ts,tsx}')]
 
 console.log(`找到 ${keys.length} 个国际化键值`)
 
@@ -15,9 +15,9 @@ const localesDir = path.resolve('./src/i18n/lang')
 const generate = async () => {
   // 删除旧文件
   try {
-    await fs.promises.rm(localesDir, { recursive: true, force: true});
+    await fs.promises.rm(localesDir, { recursive: true, force: true })
   } catch (err) {
-    console.error('删除失败:', err);
+    console.error('删除失败:', err)
   }
   for (const lang of languages) {
     const langDir = path.join(localesDir)

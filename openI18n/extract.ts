@@ -16,10 +16,14 @@ export class I18nExtractor {
   private regex = {
     // 匹配 $t('key')
     functionCall: /\$t\(\s*['"]([^'"]+)['"]\s*\)/g,
+    // 匹配 t('key') 或 I18n.t('key')
+    tCall: /(?:^|\s|\W)(?:t|I18n\.t)\(\s*['"]([^'"]+)['"]\s*\)/g,
     // 匹配 v-t="'key'"
     directive: /v-t="['"]([^'"]+)['"]/g,
     // 匹配 {{ $t('key') }}
     interpolation: /\{\{\s*\$t\(\s*['"]([^'"]+)['"]\s*\)\s*\}\}/g,
+    // 路由 meta.title: 'key'（跨行）
+    routeMetaTitle: /meta\s*:\s*\{[\s\S]*?title\s*:\s*['"]([^'"]+)['"]/g,
   }
 
   // 扫描Vue文件
@@ -31,6 +35,16 @@ export class I18nExtractor {
       this.extractFromVueFile(content, file)
     })
 
+    return Array.from(this.keys.values())
+  }
+
+  // 扫描TS/TSX文件（路由等）
+  scanTsFiles(pattern: string = 'src/**/*.{ts,tsx}'): I18nKey[] {
+    const files = glob.sync(pattern, { dot: false, nodir: true })
+    files.forEach((file) => {
+      const content = fs.readFileSync(file, 'utf-8')
+      this.extractFromTsFile(content, file)
+    })
     return Array.from(this.keys.values())
   }
 
@@ -60,6 +74,29 @@ export class I18nExtractor {
         }
       })
     }
+  }
+
+  private addKey(key: string, filePath: string, line = 0) {
+    if (!key || this.keys.has(key)) {return}
+    this.keys.set(key, {
+      key,
+      value: key,
+      file: filePath,
+      line,
+    })
+  }
+
+  private extractFromTsFile(content: string, filePath: string) {
+    // 1) 匹配 $t('key') / t('key') / I18n.t('key')
+    const matches = [
+      ...content.matchAll(this.regex.functionCall),
+      ...content.matchAll(this.regex.tCall),
+    ]
+    matches.forEach((m) => this.addKey(m[1], filePath, 0))
+
+    // 2) 匹配路由 meta.title: 'key'
+    const routeMatches = [...content.matchAll(this.regex.routeMetaTitle)]
+    routeMatches.forEach((m) => this.addKey(m[1], filePath, 0))
   }
 
   private extractFromScript(content: string, filePath: string) {

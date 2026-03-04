@@ -15,7 +15,9 @@ function filterHidden(r: Route.RouteRecord): boolean {
 }
 
 function toMenuNode(r: Route.RouteRecord): MenuNode | null {
-  if (!filterHidden(r)) {return null}
+  if (!filterHidden(r)) {
+    return null
+  }
   if (r.meta?.levelHidden) {
     const children = (r.children || []).map(toMenuNode).filter(Boolean) as MenuNode[]
     return { title: r.meta?.title || '', children }
@@ -34,7 +36,9 @@ const menus = computed<MenuNode[]>(() => appRoutes.map(toMenuNode).filter(Boolea
 
 const activePath = computed(() => route.path)
 function onSelect(path: string) {
-  if (path) {router.push(path)}
+  if (path) {
+    router.push(path)
+  }
 }
 </script>
 
@@ -49,21 +53,23 @@ function onSelect(path: string) {
         <template v-for="(m, i) in menus" :key="i">
           <ElSubMenu v-if="m.children?.length" :index="m.title">
             <template #title>
-              <span class="menu-text">{{ m.title }}</span>
+              <span class="menu-text">{{ $t(m.title) }}</span>
             </template>
             <ElMenuItem v-for="(c, j) in m.children" :key="j" :index="c.path || c.title">
-              <span class="menu-text">{{ c.title }}</span>
+              <span class="menu-text">{{ $t(c.title) }}</span>
             </ElMenuItem>
           </ElSubMenu>
           <ElMenuItem v-else :index="m.path || m.title">
-            <span class="menu-text">{{ m.title }}</span>
+            <span class="menu-text">{{ $t(m.title) }}</span>
           </ElMenuItem>
         </template>
       </ElMenu>
     </ElScrollbar>
 
     <div class="control">
-      <ElButton size="small" @click="emit('toggle')">{{ collapsed ? '展开' : '折叠' }}</ElButton>
+      <ElButton size="small" @click="emit('toggle')">{{
+        collapsed ? $t('展开') : $t('折叠')
+      }}</ElButton>
     </div>
   </div>
 </template>

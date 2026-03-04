@@ -13,13 +13,13 @@ function onCommand(cmd: string) {
 
 <template>
   <ElDropdown @command="onCommand" trigger="click">
-    <span class="el-dropdown-link">
+    <span>
       <ElAvatar size="small" class="cursor-pointer">U</ElAvatar>
     </span>
     <template #dropdown>
       <ElDropdownMenu>
         <ElDropdownItem command="github">GitHub</ElDropdownItem>
-        <ElDropdownItem divided command="logout">退出登录</ElDropdownItem>
+        <ElDropdownItem divided command="logout">{{ $t('退出登录') }}</ElDropdownItem>
       </ElDropdownMenu>
     </template>
   </ElDropdown>

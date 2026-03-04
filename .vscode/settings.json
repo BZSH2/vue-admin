@@ -133,6 +133,7 @@
     "apifix",
     "Apifox",
     "APIV",
-    "endfor"
+    "endfor",
+    "vueuse"
   ]
 }

@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@vueuse/core": "^14.2.1",
     "axios": "^1.13.4",
     "element-plus": "^2.13.2",
     "js-cookie": "^3.0.5",

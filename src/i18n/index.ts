@@ -1,7 +1,7 @@
 // src/i18n/index.js
 import { createI18n } from 'vue-i18n'
-import { messages } from './merge.ts'
-import { defaultLang, type LanguageType } from '@/config'
+import { messages } from './merge'
+import { defaultLang, type LanguageType } from '../config'
 
 // 获取用户浏览器首选语言
 function getBrowserLocale() {

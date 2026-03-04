@@ -1,10 +1,12 @@
-import i18n from '@/i18n'
+import i18n from '../i18n'
 
 const { t, te } = i18n.global
 
 function translateTitle(title: string, ...args: any[]) {
   // @ts-ignore
-  if (te(title)) {return t(title, args)}
+  if (te(title)) {
+    return t(title, args)
+  }
   return title
 }
 

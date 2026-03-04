@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import 'virtual:svg-icons-register'
+import 'virtual:uno.css'
 
 import App from './App.vue'
 import { router, setupRouter } from './router'

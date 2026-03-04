@@ -1,4 +1,10 @@
 {
+  "系统登录": "System login",
+  "用户名": "username",
+  "请输入用户名": "Please enter username",
+  "密码": "password",
+  "请输入密码": "Please enter password",
+  "登录": "Log in",
   "测试": "test",
   "哈哈哈哈": "Ha ha ha ha",
   "你好, 这是一个测试": "Hello, this is a test"

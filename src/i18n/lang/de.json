@@ -1,4 +1,10 @@
 {
+  "系统登录": "Systemanmeldung",
+  "用户名": "Benutzername",
+  "请输入用户名": "Bitte geben Sie den Benutzernamen ein",
+  "密码": "Passwort",
+  "请输入密码": "Bitte geben Sie das Passwort ein",
+  "登录": "Einloggen",
   "测试": "prüfen",
   "哈哈哈哈": "Ha ha ha ha",
   "你好, 这是一个测试": "Hallo, das ist ein Test"

@@ -10,6 +10,7 @@ declare global {
   const $baseConfirm: typeof import('../composables/useMessage').$baseConfirm
   const $baseMessage: typeof import('../composables/useMessage').$baseMessage
   const $baseNotify: typeof import('../composables/useMessage').$baseNotify
+  const $t: typeof import('../composables/i18n').$t
   const EffectScope: typeof import('vue').EffectScope
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
@@ -65,6 +66,7 @@ declare global {
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
   const storeToRefs: typeof import('pinia').storeToRefs
+  const t: typeof import('../composables/i18n').t
   const toRaw: typeof import('vue').toRaw
   const toRef: typeof import('vue').toRef
   const toRefs: typeof import('vue').toRefs

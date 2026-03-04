@@ -1,9 +1,6 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { settingConfig } from '@/config'
 import { getToken, clearToken } from '@/utils'
-
-/** 是否有token */
-const hasToken = Boolean(getToken())
 /** 是否执行鉴权 */
 let isHasFetchAuth = true
 
@@ -14,6 +11,7 @@ export async function createPermissionGuard(
 ) {
   const router = useRouter()
   const isWhiteRoute = settingConfig.routesWhiteList.includes(to.path)
+  const hasToken = Boolean(getToken())
 
   const routeSwitches: Common.StrategicPattern[] = [
     // 在访问白名单
@@ -41,7 +39,9 @@ export async function createPermissionGuard(
     },
   ]
   routeSwitches.some(({ condition, callback }) => {
-    if (condition) {callback()}
+    if (condition) {
+      callback()
+    }
     return condition
   })
 

@@ -35,8 +35,7 @@ async function onSubmit() {
 
     // 读取重定向地址（如存在）
     const redirect = (route.query?.redirect as string) || '/'
-    // 为确保路由守卫拿到最新 token，使用硬跳转
-    window.location.replace(redirect)
+    router.replace(redirect)
   } catch (e: any) {
     if (e?.message) {
       $baseMessage(e.message, 'error')

@@ -1,19 +1,14 @@
-import { languages } from '../config'
+const modules = import.meta.glob('./lang/*.json')
 
-// 自动导入所有语言文件
-const modules = import.meta.glob('./**/*.json', { eager: true })
-const modulesKeys = Object.keys(modules)
+export type LocaleMessages = Record<string, any>
 
-// 合并所有语言文件
-export const messages = languages.reduce(
-  (acc: Record<string, any>, lang: string) => {
-    const module = modulesKeys.filter((key) => key.includes(`/${lang}.json`))[0] || ''
-    const modelDefault = (modules[module] as { default?: Record<string, any> })?.default || {}
-    if (!modelDefault) {
-      console.warn(`多语言文件类型${lang}缺失，运行 "pnpm openI18n" 初始化`)
-    }
-    acc[lang] = modelDefault
-    return acc
-  },
-  {} as Record<string, any>
-)
+export async function loadMessages(lang: string): Promise<LocaleMessages | null> {
+  const moduleKey = `./lang/${lang}.json`
+  const loader = modules[moduleKey]
+  if (!loader) {
+    console.warn(`多语言文件类型${lang}缺失，运行 "pnpm openI18n" 初始化`)
+    return null
+  }
+  const mod = await loader()
+  return (mod as { default?: LocaleMessages }).default || null
+}

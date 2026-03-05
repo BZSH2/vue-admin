@@ -1,7 +1,8 @@
 // src/i18n/index.js
+import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
-import { messages } from './merge'
-import { defaultLang, type LanguageType } from '../config'
+import { loadMessages } from './merge'
+import { defaultLang, languages, type LanguageType } from '../config'
 
 // 获取用户浏览器首选语言
 function getBrowserLocale() {
@@ -28,9 +29,25 @@ export function loadLocale() {
   }
 }
 
+const loadedLocales = new Set<LanguageType>()
+
+async function ensureLocaleMessages(lang: LanguageType) {
+  if (loadedLocales.has(lang)) {
+    return true
+  }
+  const messages = await loadMessages(lang)
+  if (!messages) {
+    return false
+  }
+  i18n.global.setLocaleMessage(lang, messages)
+  loadedLocales.add(lang)
+  return true
+}
+
 // 导出切换语言的方法
-export function setLang(lang: LanguageType) {
-  if (i18n.global.availableLocales.includes(lang)) {
+export async function setLang(lang: LanguageType) {
+  const loaded = await ensureLocaleMessages(lang)
+  if (loaded) {
     i18n.global.locale.value = lang
     saveLocale(lang)
     return true
@@ -46,7 +63,7 @@ export function getCurrentLang() {
 
 // 获取可用语言列表
 export function getAvailableLocales() {
-  return i18n.global.availableLocales
+  return languages
 }
 
 // 监听语言变化
@@ -65,8 +82,15 @@ const i18n = createI18n({
   legacy: false, // 使用 Composition API 模式
   locale: loadLocale(), // 默认语言
   fallbackLocale: 'en', // 回退语言
-  messages,
+  messages: {},
   globalInjection: true, // 全局注入 $t 等方法
 })
+
+export async function setupI18n(app: App) {
+  const locale = loadLocale() as LanguageType
+  await ensureLocaleMessages(locale)
+  i18n.global.locale.value = locale
+  app.use(i18n)
+}
 
 export default i18n

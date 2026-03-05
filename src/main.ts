@@ -6,13 +6,14 @@ import 'virtual:uno.css'
 
 import App from './App.vue'
 import { router, setupRouter } from './router'
-import i18n from '@/i18n'
+import { setupI18n } from '@/i18n'
 import './styles/index.scss'
 
-function setupApp() {
+async function setupApp() {
   const app = createApp(App)
   setupRouter(app)
-  app.use(createPinia()).use(i18n)
+  app.use(createPinia())
+  await setupI18n(app)
   app.mount('#app')
 }
 

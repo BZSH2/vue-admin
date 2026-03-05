@@ -20,6 +20,12 @@ interface ImportMetaEnv {
   readonly VITE_BUILD_COMPRESS: string
   /** 配置打包环境变量 */
   readonly VITE_BUILD_ENV: string
+  /** 是否输出构建分析报告 */
+  readonly VITE_BUILD_ANALYZE: string
+  /** 预连接的外部域名列表 */
+  readonly VITE_PRECONNECT_ORIGINS: string
+  /** 需要预加载的资源路径列表 */
+  readonly VITE_PRELOAD_ASSETS: string
   /** 子系统key */
   readonly VITE_SYSTEM_KEY: string
 }

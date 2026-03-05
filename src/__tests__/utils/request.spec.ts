@@ -30,9 +30,14 @@ vi.mock('element-plus', () => ({
   },
 }))
 
+vi.mock('@/composables/useMessage', () => ({
+  $baseMessage: vi.fn(),
+}))
+
 vi.mock('@/utils/token', () => ({
   getToken: vi.fn(() => 'mock-token'),
   clearToken: vi.fn(),
+  setToken: vi.fn(),
 }))
 
 describe('Request Utils', () => {

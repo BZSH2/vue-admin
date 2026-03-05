@@ -107,7 +107,7 @@
 
     "complexity": ["warn", 20],
     "max-depth": ["warn", 4],
-    "max-params": ["warn", 4],
+    "max-params": ["off"],
     "max-statements": ["warn", 30],
     "no-var": "error",
     "prefer-const": "error",

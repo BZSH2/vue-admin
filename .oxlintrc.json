@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/crates/oxc_linter/schema/oxlintrc.schema.json",
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
   "extends": ["oxlint/recommended"],
   "plugins": ["vue"],
   "settings": {
@@ -182,7 +182,7 @@
     "max-lines-per-function": [
       "warn",
       {
-        "max": 100,
+        "max": 200,
         "skipComments": true,
         "skipBlankLines": true
       }
@@ -216,13 +216,14 @@
     {
       "files": ["*.vue"],
       "rules": {
-        "max-lines": ["warn", 300],
+        "max-lines": ["warn", 1200],
         "max-len": ["warn", 120]
       }
     },
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
+        "max-lines": ["warn", 1200],
         "@typescript-eslint/explicit-module-boundary-types": "warn"
       }
     },

@@ -177,3 +177,7 @@ declare global {
     }
   }
 }
+
+declare module 'vue-router' {
+  interface RouteMeta extends Route.RouteMeta {}
+}

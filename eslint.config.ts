@@ -1,11 +1,12 @@
-import pluginVue from 'eslint-plugin-vue'
-import unocss from '@unocss/eslint-config/flat'
-import vueParser from 'vue-eslint-parser'
-import { defineConfig, globalIgnores } from 'eslint/config'
-import pluginJsonc from 'eslint-plugin-jsonc'
-import jsoncParser from 'jsonc-eslint-parser'
 import typeScriptParser from '@typescript-eslint/parser'
+import unocss from '@unocss/eslint-config/flat'
+import { defineConfig, globalIgnores } from 'eslint/config'
 import eslintConfigPrettier from 'eslint-config-prettier'
+import pluginImport from 'eslint-plugin-import'
+import pluginJsonc from 'eslint-plugin-jsonc'
+import pluginVue from 'eslint-plugin-vue'
+import jsoncParser from 'jsonc-eslint-parser'
+import vueParser from 'vue-eslint-parser'
 
 export default defineConfig([
   unocss as any,
@@ -116,6 +117,7 @@ export default defineConfig([
     files: ['**/*.vue', '**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
     name: 'vue/javascript',
     plugins: {
+      import: pluginImport,
       vue: pluginVue,
     },
     rules: {
@@ -261,6 +263,26 @@ export default defineConfig([
       'vue/require-prop-types': 'off',
       'vue/space-infix-ops': 'error',
       'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
+      'import/order': [
+        'error',
+        {
+          'alphabetize': { order: 'ignore', caseInsensitive: true },
+          'groups': [
+            ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+          ],
+          'newlines-between': 'ignore',
+          'pathGroups': [{ pattern: '@/**', group: 'internal' }],
+          'pathGroupsExcludedImportTypes': [],
+        },
+      ],
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          noWarnOnMultipleProjects: true,
+          project: ['./tsconfig.app.json', './tsconfig.node.json', './tsconfig.vitest.json'],
+        },
+      },
     },
     languageOptions: {
       parser: vueParser,

@@ -28,6 +28,12 @@ interface ImportMetaEnv {
   readonly VITE_PRELOAD_ASSETS: string
   /** 子系统key */
   readonly VITE_SYSTEM_KEY: string
+  /** Sentry DSN */
+  readonly VITE_SENTRY_DSN?: string
+  /** Sentry 环境标识 */
+  readonly VITE_SENTRY_ENV?: string
+  /** 是否开启 Sentry */
+  readonly VITE_SENTRY_ENABLE?: string
 }
 
 interface ImportMeta {

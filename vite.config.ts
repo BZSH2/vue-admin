@@ -12,22 +12,43 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { config } from './src/config'
 import viteCompression from 'vite-plugin-compression'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 // 根据资源后缀推断 preload 的 as 类型
 const getPreloadAs = (href: string) => {
   const lowerHref = href.toLowerCase()
-  if (lowerHref.endsWith('.css')) {return 'style'}
-  if (lowerHref.endsWith('.js')) {return 'script'}
-  if (lowerHref.endsWith('.woff2')) {return 'font'}
-  if (lowerHref.endsWith('.woff')) {return 'font'}
-  if (lowerHref.endsWith('.ttf')) {return 'font'}
-  if (lowerHref.endsWith('.svg')) {return 'image'}
-  if (lowerHref.endsWith('.png')) {return 'image'}
-  if (lowerHref.endsWith('.jpg') || lowerHref.endsWith('.jpeg')) {return 'image'}
-  if (lowerHref.endsWith('.webp')) {return 'image'}
-  if (lowerHref.endsWith('.ico')) {return 'image'}
+  if (lowerHref.endsWith('.css')) {
+    return 'style'
+  }
+  if (lowerHref.endsWith('.js')) {
+    return 'script'
+  }
+  if (lowerHref.endsWith('.woff2')) {
+    return 'font'
+  }
+  if (lowerHref.endsWith('.woff')) {
+    return 'font'
+  }
+  if (lowerHref.endsWith('.ttf')) {
+    return 'font'
+  }
+  if (lowerHref.endsWith('.svg')) {
+    return 'image'
+  }
+  if (lowerHref.endsWith('.png')) {
+    return 'image'
+  }
+  if (lowerHref.endsWith('.jpg') || lowerHref.endsWith('.jpeg')) {
+    return 'image'
+  }
+  if (lowerHref.endsWith('.webp')) {
+    return 'image'
+  }
+  if (lowerHref.endsWith('.ico')) {
+    return 'image'
+  }
   return 'fetch'
 }
 
@@ -54,15 +75,27 @@ const createHtmlPreconnectPreloadPlugin = (preconnectOrigins: string[], preloadA
 
 // 手动分包策略
 const createManualChunks = (id: string) => {
-  if (!id.includes('node_modules')) {return}
-  if (id.includes('element-plus')) {return 'element-plus'}
+  if (!id.includes('node_modules')) {
+    return
+  }
+  if (id.includes('element-plus')) {
+    return 'element-plus'
+  }
   if (id.includes('vue-router') || id.includes('pinia') || id.includes('vue-i18n')) {
     return 'vue-ecosystem'
   }
-  if (id.includes('@vueuse')) {return 'vueuse'}
-  if (id.includes('vue')) {return 'vue'}
-  if (id.includes('axios')) {return 'axios'}
-  if (id.includes('lodash-es')) {return 'lodash'}
+  if (id.includes('@vueuse')) {
+    return 'vueuse'
+  }
+  if (id.includes('vue')) {
+    return 'vue'
+  }
+  if (id.includes('axios')) {
+    return 'axios'
+  }
+  if (id.includes('lodash-es')) {
+    return 'lodash'
+  }
   return 'vendor'
 }
 
@@ -82,6 +115,7 @@ export default defineConfig(({ mode, command }) => {
   const enableAnalyze = viteEnv.VITE_BUILD_ANALYZE === 'true'
   const preconnectOrigins = parseListEnv(viteEnv.VITE_PRECONNECT_ORIGINS)
   const preloadAssets = parseListEnv(viteEnv.VITE_PRELOAD_ASSETS)
+  const enableSentry = viteEnv.VITE_SENTRY_ENABLE === 'true' && !!viteEnv.VITE_SENTRY_DSN
 
   return {
     // GitHub Pages 基于 base 的资源路径处理
@@ -124,6 +158,19 @@ export default defineConfig(({ mode, command }) => {
         globalSFCScope: true,
       }),
       // 构建产物压缩与分析
+      ...(command === 'build' && enableSentry
+        ? [
+            sentryVitePlugin({
+              org: process.env.SENTRY_ORG,
+              project: process.env.SENTRY_PROJECT,
+              authToken: process.env.SENTRY_AUTH_TOKEN,
+              release: process.env.SENTRY_RELEASE,
+              sourcemaps: {
+                assets: './dist/**',
+              },
+            }),
+          ]
+        : []),
       ...(command === 'build' && enableGzip
         ? [
             viteCompression({

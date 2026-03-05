@@ -29,7 +29,7 @@ export function {{ api.functionName }}(
   },
 {%- endif %}
 {%- if api.body %}
-  body: {{ api.body.type }},
+  body{{ "?" if not api.bodyRequired }}: {{ api.body.type }},
 {%- endif %}
   options?: { [key: string]: any }
 ) {
@@ -40,25 +40,26 @@ export function {{ api.functionName }}(
   return request<{{ api.responseType }}>({
     url: `{{ api.path | safe }}`,
     method: '{{ api.method | upper }}',
-    {%- if api.hasFormData %}
+    {%- if api.contentType and not api.bodyInParams %}
     headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    {%- elseif api.body %}
-    headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': '{{ api.contentType }}',
     },
     {%- endif %}
-    {%- if api.hasParams %}
+    {%- if api.hasParams or api.bodyInParams %}
     params: {
+      {%- if api.hasParams %}
       {%- if api.params.path %}
       ...queryParams,
       {%- else %}
       ...params,
       {%- endif %}
+      {%- endif %}
+      {%- if api.bodyInParams %}
+      ...(body || {}),
+      {%- endif %}
     },
     {%- endif %}
-    {%- if api.body %}
+    {%- if api.body and not api.bodyInParams %}
     data: body,
     {%- endif %}
     ...(options || {}),

@@ -79,10 +79,13 @@ interface ApiOperation {
   }
   /** 请求体信息 */
   body?: ApiBody
+  bodyRequired?: boolean
+  bodyInParams?: boolean
   /** 文件上传信息 */
   file?: ApiFile[]
   /** 是否为 FormData 请求 */
   hasFormData?: boolean
+  contentType?: string
   /** 响应类型 (TypeScript) */
   responseType: string
 }
@@ -230,7 +233,7 @@ function getFunctionName(
   operationId?: string,
   tag: string = 'default'
 ): string {
-  let name = operationId || `${method}${tag}${url.replace(/[\W_]+/g, '')}`
+  let name = resolveTypeName(operationId || `${method}_${tag}_${url}`)
 
   // 转换为驼峰命名，并移除非法字符
   name = name.replace(/[^a-zA-Z0-9_$]/g, '-').replace(/[-_]+(.)/g, (_, c) => c.toUpperCase())
@@ -253,17 +256,11 @@ function mergeParameters(
 
   const combined = [...pParams, ...oParams]
 
-  // 去重逻辑
-  return combined.filter((p, index, arr) => {
-    const key = getParameterKey(p)
-    // 检查是否是当前 key 的最后一次出现（实现覆盖效果，或者简单的保留唯一性）
-    // 这里简单的逻辑是：保留第一个出现的？不，应该是 Operation 覆盖 Path。
-    // 由于我们是 [...path, ...op]，如果要 Op 覆盖 Path，应该保留 *最后一个* 出现的同名参数？
-    // 或者简单的去重：只保留第一次出现的？
-    // 标准行为是：Operation 覆盖 Path。
-    // 我们可以使用 Map 来辅助去重，以 key 为键，后面的覆盖前面的
-    return index === arr.findIndex((item) => getParameterKey(item) === key)
+  const paramMap = new Map<string, ParameterObject | ReferenceObject>()
+  combined.forEach((param) => {
+    paramMap.set(getParameterKey(param), param)
   })
+  return Array.from(paramMap.values())
 }
 
 /**
@@ -321,7 +318,11 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
   }
 
   // 2. 解析 Request Body
-  const { body, file, hasFormData } = parseRequestBody(op, namespace)
+  const { body, file, hasFormData, contentType, bodyRequired, bodyInParams } = parseRequestBody(
+    op,
+    namespace,
+    method
+  )
 
   return {
     functionName,
@@ -333,8 +334,11 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
     hasParams,
     params,
     body,
+    bodyRequired,
+    bodyInParams,
     file,
     hasFormData,
+    contentType,
     responseType: getResponseType(op.responses, namespace),
   }
 }
@@ -342,32 +346,42 @@ function parseOperation(options: ParseOperationOptions): ApiOperation {
 /**
  * 解析 Request Body
  */
-function parseRequestBody(op: OperationObject, namespace?: string) {
+function parseRequestBody(op: OperationObject, namespace?: string, method?: string) {
   let body: ApiBody | undefined
   let file: ApiFile[] | undefined
   let hasFormData = false
+  let contentType: string | undefined
+  let bodyRequired = false
 
   if (op.requestBody && !isReferenceObject(op.requestBody)) {
+    bodyRequired = !!op.requestBody.required
     const content = op.requestBody.content
     if (content) {
-      // 优先处理 JSON
-      if (content['application/json']) {
-        const schema = content['application/json'].schema
-        body = {
-          type: getParamType(schema, namespace),
-        }
-      }
-      // 处理 FormData (文件上传)
-      else if (content['multipart/form-data']) {
-        hasFormData = true
-        const schema = content['multipart/form-data'].schema
-        if (schema && !isReferenceObject(schema) && schema.properties) {
-          file = parseFormDataFile(schema)
+      const mediaType: string | undefined =
+        (content['application/json'] && 'application/json') ||
+        (content['multipart/form-data'] && 'multipart/form-data') ||
+        (content['application/x-www-form-urlencoded'] && 'application/x-www-form-urlencoded') ||
+        Object.keys(content)[0]
+      if (mediaType) {
+        contentType = mediaType
+        if (mediaType === 'multipart/form-data') {
+          hasFormData = true
+          const schema = content[mediaType].schema
+          if (schema && !isReferenceObject(schema) && schema.properties) {
+            file = parseFormDataFile(schema)
+          }
+          contentType = undefined
+        } else {
+          const schema = content[mediaType]?.schema
+          body = {
+            type: getParamType(schema, namespace),
+          }
         }
       }
     }
   }
-  return { body, file, hasFormData }
+  const bodyInParams = !!body && (method === 'get' || method === 'delete')
+  return { body, file, hasFormData, contentType, bodyRequired, bodyInParams }
 }
 
 /**

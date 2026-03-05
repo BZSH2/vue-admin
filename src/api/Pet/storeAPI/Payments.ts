@@ -16,7 +16,7 @@ export function createOrderPayment(
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders/${orderId}/payment`,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     params: {
       ...queryParams,

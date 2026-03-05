@@ -3,12 +3,12 @@
 import request from '@/utils/request'
 
 /** 创建用户 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/users */
-export function createUser(body: user.User, options?: { [key: string]: any }) {
+export function createUser(body?: user.User, options?: { [key: string]: any }) {
   return request<any>({
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users`,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     data: body,
     ...(options || {}),
@@ -40,7 +40,7 @@ export function updateUser(
     /** 用户名。 */
     username: string
   },
-  body: user.User,
+  body?: user.User,
   options?: { [key: string]: any }
 ) {
   const { username, ...queryParams } = params
@@ -48,7 +48,7 @@ export function updateUser(
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/users/${username}`,
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     params: {
       ...queryParams,

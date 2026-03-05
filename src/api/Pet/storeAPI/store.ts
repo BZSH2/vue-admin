@@ -22,12 +22,12 @@ export function getInventory(
   })
 }
 /** 创建订单 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/orders */
-export function placeOrder(body: storeAPI.Order, options?: { [key: string]: any }) {
+export function placeOrder(body?: storeAPI.Order, options?: { [key: string]: any }) {
   return request<storeAPI.Order>({
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/orders`,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     data: body,
     ...(options || {}),

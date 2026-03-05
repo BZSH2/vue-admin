@@ -28,7 +28,7 @@ export function updatePet(
     /** 宠物的唯一标识。 */
     id: string
   },
-  body: petsAPI.Pet,
+  body?: petsAPI.Pet,
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
@@ -36,7 +36,7 @@ export function updatePet(
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${id}`,
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     params: {
       ...queryParams,
@@ -88,12 +88,12 @@ export function findPetsByStatus(
   })
 }
 /** 创建宠物 POST https://m1.apifoxmock.com/m1/7814952-7562684-default/pets */
-export function addPet(body: petsAPI.Pet, options?: { [key: string]: any }) {
+export function addPet(body?: petsAPI.Pet, options?: { [key: string]: any }) {
   return request<any>({
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets`,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json-patch+json',
+      'Content-Type': 'application/json',
     },
     data: body,
     ...(options || {}),
@@ -114,9 +114,6 @@ export function uploadFile(
   return request<petsAPI.ApiResponse>({
     url: `https://m1.apifoxmock.com/m1/7814952-7562684-default/pets/${petId}/images`,
     method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
     params: {
       ...queryParams,
     },

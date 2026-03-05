@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { setLang } from '@/i18n'
 import { langDict } from '@/config'
-import { getPetById } from '@/api/Pet/petsAPI/pet'
-import { postdefaultpostOpenApiJson } from '@/api/openApiJSONshuju/__openAPI__default'
 
 // import { postOpenApiJSON } from '@/api/google'
 

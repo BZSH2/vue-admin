@@ -8,9 +8,18 @@ const modules = import.meta.glob('./modules/*.ts', { eager: true })
  * @returns 返回格式化后的路由记录数组
  */
 function formatModules(_modules: any, result: Route.RouteRecord[]) {
-  Object.keys(_modules).forEach((key) => {
+  const keys = Object.keys(_modules).sort((a, b) => {
+    const isAConstant = a.includes('constantRoutes.ts')
+    const isBConstant = b.includes('constantRoutes.ts')
+    if (isAConstant && !isBConstant) {return 1}
+    if (!isAConstant && isBConstant) {return -1}
+    return a.localeCompare(b)
+  })
+  keys.forEach((key) => {
     const defaultModule = _modules[key].default
-    if (!defaultModule) {return}
+    if (!defaultModule) {
+      return
+    }
     const moduleList = Array.isArray(defaultModule) ? [...defaultModule] : [defaultModule]
     result.push(...moduleList)
   })

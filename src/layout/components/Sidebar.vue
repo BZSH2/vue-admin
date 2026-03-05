@@ -8,7 +8,13 @@ import { appRoutes } from '@/router/routes'
 const route = useRoute()
 const router = useRouter()
 
-type MenuNode = { title: string; path?: string; children?: MenuNode[]; hidden?: boolean }
+type MenuNode = {
+  title: string
+  path?: string
+  children?: MenuNode[]
+  hidden?: boolean
+  levelHidden?: boolean
+}
 
 function filterHidden(r: Route.RouteRecord): boolean {
   return r.meta?.hidden !== true
@@ -20,7 +26,7 @@ function toMenuNode(r: Route.RouteRecord): MenuNode | null {
   }
   if (r.meta?.levelHidden) {
     const children = (r.children || []).map(toMenuNode).filter(Boolean) as MenuNode[]
-    return { title: r.meta?.title || '', children }
+    return { title: r.meta?.title || '', children, levelHidden: true }
   }
   const node: MenuNode = {
     title: r.meta?.title || r.name,
@@ -51,7 +57,22 @@ function onSelect(path: string) {
     <ElScrollbar class="aside-scroll">
       <ElMenu :collapse="collapsed" :default-active="activePath" class="menu" @select="onSelect">
         <template v-for="(m, i) in menus" :key="i">
-          <ElSubMenu v-if="m.children?.length" :index="m.title">
+          <template v-if="m.levelHidden && m.children?.length">
+            <template v-for="(c, j) in m.children" :key="j">
+              <ElSubMenu v-if="c.children?.length" :index="c.title">
+                <template #title>
+                  <span class="menu-text">{{ $t(c.title) }}</span>
+                </template>
+                <ElMenuItem v-for="(gc, k) in c.children" :key="k" :index="gc.path || gc.title">
+                  <span class="menu-text">{{ $t(gc.title) }}</span>
+                </ElMenuItem>
+              </ElSubMenu>
+              <ElMenuItem v-else :index="c.path || c.title">
+                <span class="menu-text">{{ $t(c.title) }}</span>
+              </ElMenuItem>
+            </template>
+          </template>
+          <ElSubMenu v-else-if="m.children?.length" :index="m.title">
             <template #title>
               <span class="menu-text">{{ $t(m.title) }}</span>
             </template>
@@ -66,10 +87,13 @@ function onSelect(path: string) {
       </ElMenu>
     </ElScrollbar>
 
-    <div class="control">
-      <ElButton size="small" @click="emit('toggle')">{{
-        collapsed ? $t('展开') : $t('折叠')
-      }}</ElButton>
+    <div class="control flex cursor-pointer items-center justify-center" @click="emit('toggle')">
+      <Icon
+        name="fold"
+        :size="16"
+        :class="collapsed ? 'transform-scale-x--100' : ''"
+        class="py-10px"
+      />
     </div>
   </div>
 </template>
@@ -87,9 +111,6 @@ function onSelect(path: string) {
 
 .control {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 8px;
   border-top: 1px solid var(--el-border-color-lighter);
 }
 
@@ -115,7 +136,7 @@ function onSelect(path: string) {
 }
 
 .aside-scroll {
-  height: calc(100% - 56px - 44px);
+  flex: 1;
   padding: 8px;
 }
 

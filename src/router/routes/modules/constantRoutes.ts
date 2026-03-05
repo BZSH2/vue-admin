@@ -33,6 +33,13 @@ const constantRoutes: Route.RouteRecord[] = [
       hidden: true,
     },
   },
+  // 兜底路由：未匹配到的路径重定向到 404
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/error/404.vue'),
+    meta: { hidden: true },
+  },
 ]
 
 export default constantRoutes

@@ -5,7 +5,7 @@ import 'virtual:svg-icons-register'
 import 'virtual:uno.css'
 
 import App from './App.vue'
-import { setupRouter } from './router'
+import { router, setupRouter } from './router'
 import { setupI18n } from '@/i18n'
 import './styles/index.scss'
 import { setupSentry } from '@/plugins/sentry'
@@ -16,6 +16,11 @@ async function render(props: Record<string, any> = {}) {
   const app = createApp(App)
   setupSentry(app)
   setupRouter(app)
+  const redirect = sessionStorage.getItem('redirect')
+  if (redirect) {
+    sessionStorage.removeItem('redirect')
+    await router.replace(redirect)
+  }
   app.use(createPinia())
   await setupI18n(app)
   const mountPoint = container ? container.querySelector('#app') : '#app'

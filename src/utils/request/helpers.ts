@@ -78,11 +78,21 @@ export function shouldRetry(error: AxiosError<any>, config?: Request.RequestConf
  * 跳转登录页（支持记录原路由）
  */
 export function redirectToLogin() {
-  const current = window.location.hash.replace(/^#/, '') || '/'
+  const base = import.meta.env.BASE_URL || '/'
+  const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base
+  const current = settingConfig.isHashRouterMode
+    ? window.location.hash.replace(/^#/, '') || '/'
+    : (() => {
+        const rawPath = window.location.pathname.startsWith(normalizedBase)
+          ? window.location.pathname.slice(normalizedBase.length)
+          : window.location.pathname
+        const normalizedPath = rawPath.startsWith('/') ? rawPath : `/${rawPath}`
+        return `${normalizedPath}${window.location.search}`
+      })()
   if (current.startsWith('/login')) {
     return
   }
-  const loginBase = '/#/login'
+  const loginBase = settingConfig.isHashRouterMode ? '/#/login' : `${normalizedBase || ''}/login`
   const target = settingConfig.recordRoute
     ? `${loginBase}?redirect=${encodeURIComponent(current)}`
     : loginBase

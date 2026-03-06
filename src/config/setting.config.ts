@@ -10,6 +10,11 @@ export const settingConfig = {
    */
   i18n: 'zh-CN',
   /**
+   * 路由模式，是否为hash模式
+   */
+  isHashRouterMode: false,
+  /**
+  /**
    * 消息框消失时间
    */
   messageDuration: 2000,

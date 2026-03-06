@@ -1,22 +1,39 @@
-import { createApp } from 'vue'
+import { createApp, type App as VueApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import 'virtual:svg-icons-register'
 import 'virtual:uno.css'
 
 import App from './App.vue'
-import { router, setupRouter } from './router'
+import { setupRouter } from './router'
 import { setupI18n } from '@/i18n'
 import './styles/index.scss'
 import { setupSentry } from '@/plugins/sentry'
+let app: VueApp<Element> | null = null
 
-async function setupApp() {
+async function render(props: Record<string, any> = {}) {
+  const { container } = props
   const app = createApp(App)
   setupSentry(app)
   setupRouter(app)
   app.use(createPinia())
   await setupI18n(app)
-  app.mount('#app')
+  const mountPoint = container ? container.querySelector('#app') : '#app'
+  app.mount(mountPoint as Element | string)
+  return app
 }
 
-setupApp()
+export async function bootstrap() {}
+
+export async function mount(props: Record<string, any>) {
+  app = await render(props)
+}
+
+export function unmount() {
+  app?.unmount()
+  app = null
+}
+
+if (!(window as any).__POWERED_BY_QIANKUN__) {
+  render()
+}

@@ -135,6 +135,7 @@
     "APIV",
     "endfor",
     "vueuse",
-    "iconfont"
+    "iconfont",
+    "qiankun"
   ]
 }

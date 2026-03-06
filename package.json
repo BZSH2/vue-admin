@@ -55,6 +55,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^3.0.4",
     "pinyin-pro": "^3.28.0",
+    "qiankun": "^2.10.16",
     "vue": "^3.5.27",
     "vue-i18n": "^11.2.8",
     "vue-router": "^5.0.1"

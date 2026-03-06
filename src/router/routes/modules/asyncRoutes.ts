@@ -33,6 +33,18 @@ const asyncRoutes: Route.RouteRecord[] = [
           noKeepAlive: false,
         },
       },
+      {
+        path: '/photo-shop',
+        name: 'PhotoShop',
+        component: () => import('@/views/photo-shop/index.vue'),
+        meta: {
+          title: '图片编辑',
+          noClosable: false,
+          isLevel1: true,
+          noKeepAlive: true,
+          microAppName: 'vue-photo-shop',
+        },
+      },
     ],
   },
 ]

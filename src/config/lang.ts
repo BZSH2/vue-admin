@@ -29,5 +29,3 @@ export const langDict: Lang.LangDist[] = [
 export const languages = langDict.map((item) => item.code) // 支持的语言列表
 
 export const defaultLang = settingConfig.i18n // 默认语言
-
-export type LanguageType = (typeof languages)[number]

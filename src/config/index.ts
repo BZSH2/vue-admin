@@ -1,3 +1,13 @@
-export { settingConfig } from './setting.config'
-export { langDict, languages, defaultLang, type LanguageType } from './lang'
-export { config } from './config'
+import { config } from './config'
+import { langDict, languages, defaultLang } from './lang'
+import { settingConfig } from './setting.config'
+
+export { config, defaultLang, langDict, languages, settingConfig }
+
+export default {
+  ...settingConfig,
+  ...config,
+  languages,
+  langDict,
+  defaultLang,
+}

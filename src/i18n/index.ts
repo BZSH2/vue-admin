@@ -2,7 +2,7 @@
 import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import { loadMessages } from './merge'
-import { defaultLang, languages, type LanguageType } from '../config'
+import { defaultLang, languages } from '../config'
 
 // 获取用户浏览器首选语言
 function getBrowserLocale() {
@@ -10,7 +10,7 @@ function getBrowserLocale() {
 }
 
 // 保存语言设置
-export function saveLocale(locale: LanguageType) {
+export function saveLocale(locale: Lang.LanguageType) {
   try {
     localStorage.setItem('locale', locale)
     document.documentElement.setAttribute('lang', locale)
@@ -29,9 +29,9 @@ export function loadLocale() {
   }
 }
 
-const loadedLocales = new Set<LanguageType>()
+const loadedLocales = new Set<Lang.LanguageType>()
 
-async function ensureLocaleMessages(lang: LanguageType) {
+async function ensureLocaleMessages(lang: Lang.LanguageType) {
   if (loadedLocales.has(lang)) {
     return true
   }
@@ -45,7 +45,7 @@ async function ensureLocaleMessages(lang: LanguageType) {
 }
 
 // 导出切换语言的方法
-export async function setLang(lang: LanguageType) {
+export async function setLang(lang: Lang.LanguageType) {
   const loaded = await ensureLocaleMessages(lang)
   if (loaded) {
     i18n.global.locale.value = lang
@@ -67,11 +67,11 @@ export function getAvailableLocales() {
 }
 
 // 监听语言变化
-export function onLangChange(callback: (lang: LanguageType) => void) {
+export function onLangChange(callback: (lang: Lang.LanguageType) => void) {
   const watchStop = watch(
     () => i18n.global.locale.value,
     (newLang) => {
-      callback(newLang as LanguageType)
+      callback(newLang as Lang.LanguageType)
     }
   )
   return watchStop
@@ -87,7 +87,7 @@ const i18n = createI18n({
 })
 
 export async function setupI18n(app: App) {
-  const locale = loadLocale() as LanguageType
+  const locale = loadLocale() as Lang.LanguageType
   await ensureLocaleMessages(locale)
   i18n.global.locale.value = locale
   app.use(i18n)

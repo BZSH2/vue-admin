@@ -5,6 +5,7 @@ This template should help get you started developing with Vue 3 in Vite.
 ## 在线预览
 
 - https://bzsh2.github.io/vue-admin/#/
+- http://vue.admin.bzsh.fun/dashboard
 
 ## 快速开始
 

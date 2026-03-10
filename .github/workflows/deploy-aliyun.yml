@@ -39,15 +39,15 @@ jobs:
 
       - name: Test SSH Connectivity
         run: |
-          ssh -p 25555 -i $RUNNER_TEMP/diag_key -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo connected"
+          ssh -p 22 -i $RUNNER_TEMP/diag_key -o StrictHostKeyChecking=no -o BatchMode=yes root@8.133.21.62 "echo connected"
 
       - name: Deploy via SSH
         uses: easingthemes/ssh-deploy@v4.1.1
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          REMOTE_PORT: 25555
+          REMOTE_HOST: 8.133.21.62
+          REMOTE_USER: root
+          REMOTE_PORT: 22
           SOURCE: dist/
           TARGET: /root/www/vue-admin/dist
           ARGS: '-avzr --delete'

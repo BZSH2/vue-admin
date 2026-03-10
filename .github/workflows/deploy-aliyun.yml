@@ -32,6 +32,15 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
 
+      - name: Prepare SSH Key (diagnostic)
+        run: |
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > $RUNNER_TEMP/diag_key
+          chmod 600 $RUNNER_TEMP/diag_key
+
+      - name: Test SSH Connectivity
+        run: |
+          ssh -p 25555 -i $RUNNER_TEMP/diag_key -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo connected"
+
       - name: Deploy via SSH
         uses: easingthemes/ssh-deploy@v4.1.1
         with:

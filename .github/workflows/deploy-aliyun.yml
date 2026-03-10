@@ -34,8 +34,14 @@ jobs:
 
       - name: Prepare SSH Key (diagnostic)
         run: |
-          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > $RUNNER_TEMP/diag_key
+          KEY_RAW="${{ secrets.SSH_PRIVATE_KEY }}"
+          if echo "$KEY_RAW" | head -n1 | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+            printf "%s\n" "$KEY_RAW" | tr -d '\r' > $RUNNER_TEMP/diag_key
+          else
+            echo "$KEY_RAW" | base64 -d > $RUNNER_TEMP/diag_key || printf "%s\n" "$KEY_RAW" > $RUNNER_TEMP/diag_key
+          fi
           chmod 600 $RUNNER_TEMP/diag_key
+          ssh-keygen -l -f $RUNNER_TEMP/diag_key || true
 
       - name: Test SSH Connectivity
         run: |

@@ -42,3 +42,5 @@ jobs:
           SOURCE: dist/
           TARGET: /root/www/vue-admin/dist
           ARGS: '-avzr --delete'
+          EXCLUDE: '.git,.github'
+          SSH_CMD_ARGS: '-o StrictHostKeyChecking=no'

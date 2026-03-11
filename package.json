@@ -32,6 +32,7 @@
     "test:e2e": "playwright test",
     "analyze": "cross-env VITE_BUILD_ANALYZE=true pnpm build-only",
     "openApi": "esno openApi/index.ts",
+    "openApi:modules": "esno openApi/genModules.ts",
     "openI18n": "esno openI18n/index.ts",
     "changelog": "changelogen --output CHANGELOG.md",
     "changelog:release": "changelogen --release --output CHANGELOG.md",

@@ -7,6 +7,7 @@ import { generatorFolder } from './generate/utils'
 
 class OpenApi {
   private config: OpenApiConfig
+  private serverBase = process.env.OPENAPI_BASE_URL || 'http://localhost:3000'
 
   constructor(config: OpenApiConfig) {
     this.config = config
@@ -20,17 +21,23 @@ class OpenApi {
    *    不同的项目处理可以采用不同的方式 可以根据实际情况 调整 可要是与后端沟通入参出参
    */
   private async postOpenApiJSON() {
-    const {
-      data: { data },
-    } = await axios.post('https://m1.apifoxmock.com/m1/7827428-7575526-default/postOpenApiJson', {
-      coke: JSON.stringify(modules),
-    })
-    return data
+    try {
+      const {
+        data: { data },
+      } = await axios.post(`${this.serverBase}/api/postOpenApiJson`, {
+        modules: modules,
+      })
+      return data
+    } catch (error) {
+      console.error('postOpenApiJSON error')
+      return undefined
+    }
   }
 
   public async open() {
     // 1. 获取openapi数据
     const data = await this.postOpenApiJSON()
+    if (!data) {return}
 
     // 2. 创建 url/api文件夹
     generatorFolder(this.config.output)

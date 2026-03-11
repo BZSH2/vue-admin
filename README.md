@@ -46,6 +46,7 @@ pnpm build
 - 自动化
   - pnpm openI18n：扫描并生成多语言 JSON
   - pnpm openApi：依据 OpenAPI 生成 api 代码
+  - pnpm openApi:modules：拉取后端模块清单并生成 openApi/modules 配置文件（含注释与通配）
   - pnpm changelog：生成/更新 CHANGELOG.md
 
 ## 国际化自动提取与生成（openI18n）
@@ -236,6 +237,32 @@ pnpm lint
 - 模块组织
   - 在 [openApi/modules](file:///d:/vue-admin/openApi/modules) 中配置不同域/服务
   - Apifox/后端提供的 OpenAPI JSON 可按模块组合返回
+
+### 模块模板生成（openApi:modules）
+
+- 命令
+  - 运行：`pnpm openApi:modules`
+  - 环境：可通过 `OPENAPI_BASE_URL` 指定后端地址（默认 `http://localhost:3000`）
+- 数据来源
+  - GET `${OPENAPI_BASE_URL}/api/getModules`
+  - 返回结构示例：
+    - `{ code: 200, data: [{ prefix, label, service: [{ value, label }] }] }`
+- 产物
+  - 在 [openApi/modules](file:///d:/vue-admin/openApi/modules) 下按模块生成 `*.ts`
+  - 使用模板 [openApiModule.njk](file:///d:/demo/vue-admin/openApi/generate/generateTemplate/templates/openApiModule.njk) 渲染
+  - 输出示例：
+
+```ts
+export default {
+  /** Users */
+  prefix: 'Users',
+  service: [
+    // '*',
+    // 'UsersController_create', /** 创建用户 (管理员) */
+    // 'UsersController_findOne', /** 根据ID查询用户 */
+  ],
+}
+```
 
 ## 自动化部署（GitHub Actions）
 

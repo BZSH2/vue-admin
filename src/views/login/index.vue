@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
-import { loginUser } from '@/api/Pet/user/user'
+import { authControllerLogin } from '@/api/LoginModule/Auth'
 import { setToken } from '@/utils/token'
 import { $baseMessage } from '@/composables/useMessage'
 
@@ -12,12 +12,12 @@ const route = useRoute()
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 const form = ref({
-  username: 'admin',
+  phoneNumber: '13800000000',
   password: '123456',
 })
 
 const rules: FormRules = {
-  username: [{ required: true, message: $t('请输入用户名'), trigger: 'blur' }],
+  phoneNumber: [{ required: true, message: $t('请输入手机号'), trigger: 'blur' }],
   password: [{ required: true, message: $t('请输入密码'), trigger: 'blur' }],
 }
 
@@ -25,10 +25,11 @@ async function onSubmit() {
   try {
     loading.value = true
     await formRef.value?.validate()
-    const token = await loginUser({
-      username: form.value.username,
+    const result = await authControllerLogin({
+      phoneNumber: form.value.phoneNumber,
       password: form.value.password,
     })
+    const token = result?.accessToken || result?.token || ''
     // 登录成功，保存 token
     setToken(String(token || ''))
     $baseMessage('登录成功', 'success')
@@ -51,8 +52,8 @@ async function onSubmit() {
     <div class="login-card">
       <div class="title">{{ $t('系统登录') }}</div>
       <ElForm ref="formRef" :model="form" :rules="rules" label-position="top">
-        <ElFormItem :label="$t('用户名')" prop="username">
-          <ElInput v-model="form.username" :placeholder="$t('请输入用户名')" clearable />
+        <ElFormItem :label="$t('手机号')" prop="phoneNumber">
+          <ElInput v-model="form.phoneNumber" :placeholder="$t('请输入手机号')" clearable />
         </ElFormItem>
         <ElFormItem :label="$t('密码')" prop="password">
           <ElInput

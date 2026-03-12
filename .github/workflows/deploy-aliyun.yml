@@ -1,61 +1,84 @@
-name: Deploy to Server
+name: Build and Deploy Vue Admin to Aliyun ACR
 
 on:
   push:
-    branches: [main, master]
-
-permissions:
-  contents: read
+    branches:
+      - master
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: vue-admin-deploy
   cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      IMAGE_REPO: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}
+      IMAGE_LATEST: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-latest
+      IMAGE_SHA: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ github.sha }}
+      DEPLOY_PATH: /opt/vue-admin
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Login to Aliyun ACR
+        uses: docker/login-action@v3
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_USERNAME }}
+          password: ${{ secrets.ALIYUN_PASSWORD }}
 
-      - name: Install Dependencies & Build
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm build
-
-      - name: Prepare SSH Key (diagnostic)
-        run: |
-          KEY_RAW="${{ secrets.SSH_PRIVATE_KEY }}"
-          if echo "$KEY_RAW" | head -n1 | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
-            printf "%s\n" "$KEY_RAW" | tr -d '\r' > $RUNNER_TEMP/diag_key
-          else
-            echo "$KEY_RAW" | base64 -d > $RUNNER_TEMP/diag_key || printf "%s\n" "$KEY_RAW" > $RUNNER_TEMP/diag_key
-          fi
-          chmod 600 $RUNNER_TEMP/diag_key
-          ssh-keygen -l -f $RUNNER_TEMP/diag_key || true
-
-      - name: Test SSH Connectivity
-        run: |
-          ssh -p 22 -i $RUNNER_TEMP/diag_key -o StrictHostKeyChecking=no -o BatchMode=yes root@8.133.21.62 "echo connected"
-
-      - name: Deploy via SSH
-        uses: easingthemes/ssh-deploy@v4.1.1
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: 8.133.21.62
-          REMOTE_USER: root
-          REMOTE_PORT: 22
-          SOURCE: dist/
-          TARGET: /root/www/vue-admin/dist
-          ARGS: '-avzr --delete'
-          EXCLUDE: '.git,.github'
-          SSH_CMD_ARGS: '-o StrictHostKeyChecking=no'
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_LATEST }}
+            ${{ env.IMAGE_SHA }}
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' '${{ secrets.DEPLOY_SSH_KEY }}' | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_HOST }}' >> ~/.ssh/known_hosts
+
+      - name: Upload deploy files
+        run: |
+          scp -P '${{ secrets.DEPLOY_PORT }}' docker-compose.prod.yml deploy/deploy.sh '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/'
+
+      - name: Prepare remote deploy env
+        run: |
+          cat > .deploy.remote.env <<EOF
+          ACR_REGISTRY=${{ secrets.ALIYUN_REGISTRY }}
+          ACR_USERNAME=${{ secrets.ALIYUN_USERNAME }}
+          ACR_PASSWORD=${{ secrets.ALIYUN_PASSWORD }}
+          DEPLOY_IMAGE=${{ env.IMAGE_SHA }}
+          DEPLOY_PATH=${{ env.DEPLOY_PATH }}
+          EOF
+          scp -P '${{ secrets.DEPLOY_PORT }}' .deploy.remote.env '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/.deploy.remote.env'
+          rm -f .deploy.remote.env
+
+      - name: Deploy on server
+        run: |
+          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' '
+            set -e
+            chmod +x /opt/vue-admin/deploy.sh
+            set -a
+            . /opt/vue-admin/.deploy.remote.env
+            set +a
+            bash /opt/vue-admin/deploy.sh
+            rm -f /opt/vue-admin/.deploy.remote.env
+          '
+
+      - name: Deployment complete
+        run: echo "✅ Vue Admin image built, pushed, and deployed successfully."

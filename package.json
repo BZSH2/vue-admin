@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "build": "run-p type-check \"build-only --mode dev\"",
     "build:dev": "run-p type-check \"build-only --mode dev\"",
     "build:test": "run-p type-check \"build-only --mode test\"",
     "build:staging": "run-p type-check \"build-only --mode staging\"",

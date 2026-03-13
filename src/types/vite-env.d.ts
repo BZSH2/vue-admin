@@ -34,6 +34,10 @@ interface ImportMetaEnv {
   readonly VITE_SENTRY_ENV?: string
   /** 是否开启 Sentry */
   readonly VITE_SENTRY_ENABLE?: string
+  /** 代理目标地址 */
+  readonly VITE_PROXY_TARGET?: string
+  /** API 基础路径 */
+  readonly VITE_API_BASE_URL?: string
 }
 
 interface ImportMeta {

@@ -1,13 +1,15 @@
 FROM node:22-slim AS builder
 WORKDIR /app
 ENV HUSKY=0
-ENV VITE_BASE_URL=/
-ENV VITE_SENTRY_ENABLE=false
+# 接收构建参数，默认为 production
+ARG BUILD_ENV=production
+
 RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
-RUN pnpm build:pages
+# 根据传入的 BUILD_ENV 参数执行对应的打包命令
+RUN pnpm build:${BUILD_ENV}
 
 FROM nginx:1.27-alpine AS runner
 WORKDIR /usr/share/nginx/html

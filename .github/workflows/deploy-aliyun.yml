@@ -1,12 +1,15 @@
 name: Build and Deploy Vue Admin to Aliyun ACR
 
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: 'Deployment environment (dev, test, staging, prod)'
 
 concurrency:
-  group: vue-admin-deploy
+  group: vue-admin-deploy-${{ inputs.environment }}
   cancel-in-progress: true
 
 jobs:
@@ -17,9 +20,11 @@ jobs:
 
     env:
       IMAGE_REPO: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}
-      IMAGE_LATEST: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-latest
-      IMAGE_SHA: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ github.sha }}
-      DEPLOY_PATH: /opt/vue-admin
+      # 镜像标签增加环境后缀
+      IMAGE_LATEST: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-latest
+      IMAGE_SHA: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-${{ github.sha }}
+      # 不同环境部署到不同目录
+      DEPLOY_PATH: /opt/vue-admin-${{ inputs.environment }}
 
     steps:
       - name: Checkout code
@@ -41,6 +46,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          # 传入构建参数
+          build-args: |
+            BUILD_ENV=${{ inputs.environment }}
           tags: |
             ${{ env.IMAGE_LATEST }}
             ${{ env.IMAGE_SHA }}

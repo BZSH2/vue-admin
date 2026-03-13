@@ -215,7 +215,7 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port: config.devPort,
       host: true,
-      proxy: command === 'serve' ? createViteProxy() : undefined,
+      proxy: command === 'serve' ? createViteProxy(viteEnv.VITE_PROXY_TARGET) : undefined,
     },
   }
 })

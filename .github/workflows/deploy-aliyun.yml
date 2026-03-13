@@ -15,6 +15,7 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     permissions:
       contents: read
 
@@ -24,7 +25,7 @@ jobs:
       IMAGE_LATEST: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-latest
       IMAGE_SHA: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-${{ github.sha }}
       # 不同环境部署到不同目录
-      DEPLOY_PATH: /opt/vue-admin-${{ inputs.environment }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || format('/opt/vue-admin-{0}', inputs.environment) }}
 
     steps:
       - name: Checkout code
@@ -82,15 +83,15 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' '
+          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' "
             set -e
-            chmod +x /opt/vue-admin/deploy.sh
+            chmod +x '${{ env.DEPLOY_PATH }}/deploy.sh'
             set -a
-            . /opt/vue-admin/.deploy.remote.env
+            . '${{ env.DEPLOY_PATH }}/.deploy.remote.env'
             set +a
-            bash /opt/vue-admin/deploy.sh
-            rm -f /opt/vue-admin/.deploy.remote.env
-          '
+            bash '${{ env.DEPLOY_PATH }}/deploy.sh'
+            rm -f '${{ env.DEPLOY_PATH }}/.deploy.remote.env'
+          "
 
       - name: Deployment complete
         run: echo "✅ Vue Admin image built, pushed, and deployed successfully."

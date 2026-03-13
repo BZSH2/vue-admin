@@ -5,8 +5,8 @@ on:
     branches:
       - master
       - develop
-      - 'feature/*'
-      - 'release/*'
+      - test
+      - uat
   workflow_dispatch:
 
 permissions:
@@ -22,22 +22,22 @@ jobs:
       environment: dev
     secrets: inherit
 
-  # 测试环境部署 (feature/* 分支)
+  # 测试环境部署 (test 分支)
   deploy-test:
-    if: startsWith(github.ref, 'refs/heads/feature/')
+    if: github.ref == 'refs/heads/test'
     name: Deploy to Test
     uses: ./.github/workflows/deploy-aliyun.yml
     with:
       environment: test
     secrets: inherit
 
-  # 预发布环境部署 (release/* 分支)
-  deploy-staging:
-    if: startsWith(github.ref, 'refs/heads/release/')
-    name: Deploy to Staging
+  # UAT 环境部署 (uat 分支)
+  deploy-uat:
+    if: github.ref == 'refs/heads/uat'
+    name: Deploy to UAT
     uses: ./.github/workflows/deploy-aliyun.yml
     with:
-      environment: staging
+      environment: uat
     secrets: inherit
 
   # 生产环境部署 (master 分支)

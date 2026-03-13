@@ -30,11 +30,103 @@ pnpm dev
 pnpm build
 ```
 
+## 多环境与 CI/CD（更新）
+
+本项目已支持「本地开发 / 开发环境 / 测试环境 / 预发布环境 / 生产环境」五套配置，并支持按分支自动部署。
+
+### 1. Vite Mode 与 env 文件加载规则
+
+Vite 会按 `--mode <mode>` 自动加载以下环境文件（后者覆盖前者）：
+
+- `.env`
+- `.env.<mode>`
+
+对应关系（当前项目约定）：
+
+- 本地开发：`pnpm dev` → `mode=development` → `.env` + `.env.development`
+- 开发环境：`pnpm build:dev` → `mode=dev` → `.env` + `.env.dev`
+- 测试环境：`pnpm build:test` → `mode=test` → `.env` + `.env.test`
+- UAT 环境：`pnpm build:uat` → `mode=uat` → `.env` + `.env.uat`
+- 生产环境：`pnpm build:prod` → `mode=production` → `.env` + `.env.production`
+
+### 2. 构建命令（推荐用法）
+
+> 说明：当前 `pnpm build` 与 `pnpm build:dev` 等价（见 [package.json](file:///d:/demo/vue-admin/package.json) 的 scripts）。
+
+```sh
+# 构建开发环境（部署用）
+pnpm build:dev
+
+# 构建测试环境
+pnpm build:test
+
+# 构建 UAT 环境
+pnpm build:uat
+
+# 构建生产环境
+pnpm build:prod
+```
+
+### 3. 本地跨域（代理）配置
+
+- 本地开发建议统一通过 `/api` 访问后端，由 Vite 代理转发到真实后端，避免浏览器跨域限制
+- 关键变量
+  - `VITE_PROXY_TARGET`：本地代理目标后端（仅 `.env.development` 使用）
+  - `VITE_API_BASE_URL`：Axios 的 baseURL（见 [instance.ts](file:///d:/demo/vue-admin/src/utils/request/instance.ts)），本地建议保持为 `/`
+
+### 4. 分支自动部署（GitHub Actions）
+
+工作流入口：[deploy.yml](file:///d:/demo/vue-admin/.github/workflows/deploy.yml)  
+Aliyun 部署逻辑：[deploy-aliyun.yml](file:///d:/demo/vue-admin/.github/workflows/deploy-aliyun.yml)
+
+- `develop` → 部署开发环境（dev）
+- `test` → 部署测试环境（test）
+- `uat` → 部署 UAT 环境（uat）
+- `master` → 部署生产环境（prod）并发布 GitHub Pages
+
+部署说明：
+
+- Docker 构建通过 `BUILD_ENV` 参数选择对应的构建脚本（见 [Dockerfile](file:///d:/demo/vue-admin/Dockerfile)）
+- 远程部署目录默认区分环境：`/opt/vue-admin-<env>`
+- 如果部署账号对 `/opt` 没权限，会出现 `scp: remote mkdir ... Permission denied`，需提前在服务器创建目录并授权（或调整部署目录到账号可写路径）
+
+### 5. 不同分支部署到不同服务器（服务端地址隔离）
+
+推荐使用 GitHub 的 Environments 功能，让同一套工作流在不同环境下读取不同的服务器地址/账号/密钥。
+
+一、仓库设置（GitHub）
+
+1. 进入仓库：Settings → Environments
+2. 新建四个环境（名称需与工作流入参一致）
+   - `dev` / `test` / `uat` / `prod`
+3. 在每个 Environment 下分别配置 Secrets（同名覆盖）
+   - `DEPLOY_HOST`：对应环境的服务器地址（IP 或域名）
+   - `DEPLOY_PORT`：SSH 端口
+   - `DEPLOY_USER`：SSH 用户
+   - `DEPLOY_SSH_KEY`：SSH 私钥（base64 后的内容）
+   - `DEPLOY_PATH`（可选）：自定义部署目录（不填则默认 `/opt/vue-admin-<env>`）
+
+二、工作流如何生效
+
+- [deploy.yml](file:///d:/demo/vue-admin/.github/workflows/deploy.yml) 会根据分支把 `environment` 传给复用工作流
+- [deploy-aliyun.yml](file:///d:/demo/vue-admin/.github/workflows/deploy-aliyun.yml) 的 job 已设置 `environment: ${{ inputs.environment }}`，因此会自动读取对应 Environment 的 secrets
+
+三、效果
+
+- `develop` 分支部署到 dev 服务器（读 dev 环境 secrets）
+- `test` 分支部署到 test 服务器（读 test 环境 secrets）
+- `uat` 分支部署到 uat 服务器（读 uat 环境 secrets）
+- `master` 分支部署到 prod 服务器（读 prod 环境 secrets）
+
 ## 常用脚本
 
 - 开发与构建
   - pnpm dev：启动本地开发
   - pnpm build：类型检查 + 产物构建
+  - pnpm build:dev：构建开发环境（部署用）
+  - pnpm build:test：构建测试环境
+  - pnpm build:uat：构建 UAT 环境
+  - pnpm build:prod：构建生产环境
   - pnpm preview：本地预览构建产物
 - 质量与规范
   - pnpm lint：运行 ESLint 检查
@@ -164,6 +256,8 @@ pnpm build
 ```sh
 pnpm test:unit
 ```
+
+说明：当前项目实际脚本为 `pnpm test`（见 [package.json](file:///d:/demo/vue-admin/package.json)）。
 
 ### Run End-to-End Tests with [Playwright](https://playwright.dev)
 

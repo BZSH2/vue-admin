@@ -15,7 +15,7 @@
     "build": "run-p type-check \"build-only --mode dev\"",
     "build:dev": "run-p type-check \"build-only --mode dev\"",
     "build:test": "run-p type-check \"build-only --mode test\"",
-    "build:staging": "run-p type-check \"build-only --mode staging\"",
+    "build:uat": "run-p type-check \"build-only --mode uat\"",
     "build:prod": "run-p type-check \"build-only --mode production\"",
     "build-only": "vite build",
     "build:pages": "pnpm build-only",

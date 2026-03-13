@@ -60,6 +60,10 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_HOST }}' >> ~/.ssh/known_hosts
 
+      - name: Prepare remote directory
+        run: |
+          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' 'mkdir -p ${{ env.DEPLOY_PATH }}'
+
       - name: Upload deploy files
         run: |
           scp -P '${{ secrets.DEPLOY_PORT }}' docker-compose.prod.yml deploy/deploy.sh '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/'

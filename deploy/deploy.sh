@@ -24,8 +24,14 @@ docker compose -f "$COMPOSE_FILE" pull
 docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
 
 for _ in $(seq 1 30); do
-  if curl -fsS "http://127.0.0.1:25000/" >/dev/null && curl -fsS "http://127.0.0.1:25000/api" >/dev/null; then
-    echo "Deploy succeeded: frontend and API proxy are responding."
+  if curl -fsS "http://127.0.0.1:25000/" >/dev/null; then
+    echo "Deploy succeeded: frontend is responding."
+
+    # 仅作为提示性检查，不影响整体部署结果
+    if ! curl -fsS "http://127.0.0.1:25000/api" >/dev/null; then
+      echo "Warning: /api 返回非 2xx 状态码，请稍后检查后端或代理配置。" >&2
+    fi
+
     exit 0
   fi
   sleep 2

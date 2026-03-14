@@ -24,7 +24,7 @@ docker compose -f "$COMPOSE_FILE" pull
 docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
 
 for _ in $(seq 1 30); do
-  if curl -fsS "http://127.0.0.1/" >/dev/null && curl -fsS "http://127.0.0.1/api" >/dev/null; then
+  if curl -fsS "http://127.0.0.1:25000/" >/dev/null && curl -fsS "http://127.0.0.1:25000/api" >/dev/null; then
     echo "Deploy succeeded: frontend and API proxy are responding."
     exit 0
   fi

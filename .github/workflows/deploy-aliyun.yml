@@ -25,7 +25,8 @@ jobs:
       IMAGE_LATEST: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-latest
       IMAGE_SHA: ${{ secrets.ALIYUN_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/${{ secrets.ALIYUN_REPO }}:vue-${{ inputs.environment }}-${{ github.sha }}
       # 不同环境部署到不同目录
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || format('/opt/vue-admin-{0}', inputs.environment) }}
+      # DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || format('/opt/vue-admin-{0}', inputs.environment) }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || format('/opt/vue-admin', inputs.environment) }}
 
     steps:
       - name: Checkout code

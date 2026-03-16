@@ -1,28 +1,36 @@
 import * as Sentry from '@sentry/vue'
 import type { App } from 'vue'
 
+import { getRuntimeSentryConfig } from '@/config/runtime'
+
 /**
- * Sentry 运行时配置
- * 通过 Vite 环境变量控制开关、环境与 DSN
+ * Sentry 配置来源
+ *
+ * - 运行时：public/runtime-config.js（优先级更高）
+ * - 构建时：.env.* / import.meta.env
  */
-const { VITE_SENTRY_DSN, VITE_SENTRY_ENV, VITE_SENTRY_ENABLE } = import.meta.env
 
 /**
  * 初始化前端 Sentry 监控
- * - 仅当 VITE_SENTRY_ENABLE 为 'true' 且存在有效 DSN 时才会真正初始化
- * - 在本地开发、测试或线上环境通过不同 env 文件控制
+ *
+ * 配置优先级：
+ * - 运行时：public/runtime-config.js（可用于线上快速开关）
+ * - 构建时：.env.* / import.meta.env
+ *
+ * 仅当 enable=true 且存在有效 DSN 时才会真正初始化。
  */
 export function setupSentry(app: App<Element>) {
-  if (VITE_SENTRY_ENABLE !== 'true') {
+  const sentry = getRuntimeSentryConfig()
+  if (!sentry.enable) {
     return
   }
-  if (!VITE_SENTRY_DSN) {
+  if (!sentry.dsn) {
     return
   }
   Sentry.init({
     app,
-    dsn: VITE_SENTRY_DSN,
-    environment: VITE_SENTRY_ENV,
+    dsn: sentry.dsn,
+    environment: sentry.env,
     sendDefaultPii: true,
   })
 }

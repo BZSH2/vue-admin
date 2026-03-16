@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import { clearToken } from '@/utils/token'
+import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
+
 const router = useRouter()
-function onCommand(cmd: string) {
+const authStore = useAuthStore()
+const userStore = useUserStore()
+
+const avatarText = computed(() => {
+  const name = userStore.displayName || 'U'
+  return String(name).slice(0, 1)
+})
+
+async function onCommand(cmd: string) {
   if (cmd === 'github') {
     window.open('https://github.com/BZSH2/vue-admin', '_blank')
-  } else if (cmd === 'logout') {
-    clearToken()
+    return
+  }
+  if (cmd === 'logout') {
+    await authStore.logout()
+    userStore.reset()
     router.push({ name: 'Login' })
   }
 }
@@ -14,7 +27,7 @@ function onCommand(cmd: string) {
 <template>
   <ElDropdown @command="onCommand" trigger="click">
     <span>
-      <ElAvatar size="small" class="cursor-pointer">U</ElAvatar>
+      <ElAvatar size="small" class="cursor-pointer">{{ avatarText }}</ElAvatar>
     </span>
     <template #dropdown>
       <ElDropdownMenu>

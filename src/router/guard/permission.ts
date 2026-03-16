@@ -1,6 +1,7 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { settingConfig } from '@/config'
 import { getToken, clearToken } from '@/utils'
+import { useUserStore } from '@/stores/user'
 
 /**
  * 是否需要执行一次“鉴权后的 replace 刷新”。
@@ -15,6 +16,12 @@ export async function createPermissionGuard(
   _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
+  // 进入登录页时，重置鉴权开关：
+  // 这样“退出登录 -> 再登录”也能重新触发一次首屏拉取逻辑。
+  if (to.name === 'Login' || to.path === '/login') {
+    isHasFetchAuth = true
+  }
+
   const isWhiteRoute = settingConfig.routesWhiteList.includes(to.path)
   if (isWhiteRoute) {
     return next()
@@ -32,9 +39,19 @@ export async function createPermissionGuard(
     )
   }
 
-  // 预留：首次进入（或刷新后）可在这里拉取权限/菜单，再装配动态路由
+  // 首次进入（或刷新后）可在这里拉取用户信息/权限/菜单，再装配动态路由
   if (isHasFetchAuth) {
     isHasFetchAuth = false
+
+    // 目前先做最小闭环：拉一次个人信息（失败也不阻断首屏）
+    // 后续如果接入“后端下发菜单/权限点”，也可以在这里扩展。
+    try {
+      const userStore = useUserStore()
+      await userStore.ensureProfile()
+    } catch {
+      // ignore
+    }
+
     return next({ ...to, replace: true })
   }
 

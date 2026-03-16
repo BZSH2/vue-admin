@@ -45,11 +45,14 @@ export function createViteProxy(
  * 此函数将 `createViteProxy` 生成的配置（路径前缀到代理选项的映射）转换为
  * **代理目标地址（target）到路径前缀** 的映射，方便在其他逻辑中通过API地址查找对应的代理前缀。
  *
+ * @param target 可选：覆盖默认代理目标地址。
+ *               - 给 Vite 用时，建议直接从 `loadEnv` 传入
+ *               - 给 openApi 生成器用时，可以不传，走默认值
  * @returns {Record<string, string>} 一个对象，其键（key）为代理目标地址（target），
  *          值（value）为配置中对应的请求路径前缀。
  */
-export function getProxyApi(): Record<string, string> {
-  const proxyConfig = createViteProxy()
+export function getProxyApi(target?: string): Record<string, string> {
+  const proxyConfig = createViteProxy(target)
   const reverseMap: Record<string, string> = {}
 
   // 如果未配置代理，返回空对象

@@ -4,7 +4,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from 'axios'
-import { $baseMessage } from '@/composables/useMessage'
+import { getApiBaseUrl } from '@/config/runtime'
 import { getToken, clearToken, setToken } from '@/utils/token'
 import { DEFAULT_RETRY_DELAY } from './constants'
 import {
@@ -15,13 +15,19 @@ import {
   shouldRetry,
   shouldShowError,
 } from './helpers'
-import { getRefreshPromise, getRefreshTokenHandler, setRefreshPromise } from './state'
+import {
+  getRefreshPromise,
+  getRefreshTokenHandler,
+  getRequestErrorHandler,
+  setRefreshPromise,
+} from './state'
 
 /**
  * Axios 实例配置
  */
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/',
+  // baseURL 支持运行时覆盖（见 public/runtime-config.js）
+  baseURL: getApiBaseUrl(),
   timeout: 10000,
   headers: { 'Content-Type': 'application/json;charset=utf-8' },
 })
@@ -52,7 +58,9 @@ async function retryRequest(error: AxiosError<any>) {
  */
 function rejectWithMessage(error: Request.RequestError, config?: Request.RequestConfig) {
   if (shouldShowError(config)) {
-    $baseMessage(error.message, 'error')
+    // 由上层（UI）注入统一的错误提示策略，request 层本身不依赖任何 UI 组件。
+    const handler = getRequestErrorHandler()
+    handler?.(error)
   }
   return Promise.reject(error)
 }

@@ -15,6 +15,7 @@
 - [OpenAPI 代码生成与本地跨域代理](openApi/generate/入参数据结构.md)
 - [国际化自动提取（openI18n）](docs/03-openi18n.md)
 - [提交规范与 CHANGELOG](docs/04-commit-and-changelog.md)
+- [PR 自动 Review / Merge 前门禁（CodeRabbit + CODEOWNERS + 分支保护）](docs/05-pr-auto-review.md)
 - [换肤系统说明](THEME.md)
 - [SVG 图标系统](ICONS.md)
 - [测试指南（Vitest + Playwright）](TESTS.md)

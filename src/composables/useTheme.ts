@@ -14,7 +14,7 @@ export interface BrandTheme {
   danger: string
   info: string
   mapAccent: string
-  chartPalette: string[]
+  chartPalette: readonly string[]
 }
 
 export interface ThemeSemanticTokens {
@@ -54,7 +54,7 @@ export interface ThemeBridgePayload {
   resolvedTheme: ResolvedTheme
   brand: BrandThemeKey
   palette: EventThemePalette
-  chartPalette: string[]
+  chartPalette: readonly string[]
   mapAccent: string
   semantic: ThemeSemanticTokens
 }
@@ -73,9 +73,9 @@ interface ThemeSnapshot {
  * - themeMode/themePrimaryColor: 用户偏好输入
  * - themeSnapshot: 主题引擎的“可回放结果”，用于首屏快速恢复
  */
-const modeStorageKey: Storage.StorageKey = 'themeMode'
-const primaryColorStorageKey: Storage.StorageKey = 'themePrimaryColor'
-const snapshotStorageKey: Storage.StorageKey = 'themeSnapshot'
+const modeStorageKey = 'themeMode' as const
+const primaryColorStorageKey = 'themePrimaryColor' as const
+const snapshotStorageKey = 'themeSnapshot' as const
 const defaultThemeMode: ThemeMode = settingConfig.showDark ? 'dark' : 'light'
 const defaultPrimaryColor = settingConfig.primaryColor
 const presetThemeColors = [
@@ -585,8 +585,8 @@ function setupSystemThemeListener() {
  * 快照恢复在 theme-preload.ts 做，这里恢复“配置输入”即可。
  */
 function loadThemeFromStorage() {
-  const savedMode = parseThemeMode(getStorage<ThemeMode>(modeStorageKey))
-  const savedPrimaryColor = normalizeColor(getStorage<string>(primaryColorStorageKey) || '')
+  const savedMode = parseThemeMode(getStorage(modeStorageKey))
+  const savedPrimaryColor = normalizeColor(getStorage(primaryColorStorageKey) || '')
   themeMode.value = savedMode || defaultThemeMode
   primaryColor.value = savedPrimaryColor || defaultPrimaryColor
   themeBrand.value = 'custom'

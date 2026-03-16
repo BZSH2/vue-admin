@@ -17,7 +17,10 @@ const modeText = computed(() => {
   return props.themeMode === 'dark' ? '深色模式' : '浅色模式'
 })
 
-function onModeChange(mode: string | number | boolean) {
+function onModeChange(mode: string | number | boolean | undefined) {
+  if (mode === undefined) {
+    return
+  }
   emit('change', mode as ThemeMode)
 }
 </script>
@@ -25,7 +28,7 @@ function onModeChange(mode: string | number | boolean) {
 <template>
   <div class="theme-row">
     <div class="theme-title">主题模式</div>
-    <ElRadioGroup :model-value="themeMode" @change="(val) => onModeChange(val!)">
+    <ElRadioGroup :model-value="themeMode" @change="onModeChange">
       <ElRadioButton label="浅色" value="light" />
       <ElRadioButton label="深色" value="dark" />
       <ElRadioButton label="跟随系统" value="system" />

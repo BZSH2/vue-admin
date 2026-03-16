@@ -9,7 +9,11 @@ class Storage {
    * @param value 值（对象会自动转 JSON）
    * @param type 存储类型，默认 'local'
    */
-  static set(key: Storage.StorageKey, value: any, type: Storage.StorageType = 'local') {
+  static set<K extends Storage.StorageKey>(
+    key: K,
+    value: Storage.StorageValue<K>,
+    type: Storage.StorageType = 'local'
+  ) {
     const storage = type === 'local' ? localStorage : sessionStorage
     const data = JSON.stringify(value)
     storage.setItem(key, data)
@@ -21,12 +25,15 @@ class Storage {
    * @param type 存储类型，默认 'local'
    * @returns 解析后的数据，如果解析失败或不存在则返回 null
    */
-  static get<T = any>(key: Storage.StorageKey, type: Storage.StorageType = 'local'): T | null {
+  static get<K extends Storage.StorageKey>(
+    key: K,
+    type: Storage.StorageType = 'local'
+  ): Storage.StorageValue<K> | null {
     const storage = type === 'local' ? localStorage : sessionStorage
     const value = storage.getItem(key)
     if (value) {
       try {
-        return JSON.parse(value)
+        return JSON.parse(value) as Storage.StorageValue<K>
       } catch (error) {
         console.warn(`[Storage] JSON parse error for key "${key}":`, error)
         return null

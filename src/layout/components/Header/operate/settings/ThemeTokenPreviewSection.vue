@@ -2,8 +2,8 @@
 import type { BrandTheme, ThemeSemanticTokens } from '@/composables/useTheme'
 
 defineProps<{
-  activeBrand: BrandTheme
-  semanticTokens: ThemeSemanticTokens
+  activeBrand: Readonly<BrandTheme>
+  semanticTokens: Readonly<ThemeSemanticTokens>
 }>()
 </script>
 

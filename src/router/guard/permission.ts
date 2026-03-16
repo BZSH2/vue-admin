@@ -1,7 +1,13 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { settingConfig } from '@/config'
 import { getToken, clearToken } from '@/utils'
-/** 是否执行鉴权 */
+
+/**
+ * 是否需要执行一次“鉴权后的 replace 刷新”。
+ *
+ * 说明：当前项目还没有真正的“拉权限/拉菜单”逻辑，
+ * 这里保留这个开关位，避免未来接入动态路由时出现首次进入不刷新的问题。
+ */
 let isHasFetchAuth = true
 
 export async function createPermissionGuard(
@@ -9,47 +15,28 @@ export async function createPermissionGuard(
   _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
-  const router = useRouter()
   const isWhiteRoute = settingConfig.routesWhiteList.includes(to.path)
-  const hasToken = Boolean(getToken())
-
-  const routeSwitches: Common.StrategicPattern[] = [
-    // 在访问白名单
-    {
-      condition: isWhiteRoute,
-      callback: () => next(),
-    },
-    // 如果没有权限
-    {
-      condition: !hasToken,
-      callback: () => handleToLogin(),
-    },
-    // 刷新或者登录需要鉴权
-    {
-      condition: isHasFetchAuth,
-      callback: async () => {
-        isHasFetchAuth = false
-        next({ ...to, replace: true })
-      },
-    },
-    // 无需鉴权直接跳转
-    {
-      condition: !isHasFetchAuth,
-      callback: () => next(),
-    },
-  ]
-  routeSwitches.some(({ condition, callback }) => {
-    if (condition) {
-      callback()
-    }
-    return condition
-  })
-
-  /** 跳转登录 */
-  function handleToLogin() {
-    clearToken()
-    router.push({
-      name: 'Login',
-    })
+  if (isWhiteRoute) {
+    return next()
   }
+
+  const hasToken = Boolean(getToken())
+  if (!hasToken) {
+    // 没有 token 时，重置鉴权开关，避免用户重新登录后不触发 replace 刷新
+    isHasFetchAuth = true
+    clearToken()
+    return next(
+      settingConfig.recordRoute
+        ? { name: 'Login', query: { redirect: to.fullPath } }
+        : { name: 'Login' }
+    )
+  }
+
+  // 预留：首次进入（或刷新后）可在这里拉取权限/菜单，再装配动态路由
+  if (isHasFetchAuth) {
+    isHasFetchAuth = false
+    return next({ ...to, replace: true })
+  }
+
+  return next()
 }

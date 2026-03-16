@@ -8,7 +8,13 @@ import type { ProxyOptions } from 'vite'
  *          如果无需代理，可返回 undefined。
  */
 export function createViteProxy(
-  target: string = 'http://8.133.21.62:35000'
+  /**
+   * 本地开发代理的目标后端地址。
+   *
+   * - 推荐在 `.env.development` 中通过 `VITE_PROXY_TARGET` 配置
+   * - 默认值使用本机后端（更符合脚手架项目的通用性）
+   */
+  target: string = process.env.VITE_PROXY_TARGET || 'http://localhost:35000'
 ): Record<string, ProxyOptions> | undefined {
   return {
     // 'https://m1.apifoxmock.com/m1/7814952-7562684-default': {

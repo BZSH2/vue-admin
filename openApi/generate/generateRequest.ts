@@ -165,9 +165,17 @@ export default function GenerateRequest(
       )
 
       // 4. 解析操作详情
+      // 处理代理前缀：避免出现 /api/api/xxx 这类重复前缀
+      const normalizedPrefix = proxyPrefix.endsWith('/') ? proxyPrefix.slice(0, -1) : proxyPrefix
+      const resolvedUrl =
+        normalizedPrefix &&
+        !(url === normalizedPrefix || url.startsWith(`${normalizedPrefix}/`))
+          ? `${normalizedPrefix}${url}`
+          : url
+
       const apiOp = parseOperation({
         method,
-        url: `${proxyPrefix}${url}`,
+        url: resolvedUrl,
         op: { ...operation, parameters: mergedParameters } as OperationObject,
         functionName,
         namespace,

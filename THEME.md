@@ -1,103 +1,79 @@
 # 换肤系统说明
 
-本文档介绍项目中的主题/换肤能力，包括：
+本文档介绍项目中的主题 / 换肤能力，包括：
 
-- 实现了哪些功能
+- 已实现的功能
 - 核心实现原理
 - 在业务中如何正确使用
 
 ## 功能概览
 
-当前换肤系统已支持以下能力：
+当前换肤系统已支持：
 
 - 主题模式切换：`light / dark / system`
 - 主色自定义：支持 `hex` 与 `rgb/rgba` 输入
 - 业务语义色自动推导：`success / warning / danger / info`
 - 自动对比度：主色文本与边框自动计算对比
-- 主题快照首屏回放：减少刷新时的主题闪烁
-- 第三方桥接：图表/地图/iframe 等组件可跟随主题
+- 首屏主题快照回放：减少刷新时的闪烁
+- 第三方桥接：图表 / 地图 / iframe 等组件可跟随主题
 
 ## 关键实现文件
 
-- 主题核心引擎：  
-  [useTheme.ts](file:///d:/demo/vue-admin/src/composables/useTheme.ts)
-- 首屏预加载脚本：  
-  [theme-preload.ts](file:///d:/demo/vue-admin/src/theme-preload.ts)
-- 主题插件入口：  
-  [theme.ts](file:///d:/demo/vue-admin/src/plugins/theme.ts)
-- 设置入口组件：  
-  [Settings.vue](file:///d:/demo/vue-admin/src/layout/components/Header/operate/Settings.vue)
-- 设置子组件（拆分后）：  
-  [ThemeModeSection.vue](file:///d:/demo/vue-admin/src/layout/components/Header/operate/settings/ThemeModeSection.vue)  
-  [ThemeActionsSection.vue](file:///d:/demo/vue-admin/src/layout/components/Header/operate/settings/ThemeActionsSection.vue)  
-  [ThemeColorSection.vue](file:///d:/demo/vue-admin/src/layout/components/Header/operate/settings/ThemeColorSection.vue)  
-  [ThemeTokenPreviewSection.vue](file:///d:/demo/vue-admin/src/layout/components/Header/operate/settings/ThemeTokenPreviewSection.vue)
-- 全局主题样式桥接：  
-  [index.scss](file:///d:/demo/vue-admin/src/styles/index.scss)
+- `src/composables/useTheme.ts`
+- `src/theme-preload.ts`
+- `src/plugins/theme.ts`
+- `src/layout/components/Header/operate/Settings.vue`
+- `src/layout/components/Header/operate/settings/ThemeModeSection.vue`
+- `src/layout/components/Header/operate/settings/ThemeActionsSection.vue`
+- `src/layout/components/Header/operate/settings/ThemeColorSection.vue`
+- `src/layout/components/Header/operate/settings/ThemeTokenPreviewSection.vue`
+- `src/styles/index.scss`
 
 ## 实现原理
 
-### 1) 主题状态与模式决策
+### 1. 主题状态与模式决策
 
-主题运行时维护：
+运行时维护这些核心状态：
 
-- `themeMode`: 用户选择（light/dark/system）
-- `isDark`: 当前是否深色（system 时由系统媒体查询决定）
-- `resolvedTheme`: 最终解析后的 light/dark
-- `primaryColor`: 当前主色
+- `themeMode`
+- `isDark`
+- `resolvedTheme`
+- `primaryColor`
 
-系统模式下会监听 `prefers-color-scheme` 变化，并在变化时同步主题变量。
+当模式为 `system` 时，会监听系统主题变化并自动同步。
 
-### 2) 颜色标准化与推导
+### 2. 颜色标准化与派生
 
-输入颜色统一标准化为 `#rrggbb`，支持：
+输入颜色会统一标准化成 `#rrggbb`，然后自动推导：
 
-- `#RGB`
-- `#RRGGBB`
-- `rgb(...) / rgba(...)`
+- `--el-color-primary` 及其 light / dark 阶梯
+- `--el-color-success / warning / danger / info`
+- 业务侧使用的语义 token
 
-标准化后，通过混色算法自动推导业务色与色阶变量：
+### 3. 语义 Token 层
 
-- `--el-color-primary` 及 light/dark 阶梯
-- `--el-color-success / warning / danger / info` 及阶梯
+除了 Element Plus 变量，还会生成一层 `--va-*` 语义变量，比如：
 
-### 3) 语义 Token 层
+- `--va-bg-page`
+- `--va-bg-card`
+- `--va-text-primary`
+- `--va-text-secondary`
+- `--va-border-soft`
+- `--va-on-primary`
 
-除了基础色，系统还生成语义变量（`--va-*`）：
+这样业务组件不直接依赖具体色值，后续扩展更轻松。
 
-- 背景层：`--va-bg-page / --va-bg-card / --va-bg-elevated`
-- 文本层：`--va-text-primary / --va-text-secondary`
-- 边框层：`--va-border-soft`
-- 对比层：`--va-on-primary` 等
+### 4. 首屏无闪烁
 
-这样业务组件只依赖“语义”，不直接绑定具体色值，便于后续扩展。
+主题变量会以快照形式缓存，页面刷新时优先回放，减少首屏闪烁。
 
-### 4) 首屏性能与无闪烁
+### 5. 第三方组件桥接
 
-运行时会把最终变量表存为 `themeSnapshot`。  
-页面刷新时，`theme-preload.ts` 在主应用挂载前优先回放快照，快速恢复：
-
-- `dark` class
-- `data-theme-*` 属性
-- 所有 CSS 变量
-
-当快照无效时，降级为仅按 `themeMode` 恢复深浅模式，确保稳定。
-
-### 5) 第三方组件桥接
-
-主题系统会分发 `va-theme-change` 事件，并输出第三方变量：
-
-- `--va-thirdparty-*`
-- `--va-chart-*`
-- `--va-map-accent`
-
-图表/地图等组件可通过事件订阅或 CSS 变量读取实现联动。
+主题系统会分发主题变化事件，并输出第三方变量，方便图表、地图、iframe 等外部组件同步更新。
 
 ## 如何使用
 
-### A. 在组件中使用主题 API
-
-在 `setup` 中使用：
+### 在组件中使用主题 API
 
 ```ts
 import { useTheme } from '@/composables/useTheme'
@@ -112,9 +88,9 @@ const { themeMode, isDark, primaryColor, setThemeMode, setPrimaryColor, toggleTh
 - `toggleTheme()`
 - `resetTheme()`
 
-### B. 在样式中使用变量
+### 在样式中使用变量
 
-优先使用语义变量（业务层推荐）：
+优先使用语义变量：
 
 ```scss
 .card {
@@ -124,37 +100,17 @@ const { themeMode, isDark, primaryColor, setThemeMode, setPrimaryColor, toggleTh
 }
 ```
 
-Element Plus 对齐场景使用 `--el-*`：
+如果要和 Element Plus 组件配合，也可以直接使用 `--el-*` 变量。
 
-```scss
-.cta {
-  background: var(--el-color-primary);
-  color: var(--va-on-primary);
-}
-```
+### 给第三方组件同步主题
 
-### C. 第三方组件跟随主题
-
-如果是纯样式容器，可加桥接属性：
-
-```html
-<div data-third-party="chart"></div>
-```
-
-如果是 JS 驱动组件（图表实例），可订阅主题事件并重绘：
-
-```ts
-import { useThemeBridge } from '@/composables/useTheme'
-
-useThemeBridge((payload) => {
-  // payload.chartPalette / payload.mapAccent / payload.semantic
-  // 在这里更新图表/地图配置并触发重绘
-})
-```
+如果是 JS 驱动组件，可以监听主题变化事件后触发局部重绘。
 
 ## 使用建议
 
-- 业务 UI 优先用 `--va-*`，减少未来重构成本
-- 避免组件内硬编码颜色，统一走主题变量
-- 第三方组件尽量实现“事件订阅 + 局部重绘”，不要整页刷新
-- 新增主题能力时，保持 `theme-preload.ts` 与 `useTheme.ts` 语义一致
+- 业务 UI 优先使用 `--va-*` 语义变量
+- 避免在组件里硬编码颜色
+- 第三方组件尽量做“事件订阅 + 局部重绘”
+- 新增主题能力时，保持 `theme-preload.ts` 和 `useTheme.ts` 语义一致
+
+如果你想先看项目总览，回到 [README](README.md)。

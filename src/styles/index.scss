@@ -1,13 +1,12 @@
 @use './normalize.css';
+@use './theme';
 
+// 应用根节点拉满高度，配合布局容器实现整屏计算（侧栏/头部/内容区）。
 #app {
   height: 100%;
 }
 
+// Element Plus 容器组件统一铺满高度，避免嵌套容器在 100vh 布局下出现塌陷。
 [class$='-container'] {
   height: 100%;
-}
-
-.hover-bg-color:hover {
-  background-color: #f6f6f6;
 }

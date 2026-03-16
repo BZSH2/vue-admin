@@ -1,0 +1,50 @@
+// 换肤主变量说明（业务层优先使用 --va-*）：
+// - 文字：--va-text-primary / --va-text-secondary
+// - 背景：--va-bg-page / --va-bg-card / --va-bg-elevated
+// - 边框：--va-border-soft
+// - 语义色：--va-color-primary / --va-color-success / --va-color-warning / --va-color-danger / --va-color-info
+// - 反色文本：--va-on-primary / --va-on-success / --va-on-warning / --va-on-danger / --va-on-info
+// - 第三方桥接：--va-thirdparty-bg / --va-thirdparty-surface / --va-thirdparty-text / --va-thirdparty-border
+// - 图表与地图：--va-chart-1..N / --va-map-accent
+// 组件库变量（Element Plus）：
+// - --el-color-primary 及 -light-3/-5/-7/-8/-9、-dark-2
+// - --el-color-success / warning / danger / info 同结构
+
+// 全局基础前景与页面底色：
+// 优先使用主题引擎输出的语义变量，未初始化时回退到 Element Plus 默认变量。
+body {
+  color: var(--va-text-primary, var(--el-text-color-primary));
+  background-color: var(--va-bg-page, var(--el-bg-color-page));
+}
+
+// 主题切换过渡态：
+// 当 html 挂载 theme-switching 类时，为常见视觉属性添加短时过渡，降低深浅切换突变感。
+html.theme-switching,
+html.theme-switching * {
+  transition:
+    color 0.22s ease,
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+// 头部操作按钮等通用 hover 区域样式。
+.hover-bg-color:hover {
+  background-color: var(--el-fill-color-light);
+}
+
+// 第三方组件主题桥接样式：
+// 约定数据属性或常见第三方容器类名，让图表/地图/iframe 在主题变更时同步视觉基线。
+// 具体色值来自 useTheme 写入的 --va-thirdparty-* 变量。
+[data-third-party='chart'],
+[data-third-party='map'],
+[data-third-party='widget'],
+.echarts,
+.mapboxgl-map,
+.leaflet-container,
+.amap-container,
+iframe[data-theme-bridge='true'] {
+  color: var(--va-thirdparty-text);
+  background-color: var(--va-thirdparty-bg);
+  border-color: var(--va-thirdparty-border);
+}

@@ -12,6 +12,7 @@ declare global {
   const $baseNotify: typeof import('../composables/useMessage').$baseNotify
   const $t: typeof import('../composables/i18n').$t
   const EffectScope: typeof import('vue').EffectScope
+  const THEME_CHANGE_EVENT: typeof import('../composables/useTheme').THEME_CHANGE_EVENT
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
@@ -20,12 +21,14 @@ declare global {
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
+  const destroyTheme: typeof import('../composables/useTheme').destroyTheme
   const effectScope: typeof import('vue').effectScope
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const h: typeof import('vue').h
+  const initTheme: typeof import('../composables/useTheme').initTheme
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
@@ -85,6 +88,8 @@ declare global {
   const useRouter: typeof import('vue-router').useRouter
   const useSlots: typeof import('vue').useSlots
   const useTemplateRef: typeof import('vue').useTemplateRef
+  const useTheme: typeof import('../composables/useTheme').useTheme
+  const useThemeBridge: typeof import('../composables/useTheme').useThemeBridge
   const watch: typeof import('vue').watch
   const watchEffect: typeof import('vue').watchEffect
   const watchPostEffect: typeof import('vue').watchPostEffect
@@ -98,4 +103,7 @@ declare global {
   // @ts-ignore
   export type { StatusType, ConfirmProps, NotificationProps, NotificationOptions } from '../composables/useMessage'
   import('../composables/useMessage')
+  // @ts-ignore
+  export type { ThemeMode, ResolvedTheme, BrandThemeKey, BrandTheme, ThemeSemanticTokens, ThemeBridgePayload } from '../composables/useTheme'
+  import('../composables/useTheme')
 }

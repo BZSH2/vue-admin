@@ -9,9 +9,11 @@ import { router, setupRouter } from './router'
 import { setupI18n } from '@/i18n'
 import './styles/index.scss'
 import { setupSentry } from '@/plugins/sentry'
+import { setupTheme, teardownTheme } from '@/plugins/theme'
 let app: VueApp<Element> | null = null
 
 async function render(props: Record<string, any> = {}) {
+  setupTheme()
   const { container } = props
   const app = createApp(App)
   setupSentry(app)
@@ -36,6 +38,7 @@ export async function mount(props: Record<string, any>) {
 
 export function unmount() {
   app?.unmount()
+  teardownTheme()
   app = null
 }
 

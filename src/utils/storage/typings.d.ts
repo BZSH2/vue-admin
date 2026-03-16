@@ -16,6 +16,9 @@ declare namespace Storage {
     | 'sidebarStatus'
     /** 元素尺寸配置 (default | medium | small | mini) */
     | 'size'
+    | 'themeMode'
+    | 'themePrimaryColor'
+    | 'themeSnapshot'
 
   /**
    * 存储类型

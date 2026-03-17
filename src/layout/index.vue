@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RouterViewKeepAlive from './components/RouterViewKeepAlive.vue'
 import Header from './components/Header/index.vue'
-import Sidebar from './components/Sidebar.vue'
+import Sidebar from './components/Sidebar/index.vue'
 const collapsed = ref(false)
 function toggle() {
   collapsed.value = !collapsed.value
@@ -10,7 +10,7 @@ function toggle() {
 
 <template>
   <ElContainer class="layout">
-    <ElAside :width="collapsed ? '64px' : '200px'" class="aside" :class="[{ collapsed }]">
+    <ElAside :width="collapsed ? '65px' : '200px'" class="aside" :class="[{ collapsed }]">
       <Sidebar :collapsed="collapsed" @toggle="toggle" />
     </ElAside>
     <ElContainer class="main-wrap">

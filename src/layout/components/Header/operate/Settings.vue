@@ -28,7 +28,7 @@ function onModeChange(mode: string | number | boolean) {
 <template>
   <ElTooltip :content="$t('设置')">
     <div class="hover-bg-color h-full flex cursor-pointer items-center" @click="showDrawer = true">
-      <Icon name="setting" :size="16" class="p-x-10px" />
+      <Icon name="layout-setting" :size="16" class="p-x-10px" />
     </div>
   </ElTooltip>
   <ElDrawer v-model="showDrawer" title="外观设置" size="360px">

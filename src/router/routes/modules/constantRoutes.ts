@@ -1,3 +1,4 @@
+/** 静态的路由配置 无需与后端接口配合一直保持有权限访问 */
 const constantRoutes: Route.RouteRecord[] = [
   {
     path: '/login',

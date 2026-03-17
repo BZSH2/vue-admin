@@ -1,5 +1,5 @@
 import Layout from '@/layout/index.vue'
-
+/** 动态的路由配置 需与后端接口配合 才有有权限访问 */
 const asyncRoutes: Route.RouteRecord[] = [
   {
     path: '/',
@@ -20,30 +20,34 @@ const asyncRoutes: Route.RouteRecord[] = [
           noClosable: true,
           isLevel1: true,
           noKeepAlive: false,
+          icon: 'menus-amazed',
         },
       },
       {
-        path: '/icons',
-        name: 'Icons',
-        component: () => import('@/views/icons/index.vue'),
+        path: '/system',
+        name: 'System',
+        // component: () => import('@/views/system/index.vue'),
         meta: {
-          title: '图标',
+          title: '系统管理',
           noClosable: true,
           isLevel1: true,
           noKeepAlive: false,
+          icon: 'menus-blink',
         },
-      },
-      {
-        path: '/photo-shop',
-        name: 'PhotoShop',
-        component: () => import('@/views/photo-shop/index.vue'),
-        meta: {
-          title: '图片编辑',
-          noClosable: false,
-          isLevel1: true,
-          noKeepAlive: true,
-          microAppName: 'vue-photo-shop',
-        },
+        children: [
+          {
+            path: '/system/userPermission',
+            name: 'UserPermission',
+            component: () => import('@/views/system/userPermission/index.vue'),
+            meta: {
+              title: '用户权限',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+              // icon: 'menus-blink',
+            },
+          },
+        ],
       },
     ],
   },

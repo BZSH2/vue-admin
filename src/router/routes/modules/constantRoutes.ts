@@ -4,6 +4,7 @@ const constantRoutes: Route.RouteRecord[] = [
     name: 'Login',
     component: () => import('@/views/login/index.vue'),
     meta: {
+      title: '系统登录',
       hidden: true,
       breadcrumbHidden: false,
       noKeepAlive: true,
@@ -14,6 +15,7 @@ const constantRoutes: Route.RouteRecord[] = [
     name: 'ErrorPage403',
     component: () => import('@/views/error/403.vue'),
     meta: {
+      title: '403',
       hidden: true,
     },
   },
@@ -22,6 +24,7 @@ const constantRoutes: Route.RouteRecord[] = [
     name: 'ErrorPage404',
     component: () => import('@/views/error/404.vue'),
     meta: {
+      title: '404',
       hidden: true,
     },
   },
@@ -30,6 +33,7 @@ const constantRoutes: Route.RouteRecord[] = [
     name: 'Unapproved',
     component: () => import('@/views/error/unApproved.vue'),
     meta: {
+      title: '未授权',
       hidden: true,
     },
   },

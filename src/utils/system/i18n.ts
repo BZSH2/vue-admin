@@ -1,7 +1,13 @@
 import i18n from '@/i18n'
-const { t, te } = i18n.global
+import { settingConfig } from '@/config'
+
+const { t } = i18n.global
 
 export function getPageTitle(pageTitle: string | undefined) {
-  const translatedPageTitle = t(`${pageTitle}`)
-  return translatedPageTitle || pageTitle || ''
+  const { title, titleSeparator } = settingConfig
+  if (pageTitle) {
+    const msg = t(`${pageTitle}`)
+    return `${msg}${titleSeparator}${title}`
+  }
+  return title
 }

@@ -10,13 +10,6 @@ const emit = defineEmits<{
   change: [mode: ThemeMode]
 }>()
 
-const modeText = computed(() => {
-  if (props.themeMode === 'system') {
-    return `跟随系统（当前${props.resolvedTheme === 'dark' ? '深色' : '浅色'}）`
-  }
-  return props.themeMode === 'dark' ? '深色模式' : '浅色模式'
-})
-
 function onModeChange(mode: string | number | boolean | undefined) {
   if (mode === undefined) {
     return
@@ -33,7 +26,6 @@ function onModeChange(mode: string | number | boolean | undefined) {
       <ElRadioButton label="深色" value="dark" />
       <ElRadioButton label="跟随系统" value="system" />
     </ElRadioGroup>
-    <ElTag size="small" effect="plain" type="info">{{ modeText }}</ElTag>
   </div>
 </template>
 

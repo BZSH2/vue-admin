@@ -52,6 +52,13 @@ const getPreloadAs = (href: string) => {
   return 'fetch'
 }
 
+const createHtmlTitlePlugin = (title: string) => ({
+  name: 'html-title',
+  transformIndexHtml(html: string) {
+    return html.replace(/<%= title %>/g, title)
+  },
+})
+
 // 注入 preconnect 与 preload 标签
 const createHtmlPreconnectPreloadPlugin = (preconnectOrigins: string[], preloadAssets: string[]) =>
   ({
@@ -121,6 +128,7 @@ export default defineConfig(({ mode, command }) => {
     // GitHub Pages 基于 base 的资源路径处理
     base: viteEnv.VITE_BASE_URL,
     plugins: [
+      createHtmlTitlePlugin(config.title),
       // HTML 预连接与预加载
       createHtmlPreconnectPreloadPlugin(preconnectOrigins, preloadAssets),
       vue(),

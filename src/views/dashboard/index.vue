@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useThemeBridge, type ThemeBridgePayload } from '@/composables/useTheme'
-import BzshTree from 'bzsh-tree'
 
 function handleClick() {
   throw new Error('测试错误')
@@ -15,7 +14,6 @@ useThemeBridge((payload) => {
 
 <template>
   <div class="dashboard-page">
-    <BzshTree :data="[{ id: 1, label: 'aaaa' }]" />
     <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
     <div>{{ $t('哈哈哈哈') }}</div>
     <h1>{{ $t('你好, 这是一个测试') }}</h1>

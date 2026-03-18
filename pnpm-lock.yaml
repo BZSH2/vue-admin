@@ -23,6 +23,9 @@ importers:
       axios:
         specifier: ^1.13.4
         version: 1.13.4
+      bzsh-tree:
+        specifier: ^1.0.0
+        version: 1.0.0(vue@3.5.27(typescript@5.9.3))
       element-plus:
         specifier: ^2.13.2
         version: 2.13.2(vue@3.5.27(typescript@5.9.3))
@@ -2177,6 +2180,11 @@ packages:
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
     engines: {node: '>=18'}
+
+  bzsh-tree@1.0.0:
+    resolution: {integrity: sha512-0Sev57VnFUMkW68Z0ZgLpEVgj/6AEZWqlvPhWFD7HU+5ncMawUVOSK/8ELxcaITMUCkx4Zq8Wg1+Y3eVvVgzqA==}
+    peerDependencies:
+      vue: ^3.0.0
 
   c12@3.3.3:
     resolution: {integrity: sha512-750hTRvgBy5kcMNPdh95Qo+XUBeGo8C7nsKSmedDmaQI+E0r82DwHeM6vBewDe4rGFbnxoa4V9pw+sPh5+Iz8Q==}
@@ -7433,6 +7441,10 @@ snapshots:
   bundle-name@4.1.0:
     dependencies:
       run-applescript: 7.1.0
+
+  bzsh-tree@1.0.0(vue@3.5.27(typescript@5.9.3)):
+    dependencies:
+      vue: 3.5.27(typescript@5.9.3)
 
   c12@3.3.3:
     dependencies:

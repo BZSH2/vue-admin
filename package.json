@@ -45,16 +45,12 @@
     "clean": "rimraf node_modules",
     "reinstall": "rimraf node_modules && pnpm install"
   },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-git"
-    }
-  },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
     "@sentry/vue": "^10.42.0",
     "@vueuse/core": "^14.2.1",
     "axios": "^1.13.4",
+    "bzsh-tree": "^1.0.0",
     "element-plus": "^2.13.2",
     "js-cookie": "^3.0.5",
     "nprogress": "^0.2.0",

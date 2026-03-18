@@ -26,7 +26,7 @@ const asyncRoutes: Route.RouteRecord[] = [
       {
         path: '/system',
         name: 'System',
-        // component: () => import('@/views/system/index.vue'),
+        redirect: '/system/userPermission',
         meta: {
           title: '系统管理',
           noClosable: true,
@@ -44,7 +44,6 @@ const asyncRoutes: Route.RouteRecord[] = [
               noClosable: true,
               isLevel1: true,
               noKeepAlive: false,
-              // icon: 'menus-blink',
             },
           },
         ],

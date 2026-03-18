@@ -1,8 +1,25 @@
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
 import RouterViewKeepAlive from './components/RouterViewKeepAlive.vue'
 import Header from './components/Header/index.vue'
 import Sidebar from './components/Sidebar/index.vue'
-const collapsed = ref(false)
+
+const { width } = useWindowSize()
+const collapsed = ref(width.value < 1200)
+
+watch(
+  width,
+  (w, oldW) => {
+    if (w < 1200 && (oldW === undefined || oldW >= 1200)) {
+      collapsed.value = true
+    }
+    if (w >= 1200 && (oldW === undefined || oldW < 1200)) {
+      collapsed.value = false
+    }
+  },
+  { immediate: true }
+)
+
 function toggle() {
   collapsed.value = !collapsed.value
 }
@@ -41,27 +58,6 @@ function toggle() {
   transition: width 220ms var(--el-transition-function-fast-bezier, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 56px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
-}
-
-.logo-text {
-  transition:
-    opacity 200ms ease-in-out,
-    transform 200ms ease-in-out;
-}
-
-.aside.collapsed .logo-text {
-  opacity: 0.95;
-  transform: scale(0.98);
-}
-
 .aside-scroll {
   height: calc(100vh - 56px);
   padding: 8px;
@@ -98,8 +94,7 @@ function toggle() {
 
 .main {
   padding: 0;
-
-  // background-color: var(--el-bg-color);
+  background-color: var(--va-bg-page);
 }
 
 .content-scroll {

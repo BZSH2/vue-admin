@@ -13,7 +13,7 @@ const breadcrumbs = computed(() =>
 </script>
 
 <template>
-  <ElBreadcrumb separator="/">
+  <ElBreadcrumb class="breadcrumb" separator="/">
     <ElBreadcrumbItem v-for="(b, i) in breadcrumbs" :key="i">
       <RouterLink :to="b.path">{{ $t(b.title) }}</RouterLink>
     </ElBreadcrumbItem>
@@ -29,6 +29,12 @@ const breadcrumbs = computed(() =>
   gap: 12px;
   align-items: center;
   height: 56px;
+}
+
+.breadcrumb {
+  @media (width <= 768px) {
+    display: none;
+  }
 }
 
 .spacer {

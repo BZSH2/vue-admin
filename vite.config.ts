@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import path from 'node:path'
-import { defineConfig, loadEnv, type HtmlTagDescriptor, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type HtmlTagDescriptor, type Plugin, type PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import UnoCSS from '@unocss/vite'
@@ -15,43 +15,50 @@ import viteCompression from 'vite-plugin-compression'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-// https://vite.dev/config/
-// 根据资源后缀推断 preload 的 as 类型
-const getPreloadAs = (href: string) => {
-  const lowerHref = href.toLowerCase()
-  if (lowerHref.endsWith('.css')) {
-    return 'style'
-  }
-  if (lowerHref.endsWith('.js')) {
-    return 'script'
-  }
-  if (lowerHref.endsWith('.woff2')) {
-    return 'font'
-  }
-  if (lowerHref.endsWith('.woff')) {
-    return 'font'
-  }
-  if (lowerHref.endsWith('.ttf')) {
-    return 'font'
-  }
-  if (lowerHref.endsWith('.svg')) {
-    return 'image'
-  }
-  if (lowerHref.endsWith('.png')) {
-    return 'image'
-  }
-  if (lowerHref.endsWith('.jpg') || lowerHref.endsWith('.jpeg')) {
-    return 'image'
-  }
-  if (lowerHref.endsWith('.webp')) {
-    return 'image'
-  }
-  if (lowerHref.endsWith('.ico')) {
-    return 'image'
-  }
-  return 'fetch'
+type BuildCommand = 'serve' | 'build'
+
+// 构建阶段可切换的功能开关集合
+// 由环境变量统一解析后传入，避免插件层重复读取 env
+interface BuildFeatureFlags {
+  enableGzip: boolean
+  enableBrotli: boolean
+  enableAnalyze: boolean
+  enableSentry: boolean
 }
 
+// preload 的 as 类型映射规则
+// 通过后缀列表声明资源类型，减少 if/else 分支复杂度
+const PRELOAD_AS_RULES: Array<[string[], string]> = [
+  [['.css'], 'style'],
+  [['.js'], 'script'],
+  [['.woff2', '.woff', '.ttf'], 'font'],
+  [['.svg', '.png', '.jpg', '.jpeg', '.webp', '.ico'], 'image'],
+]
+
+// 解析逗号分隔环境变量
+// 输入如 "a,b, c" 会被标准化为 ["a", "b", "c"]
+const parseListEnv = (value?: string) =>
+  (value ?? '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+
+// 统一处理布尔类环境变量
+// 仅字符串 "true" 视为开启，避免隐式类型转换带来误判
+const isEnabledByEnv = (value?: string) => value === 'true'
+
+// 根据资源后缀推断 preload 的 as 类型
+// 未命中规则时回退为 fetch，保证标签属性始终有效
+const getPreloadAs = (href: string) => {
+  const lowerHref = href.toLowerCase()
+  const matchedRule = PRELOAD_AS_RULES.find(([suffixes]) =>
+    suffixes.some((suffix) => lowerHref.endsWith(suffix))
+  )
+  return matchedRule?.[1] ?? 'fetch'
+}
+
+// 注入 HTML 标题占位符
+// 将模板中的 <%= title %> 替换为项目配置标题
 const createHtmlTitlePlugin = (title: string) => ({
   name: 'html-title',
   transformIndexHtml(html: string) {
@@ -59,7 +66,8 @@ const createHtmlTitlePlugin = (title: string) => ({
   },
 })
 
-// 注入 preconnect 与 preload 标签
+// 注入 preconnect 与 preload 资源提示
+// preconnect 用于提前建立连接，preload 用于关键资源提前下载
 const createHtmlPreconnectPreloadPlugin = (preconnectOrigins: string[], preloadAssets: string[]) =>
   ({
     name: 'html-preconnect-preload',
@@ -80,7 +88,8 @@ const createHtmlPreconnectPreloadPlugin = (preconnectOrigins: string[], preloadA
     },
   }) satisfies Plugin
 
-// 手动分包策略
+// 第三方依赖手动分包策略
+// 将核心依赖分组，降低首屏主包体积并提高浏览器缓存命中
 const createManualChunks = (id: string) => {
   if (!id.includes('node_modules')) {
     return
@@ -106,112 +115,148 @@ const createManualChunks = (id: string) => {
   return 'vendor'
 }
 
-// 解析逗号分隔的环境变量列表
-const parseListEnv = (value?: string) =>
-  (value ?? '')
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
+// 将插件配置标准化为数组，兼容单插件与插件数组两种返回形态
+const toPluginArray = (plugin: PluginOption): PluginOption[] => {
+  if (!plugin) {
+    return []
+  }
+  return Array.isArray(plugin) ? plugin : [plugin]
+}
+
+// Sentry 上传 sourcemap 插件工厂
+// 仅在开启监控且存在 dsn 时参与构建流程
+const createSentryBuildPlugin = (enabled: boolean) =>
+  enabled
+    ? sentryVitePlugin({
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        release: process.env.SENTRY_RELEASE,
+        sourcemaps: {
+          assets: './dist/**',
+        },
+      })
+    : undefined
+
+// gzip 压缩插件工厂
+// 生成 .gz 文件，便于服务端按 Accept-Encoding 协商返回
+const createGzipBuildPlugin = (enabled: boolean) =>
+  enabled
+    ? viteCompression({
+        algorithm: 'gzip',
+        ext: '.gz',
+      })
+    : undefined
+
+// Brotli 压缩插件工厂
+// 生成 .br 文件，通常较 gzip 有更高压缩率
+const createBrotliBuildPlugin = (enabled: boolean) =>
+  enabled
+    ? viteCompression({
+        algorithm: 'brotliCompress',
+        ext: '.br',
+      })
+    : undefined
+
+// 构建产物分析插件工厂
+// 生成 dist/stats.html，辅助定位体积热点
+const createAnalyzeBuildPlugin = (enabled: boolean) =>
+  enabled
+    ? visualizer({
+        filename: 'dist/stats.html',
+        gzipSize: true,
+        brotliSize: true,
+      })
+    : undefined
+
+// 汇总构建专属插件
+// 通过统一扁平化处理，消除 undefined 与嵌套数组
+const createBuildPlugins = (flags: BuildFeatureFlags): PluginOption[] =>
+  [
+    createSentryBuildPlugin(flags.enableSentry),
+    createGzipBuildPlugin(flags.enableGzip),
+    createBrotliBuildPlugin(flags.enableBrotli),
+    createAnalyzeBuildPlugin(flags.enableAnalyze),
+  ].flatMap(toPluginArray)
+
+// 统一收敛插件注册顺序，便于维护
+// 先注册基础插件，再按 build 命令追加构建增强插件
+const createPlugins = (
+  command: BuildCommand,
+  preconnectOrigins: string[],
+  preloadAssets: string[],
+  flags: BuildFeatureFlags
+): PluginOption[] => {
+  const plugins: PluginOption[] = [
+    createHtmlTitlePlugin(config.title),
+    createHtmlPreconnectPreloadPlugin(preconnectOrigins, preloadAssets),
+    vue(),
+    vueJsx(),
+    UnoCSS(),
+    AutoImport({
+      imports: ['vue', 'vue-router', 'pinia', 'vue-i18n'],
+      resolvers: [ElementPlusResolver()],
+      dirs: ['src/composables', '!src/composables/index.ts'],
+      dts: 'src/types/auto-imports.d.ts',
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+      dirs: ['src/icons'],
+      extensions: ['vue'],
+      dts: 'src/types/components.d.ts',
+    }),
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(process.cwd(), 'src/icons/svg')],
+      symbolId: 'icon-[dir]-[name]',
+    }),
+    VueI18nPlugin({
+      include: [path.resolve(process.cwd(), 'src/i18n/lang/**/*.json')],
+      runtimeOnly: false,
+      compositionOnly: true,
+      fullInstall: true,
+      defaultSFCLang: 'yaml',
+      globalSFCScope: true,
+    }),
+  ]
+
+  if (command === 'build') {
+    plugins.push(...createBuildPlugins(flags))
+  }
+
+  return plugins.flatMap(toPluginArray)
+}
 
 export default defineConfig(({ mode, command }) => {
-  // 加载模式对应的环境变量
-  const viteEnv: ImportMetaEnv = loadEnv(mode, process.cwd()) as any
+  // 读取当前模式下的环境变量
+  // 所有开关都在此处归一化，避免散落在各插件配置中
+  const viteEnv = loadEnv(mode, process.cwd()) as ImportMetaEnv
   const compressTypes = parseListEnv(viteEnv.VITE_BUILD_COMPRESS)
   const enableGzip = compressTypes.includes('gzip')
   const enableBrotli = compressTypes.includes('brotli')
-  const enableAnalyze = viteEnv.VITE_BUILD_ANALYZE === 'true'
+  const enableAnalyze = isEnabledByEnv(viteEnv.VITE_BUILD_ANALYZE)
   const preconnectOrigins = parseListEnv(viteEnv.VITE_PRECONNECT_ORIGINS)
   const preloadAssets = parseListEnv(viteEnv.VITE_PRELOAD_ASSETS)
-  const enableSentry = viteEnv.VITE_SENTRY_ENABLE === 'true' && !!viteEnv.VITE_SENTRY_DSN
+  const enableSentry = isEnabledByEnv(viteEnv.VITE_SENTRY_ENABLE) && !!viteEnv.VITE_SENTRY_DSN
 
   return {
-    // GitHub Pages 基于 base 的资源路径处理
+    // 部署到子路径时保持静态资源引用正确
     base: viteEnv.VITE_BASE_URL,
-    plugins: [
-      createHtmlTitlePlugin(config.title),
-      // HTML 预连接与预加载
-      createHtmlPreconnectPreloadPlugin(preconnectOrigins, preloadAssets),
-      vue(),
-      vueJsx(),
-      UnoCSS(),
-      AutoImport({
-        imports: ['vue', 'vue-router', 'pinia', 'vue-i18n'],
-        resolvers: [ElementPlusResolver()],
-        // 自动导入声明文件
-        dirs: ['src/composables', '!src/composables/index.ts'],
-        dts: 'src/types/auto-imports.d.ts',
-      }),
-      Components({
-        resolvers: [ElementPlusResolver()],
-        // 按需自动导入的组件目录
-        dirs: ['src/icons'],
-        // 组件文件扩展名
-        extensions: ['vue'],
-        // 组件类型声明文件
-        dts: 'src/types/components.d.ts',
-      }),
-      createSvgIconsPlugin({
-        // SVG 图标目录
-        iconDirs: [path.resolve(process.cwd(), 'src/icons/svg')],
-        // 生成的 symbolId 规则
-        symbolId: 'icon-[dir]-[name]',
-      }),
-      VueI18nPlugin({
-        include: [path.resolve(process.cwd(), 'src/i18n/lang/**/*.json')],
-        runtimeOnly: false,
-        compositionOnly: true,
-        fullInstall: true,
-        // i18n 自定义块默认语言
-        defaultSFCLang: 'yaml',
-        globalSFCScope: true,
-      }),
-      // 构建产物压缩与分析
-      ...(command === 'build' && enableSentry
-        ? [
-            sentryVitePlugin({
-              org: process.env.SENTRY_ORG,
-              project: process.env.SENTRY_PROJECT,
-              authToken: process.env.SENTRY_AUTH_TOKEN,
-              release: process.env.SENTRY_RELEASE,
-              sourcemaps: {
-                assets: './dist/**',
-              },
-            }),
-          ]
-        : []),
-      ...(command === 'build' && enableGzip
-        ? [
-            viteCompression({
-              algorithm: 'gzip',
-              ext: '.gz',
-            }),
-          ]
-        : []),
-      ...(command === 'build' && enableBrotli
-        ? [
-            viteCompression({
-              algorithm: 'brotliCompress',
-              ext: '.br',
-            }),
-          ]
-        : []),
-      ...(command === 'build' && enableAnalyze
-        ? [
-            visualizer({
-              filename: 'dist/stats.html',
-              gzipSize: true,
-              brotliSize: true,
-            }),
-          ]
-        : []),
-    ],
-    // 路径别名
+    // 插件注册
+    // 统一由 createPlugins 处理顺序与条件挂载
+    plugins: createPlugins(command, preconnectOrigins, preloadAssets, {
+      enableGzip,
+      enableBrotli,
+      enableAnalyze,
+      enableSentry,
+    }),
+    // 源码别名
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-    // 构建策略
+    // Rollup 构建分包策略
+    // 把高频与重量级依赖拆分到稳定 chunk，减少重复下载
     build: {
       rollupOptions: {
         output: {
@@ -219,7 +264,8 @@ export default defineConfig(({ mode, command }) => {
         },
       },
     },
-    // 开发服务器配置
+    // 本地开发服务
+    // 开发模式注入代理，构建模式不注入以避免产物受影响
     server: {
       port: config.devPort,
       host: true,

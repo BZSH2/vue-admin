@@ -1,8 +1,8 @@
 import { settingConfig } from './setting.config'
 
 export const langDict: Lang.LangDist[] = [
-  { code: 'zh-CN', name: '中文(简体)', flag: 'cn' },
-  { code: 'zh-TW', name: '中文(繁體)', flag: 'tw' },
+  { code: 'zh-CN', name: '中文(简体)', flag: 'cn', bingCode: 'zh-Hans' },
+  { code: 'zh-TW', name: '中文(繁體)', flag: 'tw', bingCode: 'zh-Hant' },
   { code: 'en', name: 'English', flag: 'us' },
   { code: 'ja', name: '日本語', flag: 'jp' },
   { code: 'ko', name: '한국어', flag: 'kr' },

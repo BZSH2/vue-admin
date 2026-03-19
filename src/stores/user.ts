@@ -16,9 +16,7 @@ export const useUserStore = defineStore('user', () => {
   const profile = ref<UserProfile | null>(null)
   const loaded = ref(false)
 
-  const displayName = computed(() => {
-    return profile.value?.nickname || profile.value?.phoneNumber || ''
-  })
+  const displayName = computed(() => profile.value?.nickname || profile.value?.phoneNumber || '')
 
   function reset() {
     profile.value = null

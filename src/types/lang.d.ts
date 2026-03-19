@@ -10,6 +10,8 @@ declare global {
       name: string
       /** 语言标志 */
       flag?: string
+      /** 供 bing-translate-api 使用的独立代码（如果与 code 相同则可省略） */
+      bingCode?: string
     }
 
     type LanguageType = (typeof languages)[number]

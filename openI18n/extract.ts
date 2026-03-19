@@ -2,7 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from '@vue/compiler-sfc'
 import * as glob from 'glob'
-import { translate } from 'google-translate-api-x'
+import { translate as googleTranslate } from 'google-translate-api-x'
+import { translate as bingTranslate } from 'bing-translate-api'
+import { langDict } from '../src/config/lang'
 
 interface I18nKey {
   key: string
@@ -13,6 +15,7 @@ interface I18nKey {
 
 export class I18nExtractor {
   private keys: Map<string, I18nKey> = new Map()
+
   private regex = {
     // 匹配 $t('key')
     functionCall: /\$t\(\s*['"]([^'"]+)['"]\s*\)/g,
@@ -77,7 +80,9 @@ export class I18nExtractor {
   }
 
   private addKey(key: string, filePath: string, line = 0) {
-    if (!key || this.keys.has(key)) {return}
+    if (!key || this.keys.has(key)) {
+      return
+    }
     this.keys.set(key, {
       key,
       value: key,
@@ -129,6 +134,10 @@ export class I18nExtractor {
         }
       })
     } catch (e) {
+      // 忽略非JSON格式的自定义块
+      console.warn(
+        `Failed to parse i18n custom block in ${filePath}: ${e instanceof Error ? e.message : 'Unknown error'}`
+      )
       // 忽略非JSON格式的自定义块
     }
   }
@@ -205,19 +214,7 @@ export class I18nExtractor {
       const keys = key.split('.')
       let current = newData
 
-      let translatedText = key
-      // 尝试翻译
-      try {
-        // 如果不是中文环境，且key包含中文（简单判断），或者是英文环境...
-        // 这里简单粗暴：只要是不存在的key，都尝试翻译
-        // 注意：翻译服务可能需要时间，且有速率限制
-        // 这里假设源语言是自动检测
-        const res = await translate(key, { to: lang })
-        translatedText = res.text
-      } catch (e) {
-        // 翻译失败降级为key
-        console.error(`Translation failed for ${key}:`, e)
-      }
+      const translatedText = await this.getTranslation(key, lang)
 
       keys.forEach((k, index) => {
         if (index === keys.length - 1) {
@@ -274,5 +271,77 @@ export class I18nExtractor {
     })
 
     return result
+  }
+
+  // 提取带有多级降级的翻译逻辑
+  private async getTranslation(key: string, lang: string): Promise<string> {
+    const hasChinese = /[\u4e00-\u9fa5]/.test(key)
+    if (!hasChinese || lang === 'zh-CN') {
+      return key
+    }
+
+    let translatedText = key
+
+    // 1. 优先尝试使用 Google 翻译
+    const googleSuccess = await this.tryGoogleTranslate(key, lang, (text) => {
+      translatedText = text
+    })
+
+    // 2. 如果 Google 翻译失败，尝试使用 Bing 翻译作为降级
+    if (!googleSuccess) {
+      await this.tryBingTranslate(key, lang, (text) => {
+        translatedText = text
+      })
+    }
+
+    return translatedText
+  }
+
+  private async tryGoogleTranslate(
+    key: string,
+    lang: string,
+    onSuccess: (text: string) => void
+  ): Promise<boolean> {
+    try {
+      const googleRes = await googleTranslate(key, { to: lang })
+      if (googleRes && googleRes.text) {
+        onSuccess(googleRes.text)
+        await new Promise<void>((resolve) => {
+          setTimeout(() => resolve(), 500)
+        })
+        return true
+      }
+    } catch (e) {
+      console.warn(
+        `Google translation failed for ${key} to ${lang}: ${e instanceof Error ? e.message : 'Unknown error'}. Trying Bing Translate...`
+      )
+    }
+    return false
+  }
+
+  private async tryBingTranslate(
+    key: string,
+    lang: string,
+    onSuccess: (text: string) => void
+  ): Promise<boolean> {
+    try {
+      const langConfig = langDict.find((item) => item.code === lang)
+      const targetLang = langConfig?.bingCode || lang
+
+      const bingRes = await bingTranslate(key, null, targetLang)
+      if (bingRes && bingRes.translation) {
+        onSuccess(bingRes.translation)
+      }
+      // 适度增加延迟，避免触发必应的反爬限制
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 800)
+      })
+      return true
+    } catch (e) {
+      console.warn(
+        `Bing translation also failed for ${key} to ${lang}: ${e instanceof Error ? e.message : 'Unknown error'}. Falling back to original key.`
+      )
+      return false
+    }
   }
 }

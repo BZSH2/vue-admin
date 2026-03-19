@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useThemeBridge, type ThemeBridgePayload } from '@/composables/useTheme'
+import BzshTree from 'bzsh-tree'
 
 function handleClick() {
   throw new Error('测试错误')
@@ -10,11 +11,37 @@ const bridgeState = ref<ThemeBridgePayload | null>(null)
 useThemeBridge((payload) => {
   bridgeState.value = payload
 })
+
+// 模拟树形结构假数据
+const treeData = ref([
+  {
+    label: '研发中心',
+    children: [
+      {
+        label: '前端团队',
+        children: [{ label: 'Vue 组' }, { label: 'React 组' }, { label: '工程化组' }],
+      },
+      {
+        label: '后端团队',
+        children: [{ label: 'Node.js 组' }, { label: 'Go 组' }, { label: 'Python 组' }],
+      },
+    ],
+  },
+  {
+    label: '产品部',
+    children: [{ label: '产品经理组' }, { label: '设计组' }, { label: '交互组' }],
+  },
+  {
+    label: '市场部',
+    children: [{ label: '新媒体组' }, { label: '策划组' }],
+  },
+])
 </script>
 
 <template>
   <div class="dashboard-page">
     <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
+    <BzshTree :data="treeData" />
     <div>{{ $t('哈哈哈哈') }}</div>
     <h1>{{ $t('你好, 这是一个测试') }}</h1>
 

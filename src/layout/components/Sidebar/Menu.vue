@@ -4,8 +4,12 @@ import { useRoute, useRouter } from 'vue-router'
 import MenuItem from './MenuItem.vue'
 import { appRoutes } from '@/router/routes'
 
-defineProps<{
+const props = defineProps<{
   collapsed: boolean
+}>()
+
+const emit = defineEmits<{
+  navigate: []
 }>()
 
 const route = useRoute()
@@ -19,30 +23,21 @@ const activeMenu = computed(() => {
   return path
 })
 
-/**
- * 菜单选择事件
- */
-const handleSelect = (index: string) => {
+function handleSelect(index: string) {
+  emit('navigate')
+
   if (/^(https?:|mailto:|tel:)/.test(index)) {
     window.open(index, '_blank')
-  } else {
-    router.push(index)
+    return
   }
+
+  void router.push(index)
 }
 
-/**
- * 过滤隐藏的路由
- * @param r 路由记录
- */
 function filterHidden(r: Route.RouteRecord): boolean {
   return r.meta?.hidden !== true
 }
 
-/**
- * 递归将路由转换为菜单节点
- * @param r 路由记录
- * @returns 菜单节点或 null
- */
 function toMenuNode(r: Route.RouteRecord): Route.RouteRecord | null {
   if (!filterHidden(r)) {
     return null
@@ -50,12 +45,10 @@ function toMenuNode(r: Route.RouteRecord): Route.RouteRecord | null {
 
   const children = r.children?.map(toMenuNode).filter(Boolean) as Route.RouteRecord[]
 
-  // 保留 levelHidden 逻辑：如果是 levelHidden，确保返回 children 数组（即使为空）
   if (r.meta?.levelHidden) {
     return { ...r, children: children || [] }
   }
 
-  // 常规节点
   return {
     ...r,
     children: children?.length ? children : undefined,
@@ -70,7 +63,7 @@ const menus = computed<Route.RouteRecord[]>(
 <template>
   <ElMenu
     :default-active="activeMenu"
-    :collapse="collapsed"
+    :collapse="props.collapsed"
     :unique-opened="false"
     :collapse-transition="false"
     mode="vertical"
@@ -81,7 +74,7 @@ const menus = computed<Route.RouteRecord[]>(
       v-for="menu in menus"
       :key="menu.path"
       :item="menu"
-      :collapse="collapsed"
+      :collapse="props.collapsed"
       base-path=""
     />
   </ElMenu>

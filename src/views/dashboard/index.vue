@@ -12,7 +12,6 @@ useThemeBridge((payload) => {
   bridgeState.value = payload
 })
 
-// 模拟树形结构假数据
 const treeData = ref([
   {
     label: '研发中心',
@@ -118,5 +117,28 @@ const treeData = ref([
   color: var(--va-thirdparty-text);
   border: 1px solid;
   border-radius: 8px;
+}
+
+@media (width <= 768px) {
+  .dashboard-page {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .bridge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-bars {
+    padding-bottom: 4px;
+    overflow-x: auto;
+  }
+
+  .map-preview {
+    height: auto;
+    min-height: 86px;
+    padding: 16px;
+    text-align: center;
+  }
 }
 </style>

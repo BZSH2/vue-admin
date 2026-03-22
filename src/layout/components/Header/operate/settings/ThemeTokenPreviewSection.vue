@@ -74,4 +74,10 @@ defineProps<{
 .token-strong {
   border-width: 1px;
 }
+
+@media (width <= 640px) {
+  .token-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

@@ -16,13 +16,11 @@ const registerFormRef = ref<FormInstance>()
 const loading = ref(false)
 const isLogin = ref(true)
 
-// Login Form
 const form = reactive({
   phoneNumber: '13488888888',
   password: '123456',
 })
 
-// Register Form
 const registerForm = reactive({
   phoneNumber: '13488888888',
   password: '',
@@ -41,7 +39,7 @@ const registerRules: FormRules = {
   confirmPassword: [
     { required: true, message: t('请再次输入密码'), trigger: 'blur' },
     {
-      validator: (rule, value, callback) => {
+      validator: (_rule, value, callback) => {
         if (value !== registerForm.password) {
           callback(new Error(t('两次输入密码不一致')))
         } else {
@@ -61,7 +59,6 @@ async function onLogin() {
       phoneNumber: form.phoneNumber,
       password: form.password,
     })
-    // result is likely the data object directly due to interceptor
     const token = result?.accessToken || result?.token || ''
 
     if (token) {
@@ -71,11 +68,9 @@ async function onLogin() {
       const redirect = (route.query?.redirect as string) || '/'
       router.replace(redirect)
     } else {
-      // Handle case where token is missing in successful response if needed
       $baseMessage(t('登录失败，未获取到令牌'), 'error')
     }
   } catch (e: any) {
-    // Error handled by interceptor or here
     console.error(e)
   } finally {
     loading.value = false
@@ -102,18 +97,16 @@ async function onRegister() {
 
 function toggleMode() {
   isLogin.value = !isLogin.value
-  // Reset forms
   formRef.value?.resetFields()
   registerFormRef.value?.resetFields()
 }
 </script>
 
 <template>
-  <div class="login-container">
+  <div class="login-container va-fullscreen-page">
     <div class="login-card">
       <div class="title">{{ isLogin ? t('系统登录') : t('用户注册') }}</div>
 
-      <!-- Login Form -->
       <ElForm
         v-if="isLogin"
         ref="formRef"
@@ -145,7 +138,6 @@ function toggleMode() {
         </div>
       </ElForm>
 
-      <!-- Register Form -->
       <ElForm
         v-else
         ref="registerFormRef"
@@ -197,20 +189,21 @@ function toggleMode() {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: var(--el-bg-color);
+  background-color: var(--el-bg-color);
   background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
   background-repeat: no-repeat;
-  background-position: center 110px;
-  background-size: 100%;
+  background-position: center 88px;
+  background-size: min(100%, 1200px);
 }
 
 .login-card {
-  width: 400px;
-  padding: 32px;
-  background: var(--el-bg-color-overlay);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08);
+  width: min(100%, 420px);
+  padding: clamp(24px, 5vw, 32px);
+  background: color-mix(in srgb, var(--el-bg-color-overlay) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--el-border-color-lighter) 80%, transparent);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgb(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 .title {
@@ -228,6 +221,26 @@ function toggleMode() {
 .form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: -10px; /* Adjust spacing as needed */
+}
+
+@media (width <= 768px) {
+  .login-container {
+    align-items: flex-start;
+    background-position: center 32px;
+    background-size: 180%;
+  }
+
+  .login-card {
+    margin-top: clamp(56px, 12vh, 112px);
+  }
+
+  .title {
+    margin-bottom: 20px;
+    font-size: 22px;
+  }
+
+  .form-footer {
+    justify-content: center;
+  }
 }
 </style>

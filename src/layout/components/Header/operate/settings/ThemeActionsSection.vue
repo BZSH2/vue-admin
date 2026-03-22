@@ -35,8 +35,19 @@ const emit = defineEmits<{
 }
 
 .actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  align-items: center;
+  align-items: stretch;
+}
+
+.actions :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+
+@media (width <= 640px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

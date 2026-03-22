@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ResolvedTheme, ThemeMode } from '@/composables/useTheme'
 
-const props = defineProps<{
+defineProps<{
   themeMode: ThemeMode
   resolvedTheme: ResolvedTheme
 }>()
@@ -40,5 +40,15 @@ function onModeChange(mode: string | number | boolean | undefined) {
   font-size: 14px;
   font-weight: 600;
   color: var(--el-text-color-primary);
+}
+
+:deep(.el-radio-group) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+:deep(.el-radio-button__inner) {
+  width: 100%;
 }
 </style>

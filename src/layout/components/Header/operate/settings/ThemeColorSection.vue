@@ -53,8 +53,9 @@ function onPickerChange(color: string | null) {
 
 .preset-colors {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
   gap: 10px;
+  justify-items: center;
 }
 
 .color-dot {

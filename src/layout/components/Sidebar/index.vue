@@ -47,6 +47,7 @@ const emit = defineEmits<{
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 

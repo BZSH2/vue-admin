@@ -37,4 +37,7 @@ body {
   min-height: var(--va-app-height);
   padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }

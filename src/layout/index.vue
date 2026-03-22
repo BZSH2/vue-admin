@@ -10,6 +10,7 @@ const route = useRoute()
 const {
   isMobile,
   isCompactHeader,
+  isNarrowMobile,
   desktopCollapsed,
   mobileSidebarVisible,
   mobileSidebarWidth,
@@ -53,7 +54,12 @@ watch(
 
     <ElContainer class="main-wrap">
       <ElHeader class="header">
-        <Header :compact="isCompactHeader" :is-mobile="isMobile" @toggle-sidebar="toggleSidebar" />
+        <Header
+          :compact="isCompactHeader"
+          :is-mobile="isMobile"
+          :is-narrow-mobile="isNarrowMobile"
+          @toggle-sidebar="toggleSidebar"
+        />
       </ElHeader>
       <ElMain class="main">
         <ElScrollbar class="content-scroll">
@@ -90,7 +96,7 @@ watch(
   display: flex;
   align-items: center;
   height: var(--va-header-height);
-  padding: 0 16px 0 12px;
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
   background-color: var(--el-bg-color);
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
@@ -117,7 +123,8 @@ watch(
 
 @media (width <= 768px) {
   .header {
-    padding: 0 12px;
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-left: max(8px, env(safe-area-inset-left));
   }
 }
 </style>

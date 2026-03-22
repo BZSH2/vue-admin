@@ -26,8 +26,8 @@ async function onCommand(cmd: string) {
 
 <template>
   <ElDropdown @command="onCommand" trigger="click">
-    <span>
-      <ElAvatar size="small" class="cursor-pointer">{{ avatarText }}</ElAvatar>
+    <span class="avatar-trigger">
+      <ElAvatar size="small" class="avatar-trigger__avatar">{{ avatarText }}</ElAvatar>
     </span>
     <template #dropdown>
       <ElDropdownMenu>
@@ -37,3 +37,31 @@ async function onCommand(cmd: string) {
     </template>
   </ElDropdown>
 </template>
+
+<style scoped lang="scss">
+.avatar-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.avatar-trigger:active {
+  background-color: var(--el-fill-color-light);
+}
+
+.avatar-trigger__avatar {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (width <= 420px) {
+  .avatar-trigger {
+    width: 36px;
+    height: 36px;
+  }
+}
+</style>

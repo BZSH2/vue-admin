@@ -5,10 +5,13 @@ export const MOBILE_BREAKPOINT = 768
 export const COMPACT_HEADER_BREAKPOINT = 992
 export const SIDEBAR_COLLAPSE_BREAKPOINT = 1200
 
+const NARROW_MOBILE_BREAKPOINT = 420
+
 export function useResponsiveLayout() {
   const { width } = useWindowSize()
   const isMobile = computed(() => width.value < MOBILE_BREAKPOINT)
   const isCompactHeader = computed(() => width.value < COMPACT_HEADER_BREAKPOINT)
+  const isNarrowMobile = computed(() => width.value < NARROW_MOBILE_BREAKPOINT)
   const desktopCollapsed = ref(width.value < SIDEBAR_COLLAPSE_BREAKPOINT)
   const mobileSidebarVisible = ref(false)
 
@@ -36,7 +39,7 @@ export function useResponsiveLayout() {
     { immediate: true }
   )
 
-  const mobileSidebarWidth = computed(() => (width.value < 420 ? '82vw' : '280px'))
+  const mobileSidebarWidth = computed(() => (width.value < 420 ? '86vw' : '300px'))
 
   function toggleSidebar() {
     if (isMobile.value) {
@@ -54,6 +57,7 @@ export function useResponsiveLayout() {
   return {
     isMobile,
     isCompactHeader,
+    isNarrowMobile,
     desktopCollapsed,
     mobileSidebarVisible,
     mobileSidebarWidth,

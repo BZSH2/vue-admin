@@ -7,6 +7,7 @@ import Operate from './operate/index.vue'
 const props = defineProps<{
   compact: boolean
   isMobile: boolean
+  isNarrowMobile: boolean
 }>()
 
 const emit = defineEmits<{
@@ -54,7 +55,7 @@ const currentTitle = computed(() => {
   </div>
 
   <div class="header-right">
-    <Operate :is-mobile="props.isMobile" />
+    <Operate :is-mobile="props.isMobile" :compact="props.isNarrowMobile" />
     <Avatar />
   </div>
 </template>
@@ -74,14 +75,14 @@ const currentTitle = computed(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   color: var(--el-text-color-primary);
   cursor: pointer;
   background: transparent;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .nav-trigger:active {
@@ -117,12 +118,28 @@ const currentTitle = computed(() => {
     gap: 8px;
   }
 
+  .nav-trigger {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
   .page-title {
     font-size: 15px;
   }
 
   .header-right {
-    gap: 0;
+    gap: 2px;
+  }
+}
+
+@media (width <= 420px) {
+  .header-left {
+    gap: 6px;
+  }
+
+  .page-title {
+    font-size: 14px;
   }
 }
 </style>

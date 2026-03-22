@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import PageContainer from '@/components/PageContainer.vue'
 import { useThemeBridge, type ThemeBridgePayload } from '@/composables/useTheme'
-import BzshTree from 'bzsh-tree'
 
 function handleClick() {
   throw new Error('测试错误')
@@ -11,60 +11,37 @@ const bridgeState = ref<ThemeBridgePayload | null>(null)
 useThemeBridge((payload) => {
   bridgeState.value = payload
 })
-
-const treeData = ref([
-  {
-    label: '研发中心',
-    children: [
-      {
-        label: '前端团队',
-        children: [{ label: 'Vue 组' }, { label: 'React 组' }, { label: '工程化组' }],
-      },
-      {
-        label: '后端团队',
-        children: [{ label: 'Node.js 组' }, { label: 'Go 组' }, { label: 'Python 组' }],
-      },
-    ],
-  },
-  {
-    label: '产品部',
-    children: [{ label: '产品经理组' }, { label: '设计组' }, { label: '交互组' }],
-  },
-  {
-    label: '市场部',
-    children: [{ label: '新媒体组' }, { label: '策划组' }],
-  },
-])
 </script>
 
 <template>
-  <div class="dashboard-page">
-    <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
-    <BzshTree :data="treeData" />
-    <div>{{ $t('哈哈哈哈') }}</div>
-    <h1>{{ $t('你好, 这是一个测试') }}</h1>
+  <PageContainer compact>
+    <div class="dashboard-page">
+      <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
+      <div class="dashboard-note">{{ $t('哈哈哈哈') }}</div>
+      <h1 class="dashboard-title">{{ $t('你好, 这是一个测试') }}</h1>
 
-    <div class="bridge-grid">
-      <div class="bridge-card" data-third-party="chart">
-        <div class="bridge-title">图表组件桥接</div>
-        <div class="chart-bars">
-          <span
-            v-for="(color, idx) in bridgeState?.chartPalette || []"
-            :key="`${color}-${idx}`"
-            class="bar"
-            :style="{ backgroundColor: color, height: `${32 + idx * 10}px` }"
-          />
+      <div class="bridge-grid">
+        <div class="bridge-card" data-third-party="chart">
+          <div class="bridge-title">图表组件桥接</div>
+          <div class="chart-bars">
+            <span
+              v-for="(color, idx) in bridgeState?.chartPalette || []"
+              :key="`${color}-${idx}`"
+              class="bar"
+              :style="{ backgroundColor: color, height: `${32 + idx * 10}px` }"
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="bridge-card" data-third-party="map">
-        <div class="bridge-title">地图组件桥接</div>
-        <div class="map-preview" :style="{ borderColor: bridgeState?.mapAccent }">
-          <span>Map Accent: {{ bridgeState?.mapAccent }}</span>
+        <div class="bridge-card" data-third-party="map">
+          <div class="bridge-title">地图组件桥接</div>
+          <div class="map-preview" :style="{ borderColor: bridgeState?.mapAccent }">
+            <span>Map Accent: {{ bridgeState?.mapAccent }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </PageContainer>
 </template>
 
 <style scoped lang="scss">
@@ -72,7 +49,18 @@ const treeData = ref([
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 16px;
+}
+
+.dashboard-note {
+  color: var(--el-text-color-regular);
+}
+
+.dashboard-title {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.08;
+  color: var(--el-text-color-primary);
+  overflow-wrap: anywhere;
 }
 
 .bridge-grid {
@@ -82,6 +70,7 @@ const treeData = ref([
 }
 
 .bridge-card {
+  min-width: 0;
   padding: 14px;
   background: var(--va-thirdparty-surface);
   border: 1px solid var(--va-thirdparty-border);
@@ -100,10 +89,12 @@ const treeData = ref([
   gap: 8px;
   align-items: flex-end;
   min-height: 82px;
+  overflow-x: auto;
 }
 
 .bar {
   display: inline-block;
+  flex-shrink: 0;
   width: 24px;
   border-radius: 4px 4px 0 0;
 }
@@ -112,9 +103,12 @@ const treeData = ref([
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 86px;
+  min-height: 86px;
+  padding: 12px;
   font-size: 12px;
   color: var(--va-thirdparty-text);
+  text-align: center;
+  overflow-wrap: anywhere;
   border: 1px solid;
   border-radius: 8px;
 }
@@ -122,23 +116,14 @@ const treeData = ref([
 @media (width <= 768px) {
   .dashboard-page {
     gap: 12px;
-    padding: 12px;
+  }
+
+  .dashboard-title {
+    font-size: clamp(28px, 9vw, 38px);
   }
 
   .bridge-grid {
     grid-template-columns: 1fr;
-  }
-
-  .chart-bars {
-    padding-bottom: 4px;
-    overflow-x: auto;
-  }
-
-  .map-preview {
-    height: auto;
-    min-height: 86px;
-    padding: 16px;
-    text-align: center;
   }
 }
 </style>

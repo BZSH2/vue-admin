@@ -4,6 +4,7 @@ import Menu from './Menu.vue'
 defineProps<{
   /** 是否折叠状态 */
   collapsed: boolean
+  showControl: boolean
 }>()
 const emit = defineEmits<{
   /** 切换折叠状态事件 */
@@ -19,7 +20,11 @@ const emit = defineEmits<{
       <Menu :collapsed="collapsed" />
     </ElScrollbar>
 
-    <div class="control flex cursor-pointer items-center justify-center" @click="emit('toggle')">
+    <div
+      v-if="showControl"
+      class="control flex cursor-pointer items-center justify-center"
+      @click="emit('toggle')"
+    >
       <Icon
         name="layout-fold"
         :size="16"

@@ -5,7 +5,10 @@ import Header from './components/Header/index.vue'
 import Sidebar from './components/Sidebar/index.vue'
 
 const { width } = useWindowSize()
+const route = useRoute()
 const collapsed = ref(width.value < 1200)
+const mobileMenuVisible = ref(false)
+const isMobile = computed(() => width.value < 768)
 
 watch(
   width,
@@ -16,23 +19,62 @@ watch(
     if (w >= 1200 && (oldW === undefined || oldW < 1200)) {
       collapsed.value = false
     }
+    if (w < 768) {
+      collapsed.value = true
+    }
+    if (w >= 768) {
+      mobileMenuVisible.value = false
+    }
   },
   { immediate: true }
+)
+
+watch(
+  () => route.fullPath,
+  () => {
+    mobileMenuVisible.value = false
+  }
 )
 
 function toggle() {
   collapsed.value = !collapsed.value
 }
+
+function toggleMenu() {
+  if (isMobile.value) {
+    mobileMenuVisible.value = !mobileMenuVisible.value
+    return
+  }
+  toggle()
+}
+
+function closeMobileMenu() {
+  mobileMenuVisible.value = false
+}
 </script>
 
 <template>
   <ElContainer class="layout">
-    <ElAside :width="collapsed ? '65px' : '200px'" class="aside" :class="[{ collapsed }]">
-      <Sidebar :collapsed="collapsed" @toggle="toggle" />
+    <ElAside
+      v-if="!isMobile"
+      :width="collapsed ? '65px' : '200px'"
+      class="aside"
+      :class="[{ collapsed }]"
+    >
+      <Sidebar :collapsed="collapsed" :show-control="true" @toggle="toggleMenu" />
     </ElAside>
+    <ElDrawer
+      v-model="mobileMenuVisible"
+      :with-header="false"
+      direction="ltr"
+      size="220px"
+      class="mobile-drawer"
+    >
+      <Sidebar :collapsed="false" :show-control="false" @toggle="closeMobileMenu" />
+    </ElDrawer>
     <ElContainer class="main-wrap">
       <ElHeader class="header">
-        <Header />
+        <Header :is-mobile="isMobile" @toggle-menu="toggleMenu" />
       </ElHeader>
       <ElMain class="main">
         <ElScrollbar class="content-scroll">
@@ -100,5 +142,17 @@ function toggle() {
 .content-scroll {
   box-sizing: border-box;
   height: calc(100vh - 56px);
+}
+
+:deep(.mobile-drawer) {
+  .el-drawer {
+    width: min(82vw, 240px) !important;
+    max-width: 240px;
+  }
+
+  .el-drawer__body {
+    padding: 0;
+    overflow: hidden;
+  }
 }
 </style>

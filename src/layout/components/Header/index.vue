@@ -2,7 +2,12 @@
 import Avatar from './Avatar.vue'
 import Operate from './operate/index.vue'
 
-defineProps<{}>()
+const props = defineProps<{
+  isMobile: boolean
+}>()
+const emit = defineEmits<{
+  'toggle-menu': []
+}>()
 
 const route = useRoute()
 const breadcrumbs = computed(() =>
@@ -13,13 +18,20 @@ const breadcrumbs = computed(() =>
 </script>
 
 <template>
+  <div
+    v-if="props.isMobile"
+    class="menu-trigger h-full flex cursor-pointer items-center"
+    @click="emit('toggle-menu')"
+  >
+    <Icon name="layout-fold" :size="18" class="p-x-10px" />
+  </div>
   <ElBreadcrumb class="breadcrumb" separator="/">
     <ElBreadcrumbItem v-for="(b, i) in breadcrumbs" :key="i">
       <RouterLink :to="b.path">{{ $t(b.title) }}</RouterLink>
     </ElBreadcrumbItem>
   </ElBreadcrumb>
   <div class="spacer" />
-  <Operate />
+  <Operate :is-mobile="props.isMobile" />
   <Avatar />
 </template>
 
@@ -39,5 +51,9 @@ const breadcrumbs = computed(() =>
 
 .spacer {
   flex: 1;
+}
+
+.menu-trigger {
+  color: var(--el-text-color-primary);
 }
 </style>

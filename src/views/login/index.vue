@@ -206,7 +206,7 @@ function toggleMode() {
 }
 
 .login-card {
-  width: 400px;
+  width: min(400px, 92vw);
   padding: 32px;
   background: var(--el-bg-color-overlay);
   border-radius: 8px;
@@ -229,5 +229,23 @@ function toggleMode() {
   display: flex;
   justify-content: flex-end;
   margin-top: -10px; /* Adjust spacing as needed */
+}
+
+@media (width <= 768px) {
+  .login-container {
+    padding: 20px 12px;
+    background-position: center 80px;
+    background-size: auto 70%;
+  }
+
+  .login-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+  }
+
+  .title {
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
 }
 </style>

@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useThemeBridge, type ThemeBridgePayload } from '@/composables/useTheme'
-import BzshTree from 'bzsh-tree'
+import { Tree as BzshTree } from 'bzsh-tree'
+import { useWindowSize } from '@vueuse/core'
 
 function handleClick() {
   throw new Error('测试错误')
 }
 
 const bridgeState = ref<ThemeBridgePayload | null>(null)
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
+const treeHeight = computed(() => (isMobile.value ? 240 : 300))
 
 useThemeBridge((payload) => {
   bridgeState.value = payload
@@ -41,7 +45,9 @@ const treeData = ref([
 <template>
   <div class="dashboard-page">
     <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
-    <BzshTree :data="treeData" />
+    <div class="tree-container">
+      <BzshTree :data="treeData" :height="treeHeight" />
+    </div>
     <div>{{ $t('哈哈哈哈') }}</div>
     <h1>{{ $t('你好, 这是一个测试') }}</h1>
 
@@ -74,6 +80,14 @@ const treeData = ref([
   flex-direction: column;
   gap: 16px;
   padding: 16px;
+}
+
+.tree-container {
+  height: 300px;
+  padding: 16px;
+  background-color: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 8px;
 }
 
 .bridge-grid {
@@ -118,5 +132,27 @@ const treeData = ref([
   color: var(--va-thirdparty-text);
   border: 1px solid;
   border-radius: 8px;
+}
+
+@media (width <= 768px) {
+  .dashboard-page {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tree-container {
+    height: 240px;
+    padding: 12px;
+  }
+
+  .bridge-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .chart-bars {
+    padding-bottom: 4px;
+    overflow-x: auto;
+  }
 }
 </style>

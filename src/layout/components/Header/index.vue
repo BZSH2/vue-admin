@@ -75,18 +75,27 @@ const currentTitle = computed(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: var(--va-header-action-size);
+  height: var(--va-header-action-size);
   padding: 0;
   color: var(--el-text-color-primary);
   cursor: pointer;
   background: transparent;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--va-radius-md);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
+.nav-trigger:hover,
 .nav-trigger:active {
   background-color: var(--el-fill-color-light);
+}
+
+.nav-trigger:focus-visible {
+  outline: 2px solid var(--el-color-primary-light-5);
+  outline-offset: 1px;
 }
 
 .breadcrumb {
@@ -119,8 +128,8 @@ const currentTitle = computed(() => {
   }
 
   .nav-trigger {
-    width: 36px;
-    height: 36px;
+    width: var(--va-header-action-size-compact);
+    height: var(--va-header-action-size-compact);
     border-radius: 10px;
   }
 

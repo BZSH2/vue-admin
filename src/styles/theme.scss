@@ -33,6 +33,40 @@ html.theme-switching * {
   background-color: var(--el-fill-color-light);
 }
 
+.va-header-action {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--va-header-action-size);
+  height: var(--va-header-action-size);
+  color: var(--el-text-color-primary);
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--va-radius-md);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.va-header-action:hover,
+.va-header-action:active {
+  background-color: var(--el-fill-color-light);
+}
+
+.va-header-action:focus-visible {
+  outline: 2px solid var(--el-color-primary-light-5);
+  outline-offset: 1px;
+}
+
+@media (width <= 420px) {
+  .va-header-action {
+    width: var(--va-header-action-size-compact);
+    height: var(--va-header-action-size-compact);
+    border-radius: 10px;
+  }
+}
+
 // 第三方组件主题桥接样式：
 // 约定数据属性或常见第三方容器类名，让图表/地图/iframe 在主题变更时同步视觉基线。
 // 具体色值来自 useTheme 写入的 --va-thirdparty-* 变量。

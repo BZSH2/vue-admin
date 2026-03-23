@@ -65,10 +65,10 @@ defineProps<{
   align-items: center;
   justify-content: center;
   height: 40px;
-  font-size: 12px;
+  font-size: var(--va-font-size-xs);
   color: var(--va-text-primary);
   border: 1px solid var(--va-border-soft);
-  border-radius: 8px;
+  border-radius: var(--va-radius-sm);
 }
 
 .token-strong {

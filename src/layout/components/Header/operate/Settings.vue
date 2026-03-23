@@ -33,7 +33,7 @@ function onModeChange(mode: string | number | boolean) {
 
 <template>
   <ElTooltip :content="$t('设置')" :disabled="props.isMobile">
-    <div class="header-action settings-trigger" @click="showDrawer = true">
+    <div class="va-header-action settings-trigger" @click="showDrawer = true">
       <Icon name="layout-setting" :size="16" />
     </div>
   </ElTooltip>
@@ -56,20 +56,6 @@ function onModeChange(mode: string | number | boolean) {
 </template>
 
 <style lang="scss" scoped>
-.header-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  border-radius: 10px;
-}
-
-.header-action:active {
-  background-color: var(--el-fill-color-light);
-}
-
 .theme-settings {
   display: flex;
   flex-direction: column;
@@ -94,9 +80,8 @@ function onModeChange(mode: string | number | boolean) {
 }
 
 @media (width <= 420px) {
-  .header-action {
-    width: 36px;
-    height: 36px;
+  .settings-trigger {
+    margin-right: 1px;
   }
 }
 </style>

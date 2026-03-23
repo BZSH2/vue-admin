@@ -201,8 +201,8 @@ function toggleMode() {
   padding: clamp(24px, 5vw, 32px);
   background: color-mix(in srgb, var(--el-bg-color-overlay) 88%, transparent);
   border: 1px solid color-mix(in srgb, var(--el-border-color-lighter) 80%, transparent);
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgb(15, 23, 42, 0.12);
+  border-radius: var(--va-radius-lg);
+  box-shadow: var(--va-shadow-elevated);
   backdrop-filter: blur(12px);
 }
 
@@ -234,7 +234,8 @@ function toggleMode() {
   .login-card {
     padding: 20px 16px;
     margin-top: clamp(56px, 12vh, 112px);
-    border-radius: 10px;
+    border-radius: var(--va-radius-md);
+    backdrop-filter: blur(8px);
   }
 
   .title {
@@ -244,6 +245,16 @@ function toggleMode() {
 
   .form-footer {
     justify-content: center;
+  }
+}
+
+@supports not (
+  (
+    backdrop-filter: blur(2px),
+  )
+) {
+  .login-card {
+    background: var(--el-bg-color-overlay);
   }
 }
 </style>

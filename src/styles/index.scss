@@ -3,6 +3,18 @@
 
 :root {
   --va-app-height: 100vh;
+  --va-radius-sm: 8px;
+  --va-radius-md: 12px;
+  --va-radius-lg: 18px;
+  --va-shadow-card: 0 12px 32px rgb(15, 23, 42, 0.08);
+  --va-shadow-elevated: 0 16px 40px rgb(15, 23, 42, 0.12);
+  --va-header-action-size: 40px;
+  --va-header-action-size-compact: 36px;
+  --va-font-size-xs: 12px;
+  --va-font-size-sm: 14px;
+  --va-font-size-md: 16px;
+  --va-line-height-tight: 1.3;
+  --va-line-height-normal: 1.6;
 }
 
 @supports (height: 100dvh) {

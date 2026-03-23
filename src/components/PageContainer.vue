@@ -2,9 +2,11 @@
 withDefaults(
   defineProps<{
     compact?: boolean
+    fluid?: boolean
   }>(),
   {
     compact: false,
+    fluid: false,
   }
 )
 
@@ -14,7 +16,10 @@ defineSlots<{
 </script>
 
 <template>
-  <div class="page-container" :class="{ 'page-container--compact': compact }">
+  <div
+    class="page-container"
+    :class="{ 'page-container--compact': compact, 'page-container--fluid': fluid }"
+  >
     <div class="page-container__inner">
       <slot />
     </div>
@@ -36,6 +41,12 @@ defineSlots<{
     min-width: 0;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  &--fluid {
+    .page-container__inner {
+      max-width: none;
+    }
   }
 }
 

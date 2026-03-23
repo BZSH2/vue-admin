@@ -138,6 +138,7 @@
     "vueuse",
     "iconfont",
     "qiankun",
-    "bzsh"
+    "bzsh",
+    "thirdparty"
   ]
 }

@@ -42,7 +42,7 @@ useThemeBridge((payload) => {
 </script>
 
 <template>
-  <PageContainer compact>
+  <PageContainer compact fluid>
     <div class="dashboard-page">
       <ElButton type="primary" @click="handleClick">{{ $t('测试') }}</ElButton>
       <div class="tree-container">
@@ -80,9 +80,12 @@ useThemeBridge((payload) => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .dashboard-note {
+  max-width: 72ch;
+  line-height: var(--va-line-height-normal);
   color: var(--el-text-color-regular);
 }
 
@@ -99,7 +102,8 @@ useThemeBridge((payload) => {
   padding: 16px;
   background-color: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-light);
-  border-radius: 8px;
+  border-radius: var(--va-radius-sm);
+  box-shadow: var(--va-shadow-card);
 }
 
 .bridge-grid {
@@ -113,13 +117,15 @@ useThemeBridge((payload) => {
   padding: 14px;
   background: var(--va-thirdparty-surface);
   border: 1px solid var(--va-thirdparty-border);
-  border-radius: 10px;
+  border-radius: var(--va-radius-md);
+  box-shadow: var(--va-shadow-card);
 }
 
 .bridge-title {
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: clamp(var(--va-font-size-sm), 1.6vw, 15px);
   font-weight: 600;
+  line-height: var(--va-line-height-tight);
   color: var(--va-thirdparty-text);
 }
 
@@ -144,18 +150,18 @@ useThemeBridge((payload) => {
   justify-content: center;
   min-height: 86px;
   padding: 12px;
-  font-size: 12px;
+  font-size: var(--va-font-size-xs);
+  line-height: 1.5;
   color: var(--va-thirdparty-text);
   text-align: center;
   overflow-wrap: anywhere;
   border: 1px solid;
-  border-radius: 8px;
+  border-radius: var(--va-radius-sm);
 }
 
 @media (width <= 768px) {
   .dashboard-page {
     gap: 12px;
-    padding: 12px;
   }
 
   .tree-container {

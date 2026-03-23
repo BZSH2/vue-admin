@@ -52,8 +52,8 @@ function goBack() {
   text-align: center;
   background: var(--el-bg-color-overlay);
   border: 1px solid var(--el-border-color-lighter);
-  border-radius: 20px;
-  box-shadow: 0 16px 40px rgb(15, 23, 42, 0.08);
+  border-radius: var(--va-radius-lg);
+  box-shadow: var(--va-shadow-card);
 }
 
 .error-code {
@@ -73,8 +73,8 @@ function goBack() {
 
 .error-desc {
   margin-bottom: 30px;
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: var(--va-font-size-sm);
+  line-height: var(--va-line-height-normal);
   color: var(--el-text-color-secondary);
 }
 

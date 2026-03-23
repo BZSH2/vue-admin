@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
 import { useTheme, type ThemeMode } from '@/composables/useTheme'
 import ThemeActionsSection from './settings/ThemeActionsSection.vue'
 import ThemeColorSection from './settings/ThemeColorSection.vue'
 import ThemeModeSection from './settings/ThemeModeSection.vue'
 import ThemeTokenPreviewSection from './settings/ThemeTokenPreviewSection.vue'
 
+const props = defineProps<{
+  isMobile: boolean
+}>()
+
 const showDrawer = ref(false)
+const drawerSize = computed(() => (props.isMobile ? '100%' : '360px'))
 const {
   themeMode,
   isDark,
@@ -26,12 +32,12 @@ function onModeChange(mode: string | number | boolean) {
 </script>
 
 <template>
-  <ElTooltip :content="$t('设置')">
-    <div class="hover-bg-color h-full flex cursor-pointer items-center" @click="showDrawer = true">
-      <Icon name="layout-setting" :size="16" class="p-x-10px" />
+  <ElTooltip :content="$t('设置')" :disabled="props.isMobile">
+    <div class="header-action settings-trigger" @click="showDrawer = true">
+      <Icon name="layout-setting" :size="16" />
     </div>
   </ElTooltip>
-  <ElDrawer v-model="showDrawer" title="外观设置" size="360px">
+  <ElDrawer v-model="showDrawer" class="theme-settings-drawer" title="外观设置" :size="drawerSize">
     <div class="theme-settings">
       <ThemeModeSection
         :theme-mode="themeMode"
@@ -50,9 +56,47 @@ function onModeChange(mode: string | number | boolean) {
 </template>
 
 <style lang="scss" scoped>
+.header-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.header-action:active {
+  background-color: var(--el-fill-color-light);
+}
+
 .theme-settings {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+:deep(.theme-settings-drawer .el-drawer__header) {
+  padding: 20px 16px 12px;
+  margin-bottom: 0;
+}
+
+:deep(.theme-settings-drawer .el-drawer__body) {
+  padding: 0 16px 20px;
+  overflow-y: auto;
+}
+
+@media (width <= 768px) {
+  :deep(.theme-settings-drawer .el-drawer__header) {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+}
+
+@media (width <= 420px) {
+  .header-action {
+    width: 36px;
+    height: 36px;
+  }
 }
 </style>

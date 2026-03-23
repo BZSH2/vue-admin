@@ -1,10 +1,9 @@
-import Layout from '@/layout/index.vue'
 /** 动态的路由配置 需与后端接口配合 才有有权限访问 */
 const asyncRoutes: Route.RouteRecord[] = [
   {
     path: '/',
     name: 'Index',
-    component: Layout,
+    component: () => import('@/layout/index.vue'),
     redirect: '/dashboard',
     meta: {
       title: '首页',

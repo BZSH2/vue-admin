@@ -1,12 +1,43 @@
 @use './normalize.css';
 @use './theme';
 
-// 应用根节点拉满高度，配合布局容器实现整屏计算（侧栏/头部/内容区）。
-#app {
-  height: 100%;
+:root {
+  --va-app-height: 100vh;
 }
 
-// Element Plus 容器组件统一铺满高度，避免嵌套容器在 100vh 布局下出现塌陷。
+@supports (height: 100dvh) {
+  :root {
+    --va-app-height: 100dvh;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-height: var(--va-app-height);
+}
+
+#app {
+  height: 100%;
+  min-height: 100%;
+}
+
 [class$='-container'] {
   height: 100%;
+  min-height: 0;
+}
+
+.va-fullscreen-page {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--va-app-height);
+  padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }

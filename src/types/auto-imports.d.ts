@@ -11,7 +11,10 @@ declare global {
   const $baseMessage: typeof import('../composables/useMessage').$baseMessage
   const $baseNotify: typeof import('../composables/useMessage').$baseNotify
   const $t: typeof import('../composables/i18n').$t
+  const COMPACT_HEADER_BREAKPOINT: typeof import('../composables/useResponsiveLayout').COMPACT_HEADER_BREAKPOINT
   const EffectScope: typeof import('vue').EffectScope
+  const MOBILE_BREAKPOINT: typeof import('../composables/useResponsiveLayout').MOBILE_BREAKPOINT
+  const SIDEBAR_COLLAPSE_BREAKPOINT: typeof import('../composables/useResponsiveLayout').SIDEBAR_COLLAPSE_BREAKPOINT
   const THEME_CHANGE_EVENT: typeof import('../composables/useTheme').THEME_CHANGE_EVENT
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
@@ -75,6 +78,7 @@ declare global {
   const toValue: typeof import('vue').toValue
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
+  const useAppViewportHeight: typeof import('../composables/useAppViewport').useAppViewportHeight
   const useAttrs: typeof import('vue').useAttrs
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
@@ -83,6 +87,7 @@ declare global {
   const useLink: typeof import('vue-router').useLink
   const useMessage: typeof import('../composables/useMessage').useMessage
   const useModel: typeof import('vue').useModel
+  const useResponsiveLayout: typeof import('../composables/useResponsiveLayout').useResponsiveLayout
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
   const useSlots: typeof import('vue').useSlots

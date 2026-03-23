@@ -5,13 +5,26 @@ import Settings from './Settings.vue'
 
 defineProps<{
   isMobile: boolean
+  compact: boolean
 }>()
 </script>
 
 <template>
-  <div class="operate h-full flex items-center">
+  <div class="operate" :class="{ compact }">
     <Screen v-if="!isMobile" />
-    <I18n />
-    <Settings />
+    <I18n v-if="!compact" />
+    <Settings :is-mobile="isMobile" />
   </div>
 </template>
+
+<style scoped lang="scss">
+.operate {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.operate.compact {
+  margin-right: 2px;
+}
+</style>

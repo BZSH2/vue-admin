@@ -1,80 +1,65 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
+import { computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useResponsiveLayout } from '@/composables/useResponsiveLayout'
 import RouterViewKeepAlive from './components/RouterViewKeepAlive.vue'
 import Header from './components/Header/index.vue'
 import Sidebar from './components/Sidebar/index.vue'
 
-const { width } = useWindowSize()
 const route = useRoute()
-const collapsed = ref(width.value < 1200)
-const mobileMenuVisible = ref(false)
-const isMobile = computed(() => width.value < 768)
+const {
+  isMobile,
+  isCompactHeader,
+  isNarrowMobile,
+  desktopCollapsed,
+  mobileSidebarVisible,
+  mobileSidebarWidth,
+  toggleSidebar,
+  closeMobileSidebar,
+} = useResponsiveLayout()
 
-watch(
-  width,
-  (w, oldW) => {
-    if (w < 1200 && (oldW === undefined || oldW >= 1200)) {
-      collapsed.value = true
-    }
-    if (w >= 1200 && (oldW === undefined || oldW < 1200)) {
-      collapsed.value = false
-    }
-    if (w < 768) {
-      collapsed.value = true
-    }
-    if (w >= 768) {
-      mobileMenuVisible.value = false
-    }
-  },
-  { immediate: true }
-)
+const layoutStyle = computed(() => ({
+  '--va-header-height': isMobile.value ? '52px' : '56px',
+}))
 
 watch(
   () => route.fullPath,
   () => {
-    mobileMenuVisible.value = false
+    closeMobileSidebar()
   }
 )
-
-function toggle() {
-  collapsed.value = !collapsed.value
-}
-
-function toggleMenu() {
-  if (isMobile.value) {
-    mobileMenuVisible.value = !mobileMenuVisible.value
-    return
-  }
-  toggle()
-}
-
-function closeMobileMenu() {
-  mobileMenuVisible.value = false
-}
 </script>
 
 <template>
-  <ElContainer class="layout">
+  <ElContainer class="layout" :style="layoutStyle">
     <ElAside
       v-if="!isMobile"
-      :width="collapsed ? '65px' : '200px'"
+      :width="desktopCollapsed ? '72px' : '220px'"
       class="aside"
-      :class="[{ collapsed }]"
+      :class="{ collapsed: desktopCollapsed }"
     >
-      <Sidebar :collapsed="collapsed" :show-control="true" @toggle="toggleMenu" />
+      <Sidebar :collapsed="desktopCollapsed" @toggle="toggleSidebar" />
     </ElAside>
+
     <ElDrawer
-      v-model="mobileMenuVisible"
-      :with-header="false"
+      v-model="mobileSidebarVisible"
+      append-to-body
+      class="mobile-sidebar-drawer"
       direction="ltr"
-      size="220px"
-      class="mobile-drawer"
+      :size="mobileSidebarWidth"
+      :with-header="false"
     >
-      <Sidebar :collapsed="false" :show-control="false" @toggle="closeMobileMenu" />
+      <Sidebar :collapsed="false" :show-collapse-control="false" @navigate="closeMobileSidebar" />
     </ElDrawer>
+
     <ElContainer class="main-wrap">
       <ElHeader class="header">
-        <Header :is-mobile="isMobile" @toggle-menu="toggleMenu" />
+        <Header
+          :compact="isCompactHeader"
+          :is-mobile="isMobile"
+          :is-narrow-mobile="isNarrowMobile"
+          @toggle-sidebar="toggleSidebar"
+        />
       </ElHeader>
       <ElMain class="main">
         <ElScrollbar class="content-scroll">
@@ -87,8 +72,8 @@ function closeMobileMenu() {
 
 <style lang="scss" scoped>
 .layout {
-  height: 100vh;
-  background-color: var(--el-bg-color);
+  height: var(--va-app-height);
+  background-color: var(--va-bg-page);
 }
 
 .aside {
@@ -100,59 +85,46 @@ function closeMobileMenu() {
   transition: width 220ms var(--el-transition-function-fast-bezier, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
-.aside-scroll {
-  height: calc(100vh - 56px);
-  padding: 8px;
-}
-
-.aside-placeholder {
-  font-size: 13px;
-  color: var(--el-text-color-secondary);
-}
-
 .main-wrap {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
 .header {
   display: flex;
-  gap: 12px;
   align-items: center;
-  height: 56px;
+  height: var(--va-header-height);
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+  background-color: var(--el-bg-color);
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
-.spacer {
-  flex: 1;
-}
-
-.user {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
 .main {
+  min-height: 0;
   padding: 0;
   background-color: var(--va-bg-page);
 }
 
 .content-scroll {
-  box-sizing: border-box;
-  height: calc(100vh - 56px);
+  height: calc(var(--va-app-height) - var(--va-header-height));
 }
 
-:deep(.mobile-drawer) {
-  .el-drawer {
-    width: min(82vw, 240px) !important;
-    max-width: 240px;
-  }
+:deep(.mobile-sidebar-drawer .el-drawer) {
+  background-color: var(--el-bg-color-overlay);
+}
 
-  .el-drawer__body {
-    padding: 0;
-    overflow: hidden;
+:deep(.mobile-sidebar-drawer .el-drawer__body) {
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (width <= 768px) {
+  .header {
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-left: max(8px, env(safe-area-inset-left));
   }
 }
 </style>

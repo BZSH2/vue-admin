@@ -44,6 +44,13 @@ pnpm openApi
 pnpm openI18n
 ```
 
+## Electron 相关说明
+
+- 当前 `master` 分支默认聚焦 Web 管理后台，不直接包含 Electron 客户端打包与运行时兼容逻辑。
+- 如果项目需要 Electron 相关功能，例如 Windows 客户端打包、`file://` 路由兼容、桌面端请求桥接，请将 `electron` 分支合并到当前分支即可。
+- 推荐直接在常用 Git 客户端中执行分支合并，这样更容易看清共享文件差异和冲突位置。
+- 之所以把 Electron 能力放在独立分支，是因为这部分改动不仅包含新增目录和打包脚本，还会影响 `package.json`、`vite.config.ts`、路由、请求层和 token 持久化逻辑。默认拆开维护，可以让纯 Web 场景保持更轻、更稳定；只有真正需要桌面端时再合并，会更清晰也更容易控制风险。
+
 ## 推荐阅读顺序
 
 1. 先看 [快速开始](docs/01-quick-start.md)

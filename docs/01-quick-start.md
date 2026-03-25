@@ -53,7 +53,31 @@ pnpm build:prod
 pnpm preview
 ```
 
-## 6. 常用命令速查
+## 6. Electron 使用说明
+
+当前 `master` 分支默认只保留 Web 管理后台所需内容。
+
+如果你需要下面这些 Electron 能力：
+
+- Windows 客户端打包
+- `file://` 场景下的路由兼容
+- Electron 主进程请求桥接
+- Electron 环境下的 token 持久化与运行时配置
+
+请直接把 `electron` 分支合并到当前分支。
+
+推荐做法：
+
+- 直接在常用 Git 客户端里执行合并
+- 合并后再查看 Electron 相关脚本、目录和补充文档
+
+这样设计的原因是：
+
+- Electron 改动不只是新增一个 `electron/` 目录，还会同步调整构建脚本、Vite 配置、路由模式、请求层和登录态处理
+- 对纯 Web 场景来说，这些依赖和兼容代码并不是必需项
+- 把 Electron 能力放在独立分支，可以让主线保持更轻量；真正需要桌面端时，再通过一次合并把整套能力带进来，维护成本和冲突范围都更可控
+
+## 7. 常用命令速查
 
 ### 开发与构建
 
@@ -95,7 +119,7 @@ pnpm test:e2e
 
 测试详细说明见：[测试指南](../TESTS.md)
 
-## 7. 目录结构
+## 8. 目录结构
 
 ```text
 vue-admin/
@@ -110,7 +134,7 @@ vue-admin/
 └── README.md             # 项目首页导航
 ```
 
-## 8. 新人建议阅读顺序
+## 9. 新人建议阅读顺序
 
 1. 先跑通 `pnpm install && pnpm dev`
 2. 了解 [OpenAPI 代码生成与本地跨域代理](../openApi/generate/入参数据结构.md)

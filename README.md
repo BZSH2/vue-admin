@@ -16,6 +16,7 @@
 - [国际化自动提取（openI18n）](docs/03-openi18n.md)
 - [提交规范与 CHANGELOG](docs/04-commit-and-changelog.md)
 - [PR 自动 Review / Merge 前门禁（CodeRabbit + CODEOWNERS + 分支保护）](docs/05-pr-auto-review.md)
+- [Electron 打包与产物说明](docs/06-electron-packaging.md)
 - [换肤系统说明](docs/THEME.md)
 - [SVG 图标系统](docs/ICONS.md)
 - [测试指南（Vitest + Playwright）](docs/TESTS.md)
@@ -33,6 +34,7 @@
 ```bash
 pnpm install
 pnpm dev
+pnpm clean:build
 pnpm build
 pnpm build:dev
 pnpm build:test

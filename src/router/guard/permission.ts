@@ -4,10 +4,14 @@ import { getToken, clearToken } from '@/utils'
 import { useUserStore } from '@/stores/user'
 
 /**
- * 是否需要执行一次“鉴权后的 replace 刷新”。
+ * 是否需要执行一次“登录后的首屏初始化”。
  *
  * 说明：当前项目还没有真正的“拉权限/拉菜单”逻辑，
- * 这里保留这个开关位，避免未来接入动态路由时出现首次进入不刷新的问题。
+ * 这里只在首次放行前预拉一次用户信息。
+ *
+ * 之所以不再做 `next({ ...to, replace: true })` 的二次跳转，
+ * 是因为 Electron 安装包运行在 `file:// + hash` 场景时，
+ * 首次登录后的“同地址再次 replace”更容易触发重复导航或停留在登录页。
  */
 let isHasFetchAuth = true
 
@@ -29,7 +33,7 @@ export async function createPermissionGuard(
 
   const hasToken = Boolean(getToken())
   if (!hasToken) {
-    // 没有 token 时，重置鉴权开关，避免用户重新登录后不触发 replace 刷新
+    // 没有 token 时，重置鉴权开关，确保用户重新登录后还能重新执行一次首屏初始化。
     isHasFetchAuth = true
     clearToken()
     return next(
@@ -39,7 +43,8 @@ export async function createPermissionGuard(
     )
   }
 
-  // 首次进入（或刷新后）可在这里拉取用户信息/权限/菜单，再装配动态路由
+  // 首次进入（或刷新后）可在这里拉取用户信息/权限/菜单。
+  // 当前项目没有动态路由装配需求，因此初始化完成后直接放行即可。
   if (isHasFetchAuth) {
     isHasFetchAuth = false
 
@@ -51,8 +56,6 @@ export async function createPermissionGuard(
     } catch {
       // ignore
     }
-
-    return next({ ...to, replace: true })
   }
 
   return next()

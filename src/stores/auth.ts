@@ -6,7 +6,11 @@ import {
   authControllerLogout,
   authControllerRefreshTokens,
 } from '@/api/LoginModule/Auth'
-import { clearToken as clearCookieToken, getToken as getCookieToken, setToken as setCookieToken } from '@/utils/token'
+import {
+  clearToken as clearPersistedToken,
+  getToken as getPersistedToken,
+  setToken as setPersistedToken,
+} from '@/utils/token'
 
 /**
  * 从接口返回里尽可能稳妥地取出 token。
@@ -27,27 +31,29 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * token 的“响应式缓存”。
    *
-   * 真正的持久化来源仍然是 Cookie（utils/token）。
+   * 真正的持久化来源统一由 `utils/token` 负责：
+   * - Web 端走 Cookie
+   * - Electron 安装包走 localStorage
    */
-  const token = ref<string>(getCookieToken() || '')
+  const token = ref<string>(getPersistedToken() || '')
 
   const isLoggedIn = computed(() => Boolean(token.value))
 
-  /** 同步 cookie -> store（例如页面刷新后） */
-  function syncTokenFromCookie() {
-    token.value = getCookieToken() || ''
+  /** 同步持久化 token -> store（例如页面刷新后） */
+  function syncTokenFromStorage() {
+    token.value = getPersistedToken() || ''
   }
 
-  /** 写入 token（同时写 cookie） */
+  /** 写入 token（同时写入持久化存储） */
   function setToken(newToken: string) {
     token.value = String(newToken)
-    setCookieToken(String(newToken))
+    setPersistedToken(String(newToken))
   }
 
-  /** 清理 token（同时清 cookie） */
+  /** 清理 token（同时清理持久化存储） */
   function clearToken() {
     token.value = ''
-    clearCookieToken()
+    clearPersistedToken()
   }
 
   /** 登录（可选：页面也可以继续自己调用 API） */
@@ -97,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     token,
     isLoggedIn,
-    syncTokenFromCookie,
+    syncTokenFromStorage,
     setToken,
     clearToken,
     login,

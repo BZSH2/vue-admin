@@ -1,8 +1,14 @@
 .DS_Store
 node_modules
-/dist
 /proto
 scripts/chinese-sentences.json
+
+# build outputs
+/.output/
+/dist
+/dist-electron
+/release
+/release-*
 
 # local env files
 .env.*.local

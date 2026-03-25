@@ -43,6 +43,26 @@ const parseListEnv = (value?: string) =>
     .map((item) => item.trim())
     .filter(Boolean)
 
+// 识别当前是否为 Electron 渲染进程构建。
+// 优先使用显式环境变量，同时兼容仅切换输出目录的旧脚本写法。
+const isElectronRendererBuild = () =>
+  process.env.BUILD_TARGET === 'electron' ||
+  (process.env.BUILD_OUT_DIR ?? '').includes('dist-electron')
+
+// Electron 安装包通过 file:// 打开 index.html。
+// 这里把根路径资源改成相对路径，避免安装后仍然去磁盘根目录查找资源而白屏。
+const normalizeElectronAssetHref = (href: string, electronRendererBuild: boolean) => {
+  if (!electronRendererBuild || !href.startsWith('/')) {
+    return href
+  }
+
+  return `.${href}`
+}
+
+// Web 端沿用原有 base；Electron 渲染进程构建强制切到相对路径。
+const resolveBuildBase = (baseUrl: string | undefined, electronRendererBuild: boolean) =>
+  electronRendererBuild ? './' : baseUrl || '/'
+
 // 统一处理布尔类环境变量
 // 仅字符串 "true" 视为开启，避免隐式类型转换带来误判
 const isEnabledByEnv = (value?: string) => value === 'true'
@@ -133,7 +153,8 @@ const createSentryBuildPlugin = (enabled: boolean) =>
         authToken: process.env.SENTRY_AUTH_TOKEN,
         release: process.env.SENTRY_RELEASE,
         sourcemaps: {
-          assets: './dist/**',
+          // sourcemap 上传路径始终跟随当前构建输出目录，避免 Electron 构建时仍指向旧的 Web 目录。
+          assets: `./${process.env.BUILD_OUT_DIR || config.outputDir}/**`,
         },
       })
     : undefined
@@ -159,11 +180,12 @@ const createBrotliBuildPlugin = (enabled: boolean) =>
     : undefined
 
 // 构建产物分析插件工厂
-// 生成 dist/stats.html，辅助定位体积热点
+// 在当前构建输出目录生成 stats.html，辅助定位体积热点
 const createAnalyzeBuildPlugin = (enabled: boolean) =>
   enabled
     ? visualizer({
-        filename: 'dist/stats.html',
+        // 分析报告输出到当前实际构建的目录下，便于和对应产物一起查看。
+        filename: `${process.env.BUILD_OUT_DIR || config.outputDir}/stats.html`,
         gzipSize: true,
         brotliSize: true,
       })
@@ -230,17 +252,21 @@ export default defineConfig(({ mode, command }) => {
   // 读取当前模式下的环境变量
   // 所有开关都在此处归一化，避免散落在各插件配置中
   const viteEnv = loadEnv(mode, process.cwd()) as ImportMetaEnv
+  const electronRendererBuild = isElectronRendererBuild()
+  const base = resolveBuildBase(viteEnv.VITE_BASE_URL, electronRendererBuild)
   const compressTypes = parseListEnv(viteEnv.VITE_BUILD_COMPRESS)
   const enableGzip = compressTypes.includes('gzip')
   const enableBrotli = compressTypes.includes('brotli')
   const enableAnalyze = isEnabledByEnv(viteEnv.VITE_BUILD_ANALYZE)
   const preconnectOrigins = parseListEnv(viteEnv.VITE_PRECONNECT_ORIGINS)
-  const preloadAssets = parseListEnv(viteEnv.VITE_PRELOAD_ASSETS)
+  const preloadAssets = parseListEnv(viteEnv.VITE_PRELOAD_ASSETS).map((href) =>
+    normalizeElectronAssetHref(href, electronRendererBuild)
+  )
   const enableSentry = isEnabledByEnv(viteEnv.VITE_SENTRY_ENABLE) && !!viteEnv.VITE_SENTRY_DSN
 
   return {
-    // 部署到子路径时保持静态资源引用正确
-    base: viteEnv.VITE_BASE_URL,
+    // Web 端沿用环境变量；Electron 安装包改为相对资源路径。
+    base,
     // 插件注册
     // 统一由 createPlugins 处理顺序与条件挂载
     plugins: createPlugins(command, preconnectOrigins, preloadAssets, {
@@ -258,6 +284,8 @@ export default defineConfig(({ mode, command }) => {
     // Rollup 构建分包策略
     // 把高频与重量级依赖拆分到稳定 chunk，减少重复下载
     build: {
+      // Electron 打包会把这里切到 dist-electron/renderer，避免覆盖 Web 版本的 dist。
+      outDir: process.env.BUILD_OUT_DIR || config.outputDir,
       rollupOptions: {
         output: {
           manualChunks: createManualChunks,

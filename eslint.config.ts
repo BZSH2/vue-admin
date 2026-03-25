@@ -1,12 +1,27 @@
+import { createRequire } from 'node:module'
 import typeScriptParser from '@typescript-eslint/parser'
 import unocss from '@unocss/eslint-config/flat'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import pluginImport from 'eslint-plugin-import'
 import pluginJsonc from 'eslint-plugin-jsonc'
 import pluginVue from 'eslint-plugin-vue'
 import jsoncParser from 'jsonc-eslint-parser'
 import vueParser from 'vue-eslint-parser'
+
+const require = createRequire(import.meta.url)
+
+function loadOptionalPlugin<T>(packageName: string): T | null {
+  try {
+    const loaded = require(packageName)
+    return (loaded?.default ?? loaded) as T
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.warn(`[eslint] 可选插件 ${packageName} 加载失败，已跳过相关规则：${message}`)
+    return null
+  }
+}
+
+const pluginImport = loadOptionalPlugin<any>('eslint-plugin-import')
 
 export default defineConfig([
   unocss as any,
@@ -117,7 +132,7 @@ export default defineConfig([
     files: ['**/*.vue', '**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
     name: 'vue/javascript',
     plugins: {
-      import: pluginImport,
+      ...(pluginImport ? { import: pluginImport } : {}),
       vue: pluginVue,
     },
     rules: {
@@ -264,18 +279,31 @@ export default defineConfig([
       'vue/require-prop-types': 'off',
       'vue/space-infix-ops': 'error',
       'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
-      'import/order': [
-        'error',
-        {
-          'alphabetize': { order: 'ignore', caseInsensitive: true },
-          'groups': [
-            ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-          ],
-          'newlines-between': 'ignore',
-          'pathGroups': [{ pattern: '@/**', group: 'internal' }],
-          'pathGroupsExcludedImportTypes': [],
-        },
-      ],
+      ...(pluginImport
+        ? {
+            'import/order': [
+              'error',
+              {
+                'alphabetize': { order: 'ignore', caseInsensitive: true },
+                'groups': [
+                  [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                    'object',
+                    'type',
+                  ],
+                ],
+                'newlines-between': 'ignore',
+                'pathGroups': [{ pattern: '@/**', group: 'internal' }],
+                'pathGroupsExcludedImportTypes': [],
+              },
+            ],
+          }
+        : {}),
     },
     settings: {
       'import/resolver': {
@@ -301,7 +329,9 @@ export default defineConfig([
   // 关闭与 Prettier 冲突的格式化类规则
   eslintConfigPrettier as any,
   globalIgnores([
-    'dist/*',
+    '.output/**',
+    'dist/**',
+    'dist-electron/**',
     'node_modules/*',
     '**/src/assets/*',
     '**/src/api/*',

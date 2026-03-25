@@ -38,6 +38,7 @@ interface ImportMetaEnv {
   readonly VITE_PROXY_TARGET?: string
   /** API 基础路径 */
   readonly VITE_API_BASE_URL?: string
+  readonly VITE_ELECTRON_API_BASE_URL?: string
 }
 
 interface ImportMeta {

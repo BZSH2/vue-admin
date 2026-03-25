@@ -24,7 +24,7 @@ pnpm cz
 
 会执行：
 
-- `npm run lint:all`
+- `npm run lint:lint-staged`
 - `npm run typecheck`
 
 目标：
@@ -33,9 +33,7 @@ pnpm cz
 
 ### pre-push
 
-会自动生成或更新：
-
-- `CHANGELOG.md`
+当前没有强制执行额外打包逻辑，避免把构建产物误带进提交。
 
 ## 3. lint-staged 做了什么
 
@@ -43,9 +41,9 @@ pnpm cz
 
 常见处理规则：
 
-- JS / TS / Vue：Prettier + Oxlint + ESLint
-- 样式文件：Stylelint + Prettier
-- Markdown / JSON：Prettier
+- JS / TS / Vue: `prettier --write` + `oxlint --fix` + `eslint --fix`
+- 样式文件: `stylelint --fix` + `prettier --write`
+- Markdown / JSON: `prettier --write`
 
 ## 4. 常用命令
 
@@ -73,3 +71,10 @@ pnpm changelog:release
 - 小改动也尽量写清楚 commit 语义
 - 提交前先本地跑一遍 `pnpm lint:all && pnpm typecheck`
 - 发布前确认 `CHANGELOG.md` 内容是否符合预期
+
+## 7. Git 相关限制
+
+- `pnpm cz` 现在只负责启动 Commitizen，不再自动执行 `git pull` 和 `git add .`
+- `dist/`、`dist-electron/`、安装包 `.exe`、`.blockmap` 等产物文件不要提交到 Git
+- 提交前先执行 `git status --short`，确认暂存区里只有你真正想提交的源码、配置和文档
+- 安装包产物建议放到 Release、制品库或 CI 制品中，不要直接提交进仓库

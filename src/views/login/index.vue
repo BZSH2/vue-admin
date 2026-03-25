@@ -2,14 +2,17 @@
 import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
-import { authControllerLogin, authControllerRegister } from '@/api/LoginModule/Auth'
-import { setToken } from '@/utils/token'
+import { authControllerRegister } from '@/api/LoginModule/Auth'
 import { $baseMessage } from '@/composables/useMessage'
 import { useI18n } from 'vue-i18n'
+import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
+const userStore = useUserStore()
 
 const formRef = ref<FormInstance>()
 const registerFormRef = ref<FormInstance>()
@@ -51,22 +54,44 @@ const registerRules: FormRules = {
   ],
 }
 
+function getLoginRedirectTarget() {
+  const redirect = route.query?.redirect
+  return typeof redirect === 'string' && redirect.startsWith('/') ? redirect : '/'
+}
+
+async function redirectAfterLogin() {
+  const redirect = getLoginRedirectTarget()
+  await router.replace(redirect)
+
+  // Electron 安装包运行在 file:// + hash 场景时，
+  // 个别环境下首次 replace 可能没有真正离开登录页。
+  // 这里补一个 hash 级别的兜底，确保登录后能稳定进入首页。
+  if (window.location.protocol === 'file:' && router.currentRoute.value.path === '/login') {
+    window.location.hash = `#${redirect}`
+  }
+}
+
 async function onLogin() {
   try {
     loading.value = true
     await formRef.value?.validate()
-    const result = await authControllerLogin({
+    await authStore.login({
       phoneNumber: form.phoneNumber,
       password: form.password,
     })
-    const token = result?.accessToken || result?.token || ''
+    const hasToken = Boolean(authStore.token)
 
-    if (token) {
-      setToken(String(token))
+    if (hasToken) {
+      // 登录成功后提前拉一次用户信息，减少首屏路由守卫里的不确定性。
+      // 即使失败也不阻断后续跳转，由守卫继续兜底。
+      try {
+        await userStore.ensureProfile(true)
+      } catch {
+        // ignore
+      }
+
       $baseMessage(t('登录成功'), 'success')
-
-      const redirect = (route.query?.redirect as string) || '/'
-      router.replace(redirect)
+      await redirectAfterLogin()
     } else {
       $baseMessage(t('登录失败，未获取到令牌'), 'error')
     }

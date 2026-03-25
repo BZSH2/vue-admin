@@ -16,6 +16,7 @@
 - [国际化自动提取（openI18n）](docs/03-openi18n.md)
 - [提交规范与 CHANGELOG](docs/04-commit-and-changelog.md)
 - [PR 自动 Review / Merge 前门禁（CodeRabbit + CODEOWNERS + 分支保护）](docs/05-pr-auto-review.md)
+- [Sentry 使用说明](docs/06-sentry.md)
 - [换肤系统说明](docs/THEME.md)
 - [SVG 图标系统](docs/ICONS.md)
 - [测试指南（Vitest + Playwright）](docs/TESTS.md)
@@ -43,6 +44,12 @@ pnpm test:e2e
 pnpm openApi
 pnpm openI18n
 ```
+
+## Sentry 相关说明
+
+- 当前 `sentry` 分支已经包含前端监控初始化、运行时配置读取和构建期 sourcemap 上传能力。
+- 如果你当前就在这个分支上开发，只需要按文档补齐环境变量和发布配置即可使用。
+- 详细配置见 [Sentry 使用说明](docs/06-sentry.md)。
 
 ## Electron 相关说明
 

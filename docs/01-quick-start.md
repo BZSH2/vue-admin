@@ -53,7 +53,20 @@ pnpm build:prod
 pnpm preview
 ```
 
-## 6. Electron 使用说明
+## 6. Sentry 使用说明
+
+当前 `sentry` 分支已经内置前端监控能力。
+
+如果你准备启用 Sentry，建议按下面的顺序处理：
+
+1. 先看 [Sentry 使用说明](./06-sentry.md)
+2. 配置 `VITE_SENTRY_ENABLE`、`VITE_SENTRY_DSN`、`VITE_SENTRY_ENV`
+3. 在构建环境中补齐 `SENTRY_ORG`、`SENTRY_PROJECT`、`SENTRY_AUTH_TOKEN`、`SENTRY_RELEASE`
+4. 再执行常规构建命令，例如 `pnpm build:prod`
+
+如果只想临时关闭监控，可以直接把 `VITE_SENTRY_ENABLE=false`。
+
+## 7. Electron 使用说明
 
 当前 `master` 分支默认只保留 Web 管理后台所需内容。
 
@@ -77,7 +90,7 @@ pnpm preview
 - 对纯 Web 场景来说，这些依赖和兼容代码并不是必需项
 - 把 Electron 能力放在独立分支，可以让主线保持更轻量；真正需要桌面端时，再通过一次合并把整套能力带进来，维护成本和冲突范围都更可控
 
-## 7. 常用命令速查
+## 8. 常用命令速查
 
 ### 开发与构建
 
@@ -119,7 +132,7 @@ pnpm test:e2e
 
 测试详细说明见：[测试指南](../TESTS.md)
 
-## 8. 目录结构
+## 9. 目录结构
 
 ```text
 vue-admin/
@@ -134,7 +147,7 @@ vue-admin/
 └── README.md             # 项目首页导航
 ```
 
-## 9. 新人建议阅读顺序
+## 10. 新人建议阅读顺序
 
 1. 先跑通 `pnpm install && pnpm dev`
 2. 了解 [OpenAPI 代码生成与本地跨域代理](../openApi/generate/入参数据结构.md)

@@ -13,6 +13,8 @@
 // 全局基础前景与页面底色：
 // 优先使用主题引擎输出的语义变量，未初始化时回退到 Element Plus 默认变量。
 body {
+  font-size: var(--va-font-size-body, var(--el-font-size-base));
+  line-height: var(--va-line-height-normal);
   color: var(--va-text-primary, var(--el-text-color-primary));
   background-color: var(--va-bg-page, var(--el-bg-color-page));
 }

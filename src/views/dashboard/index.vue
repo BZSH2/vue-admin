@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PageContainer from '@/components/PageContainer.vue'
-import { useThemeBridge, type ThemeBridgePayload } from '@/composables/useTheme'
+import { useThemeBridge } from '@/composables/useTheme'
+import type { ThemeBridgePayload } from '@/types/theme'
 import { Tree as BzshTree } from 'bzsh-tree'
 import { useWindowSize } from '@vueuse/core'
 

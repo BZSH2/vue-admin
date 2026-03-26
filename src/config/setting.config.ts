@@ -27,6 +27,10 @@ export const settingConfig = {
    */
   primaryColor: '#1684fc',
   /**
+   * 全局文字大小档位
+   */
+  fontSizeLevel: 'default',
+  /**
    * 白名单路由
    */
   routesWhiteList: ['/login', '/404', '/403'],

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { SITE_META } from '@/config/site'
 
 const { icpText, icpUrl } = SITE_META
@@ -16,10 +16,10 @@ const { icpText, icpUrl } = SITE_META
   align-items: center;
   justify-content: center;
   padding: 10px 16px 16px;
-  font-size: 12px;
+  font-size: var(--va-font-size-xs);
   line-height: 1.5;
-  text-align: center;
   color: var(--el-text-color-secondary);
+  text-align: center;
 }
 
 .icp-footer a {

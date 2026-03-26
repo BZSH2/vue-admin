@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 const props = defineProps<{
   isDark: boolean
 }>()
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }
 
 .theme-title {
-  font-size: 14px;
+  font-size: var(--va-font-size-sm);
   font-weight: 600;
   color: var(--el-text-color-primary);
 }

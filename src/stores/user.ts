@@ -8,8 +8,28 @@ export type UserProfile = {
   phoneNumber?: string
   nickname?: string
   avatar?: string
+  role?: string
   roles?: string[]
   [key: string]: any
+}
+
+function normalizeProfile(payload: any): UserProfile | null {
+  if (!payload || typeof payload !== 'object') {
+    return null
+  }
+
+  const role = typeof payload.role === 'string' ? payload.role : undefined
+  const roles = Array.isArray(payload.roles)
+    ? payload.roles.filter((item: unknown): item is string => typeof item === 'string')
+    : role
+      ? [role]
+      : []
+
+  return {
+    ...payload,
+    role,
+    roles,
+  }
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -26,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
   /** 拉取个人信息（/api/auth/profile） */
   async function fetchProfile() {
     const res = await authControllerGetProfile({ showError: false, retry: 0 })
-    profile.value = (res || null) as any
+    profile.value = normalizeProfile(res)
     loaded.value = true
     return profile.value
   }

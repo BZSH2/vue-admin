@@ -25,7 +25,7 @@ const asyncRoutes: Route.RouteRecord[] = [
       {
         path: '/system',
         name: 'System',
-        redirect: '/system/userPermission',
+        redirect: '/system/user',
         meta: {
           title: '系统管理',
           noClosable: true,
@@ -35,11 +35,22 @@ const asyncRoutes: Route.RouteRecord[] = [
         },
         children: [
           {
-            path: '/system/userPermission',
-            name: 'UserPermission',
-            component: () => import('@/views/system/userPermission/index.vue'),
+            path: '/system/user',
+            name: 'SystemUser',
+            component: () => import('@/views/system/user/index.vue'),
             meta: {
-              title: '用户权限',
+              title: '用户管理',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
+          {
+            path: '/system/role',
+            name: 'SystemRole',
+            component: () => import('@/views/system/role/index.vue'),
+            meta: {
+              title: '角色管理',
               noClosable: true,
               isLevel1: true,
               noKeepAlive: false,

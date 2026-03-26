@@ -2,7 +2,7 @@
  * 封装 localStorage 和 sessionStorage
  * 提供类型安全的存储操作，支持 JSON 自动序列化/反序列化
  */
-class Storage {
+class StorageStore {
   /**
    * 设置存储
    * @param key 键名
@@ -65,9 +65,9 @@ class Storage {
 /**
  * 导出简化的操作函数
  */
-export const setStorage = Storage.set
-export const getStorage = Storage.get
-export const removeStorage = Storage.remove
-export const clearStorage = Storage.clear
+export const setStorage = StorageStore.set
+export const getStorage = StorageStore.get
+export const removeStorage = StorageStore.remove
+export const clearStorage = StorageStore.clear
 
-export default Storage
+export default StorageStore

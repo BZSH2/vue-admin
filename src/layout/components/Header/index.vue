@@ -108,7 +108,7 @@ const currentTitle = computed(() => {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 16px;
+  font-size: var(--va-font-size-md);
   font-weight: 600;
   color: var(--el-text-color-primary);
   white-space: nowrap;
@@ -134,7 +134,7 @@ const currentTitle = computed(() => {
   }
 
   .page-title {
-    font-size: 15px;
+    font-size: var(--va-font-size-sm);
   }
 
   .header-right {
@@ -148,7 +148,7 @@ const currentTitle = computed(() => {
   }
 
   .page-title {
-    font-size: 14px;
+    font-size: var(--va-font-size-sm);
   }
 }
 </style>

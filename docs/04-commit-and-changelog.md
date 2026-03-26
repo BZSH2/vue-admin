@@ -24,18 +24,16 @@ pnpm cz
 
 会执行：
 
-- `npm run lint:all`
-- `npm run typecheck`
+- `pnpm lint:lint-staged`
 
 目标：
 
-- 提前拦住明显的格式、Lint、类型错误
+- 只校验暂存区文件，尽量在保证规则完整性的同时缩短提交等待时间
 
 ### pre-push
 
-会自动生成或更新：
-
-- `CHANGELOG.md`
+当前未配置会自动修改工作区的 `pre-push` hook。
+`CHANGELOG.md` 需要在发布前按需手动执行 `pnpm changelog` 或 `pnpm changelog:release` 生成。
 
 ## 3. lint-staged 做了什么
 
@@ -50,10 +48,11 @@ pnpm cz
 ## 4. 常用命令
 
 ```bash
+pnpm lint:oxlint
 pnpm lint
 pnpm lint:fix
+pnpm lint:ci
 pnpm lint:all
-pnpm typecheck
 pnpm changelog
 pnpm changelog:release
 ```
@@ -71,5 +70,5 @@ pnpm changelog:release
 
 - 日常开发优先用 `pnpm cz`
 - 小改动也尽量写清楚 commit 语义
-- 提交前先本地跑一遍 `pnpm lint:all && pnpm typecheck`
+- 提交前想做完整自检时，优先跑 `pnpm lint:ci`
 - 发布前确认 `CHANGELOG.md` 内容是否符合预期

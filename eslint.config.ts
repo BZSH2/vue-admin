@@ -7,6 +7,7 @@ import pluginJsonc from 'eslint-plugin-jsonc'
 import pluginVue from 'eslint-plugin-vue'
 import jsoncParser from 'jsonc-eslint-parser'
 import vueParser from 'vue-eslint-parser'
+import { ESLINT_SHARED_IGNORES } from './scripts/lint/shared-ignores.js'
 
 export default defineConfig([
   unocss as any,
@@ -300,15 +301,5 @@ export default defineConfig([
   },
   // 关闭与 Prettier 冲突的格式化类规则
   eslintConfigPrettier as any,
-  globalIgnores([
-    'dist/*',
-    'node_modules/*',
-    '**/src/assets/*',
-    '**/src/api/*',
-    '**/public/*',
-    '**/src/plugins/vxeTable/*',
-    '**/ylwiconfont/*',
-    '**/auto-imports.d.ts',
-    '**/components.d.ts',
-  ]),
+  globalIgnores(ESLINT_SHARED_IGNORES),
 ])

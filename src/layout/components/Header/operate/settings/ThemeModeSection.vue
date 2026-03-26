@@ -1,5 +1,5 @@
-<script lang="ts" setup>
-import type { ResolvedTheme, ThemeMode } from '@/composables/useTheme'
+﻿<script lang="ts" setup>
+import type { ResolvedTheme, ThemeMode } from '@/types/theme'
 
 defineProps<{
   themeMode: ThemeMode
@@ -37,7 +37,7 @@ function onModeChange(mode: string | number | boolean | undefined) {
 }
 
 .theme-title {
-  font-size: 14px;
+  font-size: var(--va-font-size-sm);
   font-weight: 600;
   color: var(--el-text-color-primary);
 }

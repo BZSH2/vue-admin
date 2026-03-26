@@ -119,10 +119,11 @@ pnpm analyze
 ### 质量检查
 
 ```bash
+pnpm lint:oxlint
 pnpm lint
 pnpm lint:fix
+pnpm lint:ci
 pnpm lint:all
-pnpm typecheck
 ```
 
 ### 自动化能力

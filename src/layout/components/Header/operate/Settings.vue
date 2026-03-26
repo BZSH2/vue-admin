@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useTheme, type ThemeMode } from '@/composables/useTheme'
+import { useTheme, type ThemeFontSizeLevel, type ThemeMode } from '@/composables/useTheme'
 import ThemeActionsSection from './settings/ThemeActionsSection.vue'
 import ThemeColorSection from './settings/ThemeColorSection.vue'
+import ThemeFontSizeSection from './settings/ThemeFontSizeSection.vue'
 import ThemeModeSection from './settings/ThemeModeSection.vue'
 import ThemeTokenPreviewSection from './settings/ThemeTokenPreviewSection.vue'
 
@@ -18,16 +19,23 @@ const {
   resolvedTheme,
   activeBrand,
   primaryColor,
+  fontSizeLevel,
   semanticTokens,
   presetThemeColors,
+  fontSizeOptions,
   setThemeMode,
   setPrimaryColor,
+  setFontSizeLevel,
   toggleTheme,
   resetTheme,
 } = useTheme()
 
 function onModeChange(mode: string | number | boolean) {
   setThemeMode(mode as ThemeMode)
+}
+
+function onFontSizeLevelChange(level: string | number | boolean) {
+  setFontSizeLevel(level as ThemeFontSizeLevel)
 }
 </script>
 
@@ -43,6 +51,11 @@ function onModeChange(mode: string | number | boolean) {
         :theme-mode="themeMode"
         :resolved-theme="resolvedTheme"
         @change="onModeChange"
+      />
+      <ThemeFontSizeSection
+        :font-size-level="fontSizeLevel"
+        :font-size-options="fontSizeOptions"
+        @change="onFontSizeLevelChange"
       />
       <ThemeActionsSection :is-dark="isDark" @toggle="toggleTheme" @reset="resetTheme" />
       <ThemeColorSection

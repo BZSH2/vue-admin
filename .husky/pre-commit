@@ -12,23 +12,14 @@ fi
 echo "📁 检查文件:"
 echo "$STAGED_FILES" | sed 's/^/  /'
 
-# 1. 运行 lint-staged
-echo "🔍 运行代码检查和格式化..."
-npm run lint:lint-staged
+# 提交时只校验暂存区文件，兼顾速度和规则完整性。
+# 开发态快速校验走 oxlint，完整的 ESLint + typecheck 放到 CI / 发布前执行。
+echo "🔍 运行提交前代码检查和格式化..."
+pnpm lint:lint-staged
 
 if [ $? -ne 0 ]; then
   echo "❌ 代码检查失败，请修复以上问题"
   exit 1
-fi
-if echo "$STAGED_FILES" | grep -Ei '\.(ts|tsx|vue)$' >/dev/null; then
-  echo "🔍 运行 TypeScript 类型检查..."
-  if [ -f "node_modules/.bin/vue-tsc" ]; then
-    npm run typecheck
-    if [ $? -ne 0 ]; then
-      echo "❌ TypeScript 类型检查失败"
-      exit 1
-    fi
-  fi
 fi
 
 echo "✅ 所有检查通过！"

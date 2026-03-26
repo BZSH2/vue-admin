@@ -1,5 +1,10 @@
+import fontSizeTokenRule, {
+  ruleName as fontSizeTokenRuleName,
+} from './scripts/stylelint/font-size-token-rule.mjs'
+
 /** @type {import('stylelint').Config} */
 export default {
+  plugins: [fontSizeTokenRule],
   extends: [
     'stylelint-config-standard',
     'stylelint-config-standard-scss',
@@ -22,6 +27,7 @@ export default {
     },
   ],
   rules: {
+    [fontSizeTokenRuleName]: true,
     'custom-property-empty-line-before': ['never', { except: ['after-comment'] }], // 要求或禁止自定义属性之前有空行
     'selector-pseudo-class-no-unknown': [
       true,

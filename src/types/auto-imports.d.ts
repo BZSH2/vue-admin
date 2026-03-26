@@ -108,6 +108,6 @@ declare global {
   export type { StatusType, ConfirmProps, NotificationProps, NotificationOptions } from '../composables/useMessage'
   import('../composables/useMessage')
   // @ts-ignore
-  export type { ThemeMode, ResolvedTheme, BrandThemeKey, BrandTheme, ThemeSemanticTokens, ThemeBridgePayload } from '../composables/useTheme'
+  export type { BrandTheme, BrandThemeKey, ResolvedTheme, ThemeBridgePayload, ThemeMode, ThemeSemanticTokens, ThemeSnapshot, ThemeFontSizeLevel, ThemeFontSizeOption } from '../composables/useTheme'
   import('../composables/useTheme')
 }

@@ -54,7 +54,7 @@ async function onCommand(cmd: string) {
 }
 
 .avatar-trigger__avatar {
-  font-size: 13px;
+  font-size: var(--va-font-size-xs);
   font-weight: 600;
 }
 

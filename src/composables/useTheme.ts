@@ -1,44 +1,33 @@
 import { settingConfig } from '@/config'
+import {
+  THEME_FONT_SIZE_OPTIONS,
+  getThemeFontSizeCssVarMap,
+  isThemeFontSizeLevel,
+  type ThemeFontSizeLevel,
+  type ThemeFontSizeOption,
+} from '@/shared/theme/font-size.js'
+import { isThemeMode } from '@/shared/theme/mode'
+import type {
+  BrandTheme,
+  BrandThemeKey,
+  ResolvedTheme,
+  ThemeBridgePayload,
+  ThemeMode,
+  ThemeSemanticTokens,
+  ThemeSnapshot,
+} from '@/types/theme'
 import { getStorage, setStorage } from '@/utils/storage'
 
-export type ThemeMode = 'light' | 'dark' | 'system'
-export type ResolvedTheme = 'light' | 'dark'
-export type BrandThemeKey = 'custom'
-
-export interface BrandTheme {
-  key: BrandThemeKey
-  name: string
-  primary: string
-  success: string
-  warning: string
-  danger: string
-  info: string
-  mapAccent: string
-  chartPalette: readonly string[]
-}
-
-export interface ThemeSemanticTokens {
-  pageBg: string
-  cardBg: string
-  elevatedBg: string
-  textPrimary: string
-  textSecondary: string
-  borderSoft: string
-  onPrimary: string
-  onSuccess: string
-  onWarning: string
-  onDanger: string
-  onInfo: string
-  borderOnPrimary: string
-  borderOnSuccess: string
-  borderOnWarning: string
-  borderOnDanger: string
-  borderOnInfo: string
-  thirdPartyBg: string
-  thirdPartySurface: string
-  thirdPartyText: string
-  thirdPartyBorder: string
-}
+export type {
+  BrandTheme,
+  BrandThemeKey,
+  ResolvedTheme,
+  ThemeBridgePayload,
+  ThemeMode,
+  ThemeSemanticTokens,
+  ThemeSnapshot,
+} from '@/types/theme'
+export type { ThemeFontSizeLevel, ThemeFontSizeOption } from '@/shared/theme/font-size.js'
 
 /**
  * 主题广播事件名。
@@ -46,27 +35,7 @@ export interface ThemeSemanticTokens {
  */
 export const THEME_CHANGE_EVENT = 'va-theme-change'
 
-type EventThemePalette = Pick<BrandTheme, 'primary' | 'success' | 'warning' | 'danger' | 'info'>
 type ElementColorType = 'primary' | 'success' | 'warning' | 'danger' | 'info'
-
-export interface ThemeBridgePayload {
-  mode: ThemeMode
-  resolvedTheme: ResolvedTheme
-  brand: BrandThemeKey
-  palette: EventThemePalette
-  chartPalette: readonly string[]
-  mapAccent: string
-  semantic: ThemeSemanticTokens
-}
-
-interface ThemeSnapshot {
-  mode: ThemeMode
-  resolvedTheme: ResolvedTheme
-  brand: BrandThemeKey
-  colorScheme: 'light' | 'dark'
-  isDark: boolean
-  vars: Record<string, string>
-}
 
 /**
  * 本地存储键：
@@ -75,9 +44,12 @@ interface ThemeSnapshot {
  */
 const modeStorageKey = 'themeMode' as const
 const primaryColorStorageKey = 'themePrimaryColor' as const
+const fontSizeStorageKey = 'themeFontSizeLevel' as const
 const snapshotStorageKey = 'themeSnapshot' as const
 const defaultThemeMode: ThemeMode = settingConfig.showDark ? 'dark' : 'light'
 const defaultPrimaryColor = settingConfig.primaryColor
+const defaultFontSizeLevel: ThemeFontSizeLevel =
+  parseFontSizeLevel(settingConfig.fontSizeLevel) || 'default'
 const presetThemeColors = [
   '#409eff',
   '#1684fc',
@@ -88,9 +60,11 @@ const presetThemeColors = [
   '#00bcd4',
   '#ff6b9a',
 ]
+const fontSizeOptions: readonly ThemeFontSizeOption[] = THEME_FONT_SIZE_OPTIONS
 
 const themeMode = ref<ThemeMode>(defaultThemeMode)
 const primaryColor = ref(defaultPrimaryColor)
+const fontSizeLevel = ref<ThemeFontSizeLevel>(defaultFontSizeLevel)
 const themeBrand = ref<BrandThemeKey>('custom')
 const semanticTokens = ref<ThemeSemanticTokens>({
   pageBg: '#f5f7fb',
@@ -131,7 +105,14 @@ let transitionTimer: ReturnType<typeof setTimeout> | null = null
  * 外部输入与存储值都可能不可信，这里统一做白名单约束。
  */
 function parseThemeMode(value: unknown): ThemeMode | null {
-  if (value === 'light' || value === 'dark' || value === 'system') {
+  if (isThemeMode(value)) {
+    return value
+  }
+  return null
+}
+
+function parseFontSizeLevel(value: unknown): ThemeFontSizeLevel | null {
+  if (isThemeFontSizeLevel(value)) {
     return value
   }
   return null
@@ -337,6 +318,10 @@ function buildElementColorScaleVars(type: ElementColorType, color: string) {
   }
 }
 
+function buildFontSizeCssVarMap(level: ThemeFontSizeLevel) {
+  return getThemeFontSizeCssVarMap(level)
+}
+
 /**
  * 构建语义 Token。
  * 这里把“颜色值”提升为“语义角色”（页面底色、卡片底色、对比文本等），
@@ -496,6 +481,7 @@ function getThemeBridgePayload(brand: BrandTheme, tokens: ThemeSemanticTokens): 
     mode: themeMode.value,
     resolvedTheme: resolvedTheme.value,
     brand: themeBrand.value,
+    fontSizeLevel: fontSizeLevel.value,
     palette: {
       primary: brand.primary,
       success: brand.success,
@@ -534,7 +520,10 @@ function applyThemeColorSystem() {
   const tokens = buildSemanticTokens(brand)
   semanticTokens.value = tokens
   primaryColor.value = brand.primary
-  const cssVars = buildThemeCssVarMap(brand, tokens)
+  const cssVars = {
+    ...buildThemeCssVarMap(brand, tokens),
+    ...buildFontSizeCssVarMap(fontSizeLevel.value),
+  }
   applyThemeCssVarMap(cssVars)
   applyMetaThemeColor(brand.primary)
   persistThemeSnapshot(cssVars)
@@ -587,8 +576,10 @@ function setupSystemThemeListener() {
 function loadThemeFromStorage() {
   const savedMode = parseThemeMode(getStorage(modeStorageKey))
   const savedPrimaryColor = normalizeColor(getStorage(primaryColorStorageKey) || '')
+  const savedFontSizeLevel = parseFontSizeLevel(getStorage(fontSizeStorageKey))
   themeMode.value = savedMode || defaultThemeMode
   primaryColor.value = savedPrimaryColor || defaultPrimaryColor
+  fontSizeLevel.value = savedFontSizeLevel || defaultFontSizeLevel
   themeBrand.value = 'custom'
 }
 
@@ -686,6 +677,17 @@ export function useTheme() {
     applyThemeColorSystem()
   }
 
+  const setFontSizeLevel = (level: ThemeFontSizeLevel) => {
+    const normalizedLevel = parseFontSizeLevel(level)
+    if (!normalizedLevel || fontSizeLevel.value === normalizedLevel) {
+      return
+    }
+    fontSizeLevel.value = normalizedLevel
+    setStorage(fontSizeStorageKey, normalizedLevel)
+    applyThemeMode()
+    applyThemeColorSystem()
+  }
+
   const toggleTheme = () => {
     setThemeMode(isDark.value ? 'light' : 'dark')
   }
@@ -693,6 +695,7 @@ export function useTheme() {
   const resetTheme = () => {
     setThemeMode(defaultThemeMode)
     setPrimaryColor(defaultPrimaryColor)
+    setFontSizeLevel(defaultFontSizeLevel)
   }
 
   return {
@@ -702,10 +705,13 @@ export function useTheme() {
     themeBrand: readonly(themeBrand),
     activeBrand: readonly(activeBrand),
     primaryColor: readonly(primaryColor),
+    fontSizeLevel: readonly(fontSizeLevel),
     semanticTokens: readonly(semanticTokens),
     presetThemeColors,
+    fontSizeOptions,
     setThemeMode,
     setPrimaryColor,
+    setFontSizeLevel,
     toggleTheme,
     resetTheme,
   }

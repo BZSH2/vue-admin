@@ -1,5 +1,5 @@
-<script lang="ts" setup>
-import type { BrandTheme, ThemeSemanticTokens } from '@/composables/useTheme'
+﻿<script lang="ts" setup>
+import type { BrandTheme, ThemeSemanticTokens } from '@/types/theme'
 
 defineProps<{
   activeBrand: Readonly<BrandTheme>
@@ -49,7 +49,7 @@ defineProps<{
 }
 
 .theme-title {
-  font-size: 14px;
+  font-size: var(--va-font-size-sm);
   font-weight: 600;
   color: var(--el-text-color-primary);
 }

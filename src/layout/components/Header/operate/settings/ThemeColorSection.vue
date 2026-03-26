@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 const props = defineProps<{
   primaryColor: string
   presetThemeColors: string[]
@@ -46,7 +46,7 @@ function onPickerChange(color: string | null) {
 }
 
 .theme-title {
-  font-size: 14px;
+  font-size: var(--va-font-size-sm);
   font-weight: 600;
   color: var(--el-text-color-primary);
 }

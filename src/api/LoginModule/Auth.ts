@@ -7,7 +7,7 @@ export function authControllerRegister(
   body: LoginModule.RegisterDto,
   options?: { [key: string]: any }
 ) {
-  return request<any>({
+  return request<LoginModule.AuthProfileResponseDto>({
     url: `/api/auth/register`,
     method: 'POST',
     headers: {
@@ -19,7 +19,7 @@ export function authControllerRegister(
 }
 /** 用户登录 POST /api/auth/login */
 export function authControllerLogin(body: LoginModule.LoginDto, options?: { [key: string]: any }) {
-  return request<any>({
+  return request<LoginModule.AuthTokensResponseDto>({
     url: `/api/auth/login`,
     method: 'POST',
     headers: {
@@ -31,7 +31,7 @@ export function authControllerLogin(body: LoginModule.LoginDto, options?: { [key
 }
 /** 用户登出 POST /api/auth/logout */
 export function authControllerLogout(options?: { [key: string]: any }) {
-  return request<any>({
+  return request<LoginModule.OperationMessageResponseDto>({
     url: `/api/auth/logout`,
     method: 'POST',
     ...(options || {}),
@@ -39,7 +39,7 @@ export function authControllerLogout(options?: { [key: string]: any }) {
 }
 /** 刷新 Token POST /api/auth/refresh */
 export function authControllerRefreshTokens(options?: { [key: string]: any }) {
-  return request<any>({
+  return request<LoginModule.AuthTokensResponseDto>({
     url: `/api/auth/refresh`,
     method: 'POST',
     ...(options || {}),

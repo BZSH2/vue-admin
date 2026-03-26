@@ -11,6 +11,7 @@
 当前换肤系统已支持：
 
 - 主题模式切换：`light / dark / system`
+- 全局字号切换：`small / default / large`
 - 主色自定义：支持 `hex` 与 `rgb/rgba` 输入
 - 业务语义色自动推导：`success / warning / danger / info`
 - 自动对比度：主色文本与边框自动计算对比
@@ -21,6 +22,8 @@
 
 - `src/composables/useTheme.ts`
 - `src/theme-preload.ts`
+- `src/types/theme.ts`
+- `src/shared/theme/font-size.js`
 - `src/plugins/theme.ts`
 - `src/layout/components/Header/operate/Settings.vue`
 - `src/layout/components/Header/operate/settings/ThemeModeSection.vue`
@@ -39,6 +42,7 @@
 - `isDark`
 - `resolvedTheme`
 - `primaryColor`
+- `fontSizeLevel`
 
 当模式为 `system` 时，会监听系统主题变化并自动同步。
 
@@ -60,6 +64,12 @@
 - `--va-text-secondary`
 - `--va-border-soft`
 - `--va-on-primary`
+
+同时会统一输出字号变量，例如：
+
+- `--va-font-size-xs`
+- `--va-font-size-sm`
+- `--va-font-size-md`
 
 这样业务组件不直接依赖具体色值，后续扩展更轻松。
 

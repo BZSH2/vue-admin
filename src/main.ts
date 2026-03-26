@@ -8,7 +8,6 @@ import App from './App.vue'
 import { router, setupRouter } from './router'
 import { setupI18n } from '@/i18n'
 import './styles/index.scss'
-import { setupSentry } from '@/plugins/sentry'
 import { setupTheme, teardownTheme } from '@/plugins/theme'
 
 import { $baseMessage } from '@/composables/useMessage'
@@ -36,7 +35,6 @@ async function render(props: Record<string, any> = {}) {
   const authStore = useAuthStore(pinia)
   setRefreshTokenHandler(() => authStore.refreshToken())
 
-  setupSentry(app)
   setupRouter(app)
 
   const redirect = sessionStorage.getItem('redirect')

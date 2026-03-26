@@ -9,17 +9,9 @@
  * 约定：运行期配置优先级更高。
  */
 
-export type RuntimeSentryConfig = {
-  enable?: boolean
-  dsn?: string
-  env?: string
-}
-
 export type RuntimeConfig = {
   /** axios baseURL */
   apiBaseUrl?: string
-  /** sentry config */
-  sentry?: RuntimeSentryConfig
 }
 
 /** 获取运行时配置（浏览器端） */
@@ -37,19 +29,4 @@ export function getRuntimeConfig(): RuntimeConfig {
  */
 export function getApiBaseUrl(): string {
   return getRuntimeConfig().apiBaseUrl || import.meta.env.VITE_API_BASE_URL || '/'
-}
-
-/**
- * 获取 Sentry 运行时配置
- *
- * enable 的优先级：runtime.sentry.enable > VITE_SENTRY_ENABLE
- */
-export function getRuntimeSentryConfig() {
-  const runtime = getRuntimeConfig().sentry || {}
-  const enableFromEnv = import.meta.env.VITE_SENTRY_ENABLE === 'true'
-  return {
-    enable: runtime.enable ?? enableFromEnv,
-    dsn: runtime.dsn ?? import.meta.env.VITE_SENTRY_DSN,
-    env: runtime.env ?? import.meta.env.VITE_SENTRY_ENV,
-  }
 }

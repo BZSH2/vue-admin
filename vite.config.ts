@@ -12,7 +12,6 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import config from './src/config'
 import viteCompression from 'vite-plugin-compression'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 type BuildCommand = 'serve' | 'build'
@@ -23,7 +22,6 @@ interface BuildFeatureFlags {
   enableGzip: boolean
   enableBrotli: boolean
   enableAnalyze: boolean
-  enableSentry: boolean
 }
 
 // preload 的 as 类型映射规则
@@ -123,21 +121,6 @@ const toPluginArray = (plugin: PluginOption): PluginOption[] => {
   return Array.isArray(plugin) ? plugin : [plugin]
 }
 
-// Sentry 上传 sourcemap 插件工厂
-// 仅在开启监控且存在 dsn 时参与构建流程
-const createSentryBuildPlugin = (enabled: boolean) =>
-  enabled
-    ? sentryVitePlugin({
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        release: process.env.SENTRY_RELEASE,
-        sourcemaps: {
-          assets: './dist/**',
-        },
-      })
-    : undefined
-
 // gzip 压缩插件工厂
 // 生成 .gz 文件，便于服务端按 Accept-Encoding 协商返回
 const createGzipBuildPlugin = (enabled: boolean) =>
@@ -173,7 +156,6 @@ const createAnalyzeBuildPlugin = (enabled: boolean) =>
 // 通过统一扁平化处理，消除 undefined 与嵌套数组
 const createBuildPlugins = (flags: BuildFeatureFlags): PluginOption[] =>
   [
-    createSentryBuildPlugin(flags.enableSentry),
     createGzipBuildPlugin(flags.enableGzip),
     createBrotliBuildPlugin(flags.enableBrotli),
     createAnalyzeBuildPlugin(flags.enableAnalyze),
@@ -236,7 +218,6 @@ export default defineConfig(({ mode, command }) => {
   const enableAnalyze = isEnabledByEnv(viteEnv.VITE_BUILD_ANALYZE)
   const preconnectOrigins = parseListEnv(viteEnv.VITE_PRECONNECT_ORIGINS)
   const preloadAssets = parseListEnv(viteEnv.VITE_PRELOAD_ASSETS)
-  const enableSentry = isEnabledByEnv(viteEnv.VITE_SENTRY_ENABLE) && !!viteEnv.VITE_SENTRY_DSN
 
   return {
     // 部署到子路径时保持静态资源引用正确
@@ -247,7 +228,6 @@ export default defineConfig(({ mode, command }) => {
       enableGzip,
       enableBrotli,
       enableAnalyze,
-      enableSentry,
     }),
     // 源码别名
     resolve: {

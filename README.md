@@ -44,6 +44,13 @@ pnpm openApi
 pnpm openI18n
 ```
 
+## Sentry 相关说明
+
+- 当前 `master` 分支默认不包含 Sentry 监控初始化、sourcemap 上传插件和对应环境变量。
+- 如果项目需要前端错误监控和发布后的堆栈还原，请将 `sentry` 分支合并到当前分支。
+- 推荐直接在常用 Git 客户端中执行分支合并，这样更容易看清 `package.json`、`vite.config.ts`、`src/main.ts`、运行时配置和 `.env` 文件里的差异。
+- 之所以把 Sentry 能力拆到独立分支，是因为这部分改动不仅包含 SDK 依赖，还会同步影响构建上传、运行时开关、类型声明和部署配置。默认放在 `master` 之外，可以让不需要监控的 Web 场景保持更轻、更干净。
+
 ## Electron 相关说明
 
 - 当前 `master` 分支默认聚焦 Web 管理后台，不直接包含 Electron 客户端打包与运行时兼容逻辑。

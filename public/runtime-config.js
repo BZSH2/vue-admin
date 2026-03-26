@@ -6,7 +6,7 @@
  *   window.__RUNTIME_CONFIG__
  *
  * 你可以在服务器上直接修改 dist/runtime-config.js（或挂载一个同名文件）
- * 来覆盖 API 地址、Sentry 开关等，而无需重新打包前端。
+ * 来覆盖 API 地址，而无需重新打包前端。
  *
  * 注意：
  * - 这里的配置优先级高于 .env / import.meta.env
@@ -24,20 +24,5 @@
      * 如果你不走同域代理，也可以改成：'https://api.example.com'
      */
     apiBaseUrl: '/',
-
-    /**
-     * Sentry 运行时配置（可选）
-     *
-     * 默认不配置（让 .env.production 等构建期配置继续生效）。
-     *
-     * 如果你希望“线上不重新 build 就能开/关 Sentry”，可以在服务器上把下面注释放开：
-     *
-     * sentry: {
-     *   enable: true,
-     *   dsn: 'https://xxxx@xxxx.ingest.sentry.io/xxxx',
-     *   env: 'production',
-     * },
-     */
-    // sentry: {},
   }
 })()

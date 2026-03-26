@@ -25,6 +25,10 @@ declare namespace RoleModule {
     userId: string
   }
 
+  interface UpdateUserRoleDto {
+    role: 'admin' | 'user'
+  }
+
   interface RoleDetailDto {
     id: string
     code: string
@@ -61,6 +65,16 @@ declare namespace RoleModule {
     pageSize: number
   }
 
+  interface UserRoleDetailDto {
+    userId: string
+    phoneNumber: string
+    nickname?: string | null
+    avatar?: string | null
+    role: 'admin' | 'user'
+  }
+
+  type UserRoleDetailResponseDto = UserRoleDetailDto
+
   interface OperationMessageDto {
     message: string
   }
@@ -69,4 +83,6 @@ declare namespace RoleModule {
     value: 'admin' | 'user'
     label: string
   }
+
+  type RoleOptionsResponseDto = RoleOptionDto[]
 }

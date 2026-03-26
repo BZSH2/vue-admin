@@ -25,7 +25,7 @@ const asyncRoutes: Route.RouteRecord[] = [
       {
         path: '/system',
         name: 'System',
-        redirect: '/system/userPermission',
+        redirect: '/system/roleManagement',
         meta: {
           title: '系统管理',
           noClosable: true,
@@ -34,6 +34,17 @@ const asyncRoutes: Route.RouteRecord[] = [
           icon: 'menus-blink',
         },
         children: [
+          {
+            path: '/system/roleManagement',
+            name: 'RoleManagement',
+            component: () => import('@/views/system/roleManagement/index.vue'),
+            meta: {
+              title: '角色管理',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
           {
             path: '/system/userPermission',
             name: 'UserPermission',

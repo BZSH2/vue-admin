@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { authControllerLogin, authControllerRegister } from '@/api/LoginModule/Auth'
+import IcpFooter from '@/components/IcpFooter.vue'
 import { setToken } from '@/utils/token'
 import { $baseMessage } from '@/composables/useMessage'
 import { useI18n } from 'vue-i18n'
@@ -103,89 +104,102 @@ function toggleMode() {
 </script>
 
 <template>
-  <div class="login-container va-fullscreen-page">
-    <div class="login-card">
-      <div class="title">{{ isLogin ? t('系统登录') : t('用户注册') }}</div>
+  <div class="login-page">
+    <div class="login-container va-fullscreen-page">
+      <div class="login-card">
+        <div class="title">{{ isLogin ? t('系统登录') : t('用户注册') }}</div>
 
-      <ElForm
-        v-if="isLogin"
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-position="top"
-        size="large"
-      >
-        <ElFormItem :label="t('手机号')" prop="phoneNumber">
-          <ElInput v-model="form.phoneNumber" :placeholder="t('请输入手机号')" clearable />
-        </ElFormItem>
-        <ElFormItem :label="t('密码')" prop="password">
-          <ElInput
-            v-model="form.password"
-            :placeholder="t('请输入密码')"
-            show-password
-            clearable
-            type="password"
-            @keyup.enter="onLogin"
-          />
-        </ElFormItem>
-        <ElFormItem>
-          <ElButton type="primary" :loading="loading" class="w-full" @click="onLogin">
-            {{ t('登录') }}
-          </ElButton>
-        </ElFormItem>
-        <div class="form-footer">
-          <ElLink type="primary" @click="toggleMode">{{ t('没有账号？去注册') }}</ElLink>
-        </div>
-      </ElForm>
+        <ElForm
+          v-if="isLogin"
+          ref="formRef"
+          :model="form"
+          :rules="rules"
+          label-position="top"
+          size="large"
+        >
+          <ElFormItem :label="t('手机号')" prop="phoneNumber">
+            <ElInput v-model="form.phoneNumber" :placeholder="t('请输入手机号')" clearable />
+          </ElFormItem>
+          <ElFormItem :label="t('密码')" prop="password">
+            <ElInput
+              v-model="form.password"
+              :placeholder="t('请输入密码')"
+              show-password
+              clearable
+              type="password"
+              @keyup.enter="onLogin"
+            />
+          </ElFormItem>
+          <ElFormItem>
+            <ElButton type="primary" :loading="loading" class="w-full" @click="onLogin">
+              {{ t('登录') }}
+            </ElButton>
+          </ElFormItem>
+          <div class="form-footer">
+            <ElLink type="primary" @click="toggleMode">{{ t('没有账号？去注册') }}</ElLink>
+          </div>
+        </ElForm>
 
-      <ElForm
-        v-else
-        ref="registerFormRef"
-        :model="registerForm"
-        :rules="registerRules"
-        label-position="top"
-        size="large"
-      >
-        <ElFormItem :label="t('手机号')" prop="phoneNumber">
-          <ElInput v-model="registerForm.phoneNumber" :placeholder="t('请输入手机号')" clearable />
-        </ElFormItem>
-        <ElFormItem :label="t('昵称')" prop="nickname">
-          <ElInput v-model="registerForm.nickname" :placeholder="t('请输入昵称')" clearable />
-        </ElFormItem>
-        <ElFormItem :label="t('密码')" prop="password">
-          <ElInput
-            v-model="registerForm.password"
-            :placeholder="t('请输入密码')"
-            show-password
-            clearable
-            type="password"
-          />
-        </ElFormItem>
-        <ElFormItem :label="t('确认密码')" prop="confirmPassword">
-          <ElInput
-            v-model="registerForm.confirmPassword"
-            :placeholder="t('请再次输入密码')"
-            show-password
-            clearable
-            type="password"
-            @keyup.enter="onRegister"
-          />
-        </ElFormItem>
-        <ElFormItem>
-          <ElButton type="primary" :loading="loading" class="w-full" @click="onRegister">
-            {{ t('注册') }}
-          </ElButton>
-        </ElFormItem>
-        <div class="form-footer">
-          <ElLink type="primary" @click="toggleMode">{{ t('已有账号？去登录') }}</ElLink>
-        </div>
-      </ElForm>
+        <ElForm
+          v-else
+          ref="registerFormRef"
+          :model="registerForm"
+          :rules="registerRules"
+          label-position="top"
+          size="large"
+        >
+          <ElFormItem :label="t('手机号')" prop="phoneNumber">
+            <ElInput v-model="registerForm.phoneNumber" :placeholder="t('请输入手机号')" clearable />
+          </ElFormItem>
+          <ElFormItem :label="t('昵称')" prop="nickname">
+            <ElInput v-model="registerForm.nickname" :placeholder="t('请输入昵称')" clearable />
+          </ElFormItem>
+          <ElFormItem :label="t('密码')" prop="password">
+            <ElInput
+              v-model="registerForm.password"
+              :placeholder="t('请输入密码')"
+              show-password
+              clearable
+              type="password"
+            />
+          </ElFormItem>
+          <ElFormItem :label="t('确认密码')" prop="confirmPassword">
+            <ElInput
+              v-model="registerForm.confirmPassword"
+              :placeholder="t('请再次输入密码')"
+              show-password
+              clearable
+              type="password"
+              @keyup.enter="onRegister"
+            />
+          </ElFormItem>
+          <ElFormItem>
+            <ElButton type="primary" :loading="loading" class="w-full" @click="onRegister">
+              {{ t('注册') }}
+            </ElButton>
+          </ElFormItem>
+          <div class="form-footer">
+            <ElLink type="primary" @click="toggleMode">{{ t('已有账号？去登录') }}</ElLink>
+          </div>
+        </ElForm>
+      </div>
     </div>
+
+    <IcpFooter class="login-icp" />
   </div>
 </template>
 
 <style scoped lang="scss">
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--el-bg-color);
+}
+
 .login-container {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -221,6 +235,10 @@ function toggleMode() {
 .form-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.login-icp {
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
 }
 
 @media (width <= 768px) {

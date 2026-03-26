@@ -57,7 +57,10 @@ function applyFallbackByMode() {
   html.style.colorScheme = fallbackDark ? 'dark' : 'light'
   const fontSizeVars = getThemeFontSizeCssVarMap(fallbackFontSizeLevel)
   for (const name in fontSizeVars) {
-    html.style.setProperty(name, fontSizeVars[name as keyof typeof fontSizeVars])
+    const value = fontSizeVars[name as keyof typeof fontSizeVars]
+    if (value) {
+      html.style.setProperty(name, value)
+    }
   }
 }
 

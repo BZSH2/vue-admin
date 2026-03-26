@@ -25,7 +25,7 @@ const asyncRoutes: Route.RouteRecord[] = [
       {
         path: '/system',
         name: 'System',
-        redirect: '/system/roleManagement',
+        redirect: '/system/users',
         meta: {
           title: '系统管理',
           noClosable: true,
@@ -34,6 +34,17 @@ const asyncRoutes: Route.RouteRecord[] = [
           icon: 'menus-blink',
         },
         children: [
+          {
+            path: '/system/users',
+            name: 'UserManagement',
+            component: () => import('@/views/system/userManagement/index.vue'),
+            meta: {
+              title: '用户管理',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
           {
             path: '/system/roleManagement',
             name: 'RoleManagement',
@@ -46,22 +57,44 @@ const asyncRoutes: Route.RouteRecord[] = [
             },
           },
           {
-            path: '/system/userPermission',
-            name: 'UserPermission',
-            component: () => import('@/views/system/userPermission/index.vue'),
+            path: '/system/menus',
+            name: 'MenuManagement',
+            component: () => import('@/views/system/menuManagement/index.vue'),
             meta: {
-              title: '用户管理',
+              title: '菜单管理',
               noClosable: true,
               isLevel1: true,
               noKeepAlive: false,
             },
           },
           {
-            path: '/system/role',
-            name: 'SystemRole',
-            component: () => import('@/views/system/role/index.vue'),
+            path: '/system/configs',
+            name: 'SystemConfig',
+            component: () => import('@/views/system/systemConfig/index.vue'),
             meta: {
-              title: '角色管理',
+              title: '系统参数',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
+          {
+            path: '/system/loginLogs',
+            name: 'LoginLog',
+            component: () => import('@/views/system/loginLog/index.vue'),
+            meta: {
+              title: '登录日志',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
+          {
+            path: '/system/operationLogs',
+            name: 'OperationLog',
+            component: () => import('@/views/system/operationLog/index.vue'),
+            meta: {
+              title: '操作日志',
               noClosable: true,
               isLevel1: true,
               noKeepAlive: false,

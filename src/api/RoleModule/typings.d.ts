@@ -1,42 +1,72 @@
 declare namespace RoleModule {
-  interface RoleOptionDto {
-    /** 角色值 */
-    value: 'admin' | 'user'
-    /** 角色展示名称 */
-    label: string
+  interface QueryRoleDto {
+    page?: number
+    pageSize?: number
+    keyword?: string
+    enabled?: boolean
   }
 
-  interface RoleOptionsResponseDto {
-    /** 业务状态码 */
-    code: number
-    /** 响应消息 */
-    message: string
-    data: RoleOptionDto[]
+  interface CreateRoleDto {
+    code: string
+    name: string
+    description?: string
+    sort?: number
+    enabled?: boolean
+    isDefault?: boolean
   }
 
-  interface UserRoleDetailDto {
-    /** 用户ID */
+  interface UpdateRoleDto extends Partial<CreateRoleDto> {}
+
+  interface UpdateRoleStatusDto {
+    enabled: boolean
+  }
+
+  interface CreateRoleUserDto {
     userId: string
-    /** 手机号 */
+  }
+
+  interface RoleDetailDto {
+    id: string
+    code: string
+    name: string
+    description?: string | null
+    sort: number
+    enabled: boolean
+    isSystem: boolean
+    isDefault: boolean
+    memberCount: number
+    createdAt: string
+    updatedAt: string
+  }
+
+  interface RoleListResult {
+    items: RoleDetailDto[]
+    total: number
+    page: number
+    pageSize: number
+  }
+
+  interface RoleMemberDto {
+    userId: string
     phoneNumber: string
-    /** 昵称 */
     nickname?: string | null
-    /** 头像地址 */
     avatar?: string | null
-    /** 当前角色 */
-    role: 'admin' | 'user'
+    assignedAt: string
   }
 
-  interface UserRoleDetailResponseDto {
-    /** 业务状态码 */
-    code: number
-    /** 响应消息 */
+  interface RoleMemberListResult {
+    items: RoleMemberDto[]
+    total: number
+    page: number
+    pageSize: number
+  }
+
+  interface OperationMessageDto {
     message: string
-    data: UserRoleDetailDto
   }
 
-  interface UpdateUserRoleDto {
-    /** 目标角色 */
-    role: 'admin' | 'user'
+  type RoleOptionDto = {
+    value: 'admin' | 'user'
+    label: string
   }
 }

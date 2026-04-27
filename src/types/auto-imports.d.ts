@@ -80,6 +80,7 @@ declare global {
   const unref: typeof import('vue').unref
   const useAppViewportHeight: typeof import('../composables/useAppViewport').useAppViewportHeight
   const useAttrs: typeof import('vue').useAttrs
+  const useChartResize: typeof import('../composables/useResize').useChartResize
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
   const useI18n: typeof import('vue-i18n').useI18n
@@ -87,6 +88,7 @@ declare global {
   const useLink: typeof import('vue-router').useLink
   const useMessage: typeof import('../composables/useMessage').useMessage
   const useModel: typeof import('vue').useModel
+  const useResize: typeof import('../composables/useResize').useResize
   const useResponsiveLayout: typeof import('../composables/useResponsiveLayout').useResponsiveLayout
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter

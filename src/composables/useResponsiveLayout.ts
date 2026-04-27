@@ -1,9 +1,10 @@
 import { computed, ref, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+import { settingConfig } from '@/config/setting.config'
 
-export const MOBILE_BREAKPOINT = 768
-export const COMPACT_HEADER_BREAKPOINT = 992
-export const SIDEBAR_COLLAPSE_BREAKPOINT = 1200
+export const MOBILE_BREAKPOINT = settingConfig.mobileWidth
+export const COMPACT_HEADER_BREAKPOINT = settingConfig.compactWidth
+export const SIDEBAR_COLLAPSE_BREAKPOINT = settingConfig.windowWidth
 
 const NARROW_MOBILE_BREAKPOINT = 420
 

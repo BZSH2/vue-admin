@@ -38,4 +38,16 @@ export const settingConfig = {
    * intelligence(前端导出路由)和 all(后端导出路由)两种方式
    */
   authentication: 'all',
+  /**
+   * 移动端断点
+   */
+  mobileWidth: 768,
+  /**
+   * ipad断点
+   */
+  compactWidth: 992,
+  /**
+   * window断点
+   */
+  windowWidth: 1200,
 }

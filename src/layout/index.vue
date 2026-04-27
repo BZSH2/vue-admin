@@ -35,7 +35,7 @@ watch(
     <ElAside
       v-if="!isMobile"
       :width="desktopCollapsed ? '65px' : '220px'"
-      class="aside"
+      class="aside aside-box"
       :class="{ collapsed: desktopCollapsed }"
     >
       <Sidebar :collapsed="desktopCollapsed" @toggle="toggleSidebar" />

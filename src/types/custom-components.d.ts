@@ -12,5 +12,7 @@ declare namespace Components {
     content: string
     /** 颜色 */
     color: string
+    /** 图标 */
+    icon: string
   }
 }

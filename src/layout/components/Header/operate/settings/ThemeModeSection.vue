@@ -22,7 +22,7 @@ function onModeChange(mode: string | number | boolean | undefined) {
   <div class="theme-row">
     <div class="theme-title">主题模式</div>
     <ElRadioGroup :model-value="themeMode" @change="onModeChange">
-      <ElRadioButton label="浅色" value="light" />
+      <ElRadioButton label="浅色" value="light" :span="8" />
       <ElRadioButton label="深色" value="dark" />
       <ElRadioButton label="跟随系统" value="system" />
     </ElRadioGroup>
@@ -43,9 +43,11 @@ function onModeChange(mode: string | number | boolean | undefined) {
 }
 
 :deep(.el-radio-group) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 10px;
+  display: flex;
+
+  .el-radio-button {
+    flex: 1;
+  }
 }
 
 :deep(.el-radio-button__inner) {

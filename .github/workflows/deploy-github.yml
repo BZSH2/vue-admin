@@ -58,7 +58,7 @@ jobs:
     env:
       VITE_BASE_URL: '/${{ github.event.repository.name }}/'
       VITE_BUILD_COMPRESS: 'gzip,brotli'
-      VITE_PRELOAD_ASSETS: '/favicon.ico'
+      VITE_PRELOAD_ASSETS: '/favicon.svg'
       VITE_PRECONNECT_ORIGINS: 'https://m1.apifoxmock.com'
 
     steps:

@@ -2,7 +2,6 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { authControllerChangePassword } from '@/api/ProfileModule/Auth'
-import PageContainer from '@/components/PageContainer.vue'
 import { $baseMessage } from '@/composables/useMessage'
 import { useUserStore } from '@/stores/user'
 
@@ -118,144 +117,142 @@ onMounted(() => {
 </script>
 
 <template>
-  <PageContainer fluid>
-    <div class="system-user-page">
-      <section class="hero-card">
-        <div>
-          <p class="eyebrow">SYSTEM USER</p>
-          <h1 class="hero-title">用户管理</h1>
-          <p class="hero-desc">
-            当前接口文档只开放了个人资料与修改密码能力，所以这里优先把“当前登录用户”的信息维护链路做完整。
-          </p>
-        </div>
-        <ElButton :loading="loadingProfile" plain type="primary" @click="loadProfile(true)">
-          刷新资料
-        </ElButton>
-      </section>
+  <div class="system-user-page user-container">
+    <section class="hero-card">
+      <div>
+        <p class="eyebrow">SYSTEM USER</p>
+        <h1 class="hero-title">用户管理</h1>
+        <p class="hero-desc">
+          当前接口文档只开放了个人资料与修改密码能力，所以这里优先把“当前登录用户”的信息维护链路做完整。
+        </p>
+      </div>
+      <ElButton :loading="loadingProfile" plain type="primary" @click="loadProfile(true)">
+        刷新资料
+      </ElButton>
+    </section>
 
-      <div class="content-grid">
-        <section class="panel profile-panel">
-          <div class="panel-head">
-            <div>
-              <h2>当前用户资料</h2>
-              <p>数据来自 `/api/auth/profile`，会在进入系统后自动拉取，也支持这里手动刷新。</p>
-            </div>
-            <ElTag :type="roleTagType" effect="dark">{{ roleLabel }}</ElTag>
+    <div class="content-grid">
+      <section class="panel profile-panel">
+        <div class="panel-head">
+          <div>
+            <h2>当前用户资料</h2>
+            <p>数据来自 `/api/auth/profile`，会在进入系统后自动拉取，也支持这里手动刷新。</p>
           </div>
+          <ElTag :type="roleTagType" effect="dark">{{ roleLabel }}</ElTag>
+        </div>
 
-          <ElSkeleton :loading="loadingProfile" animated>
-            <template #template>
-              <div class="profile-skeleton">
-                <div class="profile-skeleton-avatar" />
-                <div class="profile-skeleton-lines">
-                  <ElSkeletonItem variant="h3" />
-                  <ElSkeletonItem variant="text" />
-                  <ElSkeletonItem variant="text" />
-                  <ElSkeletonItem variant="text" />
+        <ElSkeleton :loading="loadingProfile" animated>
+          <template #template>
+            <div class="profile-skeleton">
+              <div class="profile-skeleton-avatar" />
+              <div class="profile-skeleton-lines">
+                <ElSkeletonItem variant="h3" />
+                <ElSkeletonItem variant="text" />
+                <ElSkeletonItem variant="text" />
+                <ElSkeletonItem variant="text" />
+              </div>
+            </div>
+          </template>
+
+          <template #default>
+            <template v-if="profile">
+              <div class="profile-summary">
+                <div class="avatar-shell">
+                  <img
+                    v-if="profile.avatar"
+                    :src="profile.avatar"
+                    alt="用户头像"
+                    class="avatar-image"
+                  />
+                  <span v-else class="avatar-fallback">{{ profileInitial }}</span>
+                </div>
+
+                <div class="summary-copy">
+                  <div class="summary-name">{{
+                    profile.nickname || profile.phoneNumber || '未命名用户'
+                  }}</div>
+                  <div class="summary-subtitle">手机号 {{ profile.phoneNumber || '未提供' }}</div>
+                  <div class="summary-role">角色标识：{{ profile.role || '未设置' }}</div>
+                </div>
+              </div>
+
+              <div class="info-grid">
+                <div v-for="item in profileRows" :key="item.label" class="info-item">
+                  <span class="info-label">{{ item.label }}</span>
+                  <span class="info-value">{{ item.value }}</span>
                 </div>
               </div>
             </template>
 
-            <template #default>
-              <template v-if="profile">
-                <div class="profile-summary">
-                  <div class="avatar-shell">
-                    <img
-                      v-if="profile.avatar"
-                      :src="profile.avatar"
-                      alt="用户头像"
-                      class="avatar-image"
-                    />
-                    <span v-else class="avatar-fallback">{{ profileInitial }}</span>
-                  </div>
+            <ElEmpty v-else description="暂未获取到当前用户信息" />
+          </template>
+        </ElSkeleton>
+      </section>
 
-                  <div class="summary-copy">
-                    <div class="summary-name">{{
-                      profile.nickname || profile.phoneNumber || '未命名用户'
-                    }}</div>
-                    <div class="summary-subtitle">手机号 {{ profile.phoneNumber || '未提供' }}</div>
-                    <div class="summary-role">角色标识：{{ profile.role || '未设置' }}</div>
-                  </div>
-                </div>
-
-                <div class="info-grid">
-                  <div v-for="item in profileRows" :key="item.label" class="info-item">
-                    <span class="info-label">{{ item.label }}</span>
-                    <span class="info-value">{{ item.value }}</span>
-                  </div>
-                </div>
-              </template>
-
-              <ElEmpty v-else description="暂未获取到当前用户信息" />
-            </template>
-          </ElSkeleton>
-        </section>
-
-        <section class="panel password-panel">
-          <div class="panel-head">
-            <div>
-              <h2>修改密码</h2>
-              <p>调用 `/api/auth/change-password`。提交成功后会清空表单，便于继续其他操作。</p>
-            </div>
+      <section class="panel password-panel">
+        <div class="panel-head">
+          <div>
+            <h2>修改密码</h2>
+            <p>调用 `/api/auth/change-password`。提交成功后会清空表单，便于继续其他操作。</p>
           </div>
+        </div>
 
-          <ElAlert
-            type="info"
-            :closable="false"
-            title="新密码长度需为 6-20 位，建议包含数字与大小写字母。"
-          />
+        <ElAlert
+          type="info"
+          :closable="false"
+          title="新密码长度需为 6-20 位，建议包含数字与大小写字母。"
+        />
 
-          <ElForm
-            ref="passwordFormRef"
-            class="password-form"
-            label-position="top"
-            :model="passwordForm"
-            :rules="passwordRules"
-          >
-            <ElFormItem label="旧密码" prop="oldPassword">
-              <ElInput
-                v-model="passwordForm.oldPassword"
-                clearable
-                show-password
-                type="password"
-                placeholder="请输入旧密码"
-              />
-            </ElFormItem>
+        <ElForm
+          ref="passwordFormRef"
+          class="password-form"
+          label-position="top"
+          :model="passwordForm"
+          :rules="passwordRules"
+        >
+          <ElFormItem label="旧密码" prop="oldPassword">
+            <ElInput
+              v-model="passwordForm.oldPassword"
+              clearable
+              show-password
+              type="password"
+              placeholder="请输入旧密码"
+            />
+          </ElFormItem>
 
-            <ElFormItem label="新密码" prop="newPassword">
-              <ElInput
-                v-model="passwordForm.newPassword"
-                clearable
-                show-password
-                type="password"
-                placeholder="请输入新密码"
-              />
-            </ElFormItem>
+          <ElFormItem label="新密码" prop="newPassword">
+            <ElInput
+              v-model="passwordForm.newPassword"
+              clearable
+              show-password
+              type="password"
+              placeholder="请输入新密码"
+            />
+          </ElFormItem>
 
-            <ElFormItem label="确认新密码" prop="confirmPassword">
-              <ElInput
-                v-model="passwordForm.confirmPassword"
-                clearable
-                show-password
-                type="password"
-                placeholder="请再次输入新密码"
-                @keyup.enter="handleChangePassword"
-              />
-            </ElFormItem>
+          <ElFormItem label="确认新密码" prop="confirmPassword">
+            <ElInput
+              v-model="passwordForm.confirmPassword"
+              clearable
+              show-password
+              type="password"
+              placeholder="请再次输入新密码"
+              @keyup.enter="handleChangePassword"
+            />
+          </ElFormItem>
 
-            <div class="form-actions">
-              <ElButton :disabled="savingPassword" @click="passwordFormRef?.resetFields()">
-                重置
-              </ElButton>
-              <ElButton type="primary" :loading="savingPassword" @click="handleChangePassword">
-                保存新密码
-              </ElButton>
-            </div>
-          </ElForm>
-        </section>
-      </div>
+          <div class="form-actions">
+            <ElButton :disabled="savingPassword" @click="passwordFormRef?.resetFields()">
+              重置
+            </ElButton>
+            <ElButton type="primary" :loading="savingPassword" @click="handleChangePassword">
+              保存新密码
+            </ElButton>
+          </div>
+        </ElForm>
+      </section>
     </div>
-  </PageContainer>
+  </div>
 </template>
 
 <style scoped lang="scss">

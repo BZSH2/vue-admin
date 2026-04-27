@@ -8,7 +8,6 @@ import {
   roleControllerUpdateStatus,
 } from '@/api/RoleModule/Role'
 import { $asyncBaseConfirm, $baseMessage } from '@/composables/useMessage'
-import PageContainer from '@/components/PageContainer.vue'
 import RoleFormDialog from './components/RoleFormDialog.vue'
 import RoleMembersDialog from './components/RoleMembersDialog.vue'
 
@@ -163,120 +162,118 @@ onMounted(() => {
 </script>
 
 <template>
-  <PageContainer fluid>
-    <div class="role-management-page">
-      <ElCard shadow="never" class="toolbar-card">
-        <div class="page-header">
-          <div>
-            <div class="page-title">角色管理</div>
-            <div class="page-desc">支持角色列表、创建编辑、启停控制和成员管理。</div>
-          </div>
-          <ElButton type="primary" @click="openCreate">新增角色</ElButton>
+  <div class="role-management-page">
+    <ElCard shadow="never" class="toolbar-card">
+      <div class="page-header">
+        <div>
+          <div class="page-title">角色管理</div>
+          <div class="page-desc">支持角色列表、创建编辑、启停控制和成员管理。</div>
         </div>
+        <ElButton type="primary" @click="openCreate">新增角色</ElButton>
+      </div>
 
-        <div class="search-bar">
-          <ElInput
-            v-model="query.keyword"
-            clearable
-            placeholder="搜索角色名称或编码"
-            class="search-bar__keyword"
-            @keyup.enter="handleSearch"
+      <div class="search-bar">
+        <ElInput
+          v-model="query.keyword"
+          clearable
+          placeholder="搜索角色名称或编码"
+          class="search-bar__keyword"
+          @keyup.enter="handleSearch"
+        />
+        <ElSelect v-model="statusValue" class="search-bar__status">
+          <ElOption
+            v-for="item in statusOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           />
-          <ElSelect v-model="statusValue" class="search-bar__status">
-            <ElOption
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </ElSelect>
-          <ElButton @click="handleSearch">查询</ElButton>
-          <ElButton @click="handleReset">重置</ElButton>
-        </div>
-      </ElCard>
+        </ElSelect>
+        <ElButton @click="handleSearch">查询</ElButton>
+        <ElButton @click="handleReset">重置</ElButton>
+      </div>
+    </ElCard>
 
-      <ElCard shadow="never">
-        <ElTable :data="list" v-loading="loading" border>
-          <ElTableColumn prop="name" label="角色名称" min-width="160" />
-          <ElTableColumn prop="code" label="角色编码" min-width="160" />
-          <ElTableColumn label="状态" width="100" align="center">
-            <template #default="{ row }">
-              <ElTag :type="row.enabled ? 'success' : 'info'">
-                {{ row.enabled ? '启用' : '停用' }}
-              </ElTag>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="属性" min-width="180">
-            <template #default="{ row }">
-              <div class="tag-group">
-                <ElTag v-if="row.isSystem" type="danger" effect="plain">系统角色</ElTag>
-                <ElTag v-if="row.isDefault" type="warning" effect="plain">默认角色</ElTag>
-                <span v-if="!row.isSystem && !row.isDefault" class="text-muted">普通角色</span>
-              </div>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="memberCount" label="成员数" width="100" align="center" />
-          <ElTableColumn prop="description" label="描述" min-width="220">
-            <template #default="{ row }">
-              {{ row.description || '-' }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="updatedAt" label="更新时间" min-width="180">
-            <template #default="{ row }">
-              {{ formatTime(row.updatedAt) }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="操作" min-width="260" fixed="right">
-            <template #default="{ row }">
-              <div class="action-group">
-                <ElButton link type="primary" @click="openEdit(row)">编辑</ElButton>
-                <ElButton link type="primary" @click="openMembers(row)">成员</ElButton>
-                <ElButton
-                  link
-                  :type="row.enabled ? 'warning' : 'success'"
-                  :loading="actionRoleId === row.id"
-                  @click="handleToggleStatus(row)"
-                >
-                  {{ row.enabled ? '停用' : '启用' }}
-                </ElButton>
-                <ElButton
-                  link
-                  type="danger"
-                  :disabled="row.isSystem"
-                  :loading="actionRoleId === row.id"
-                  @click="handleRemove(row)"
-                >
-                  删除
-                </ElButton>
-              </div>
-            </template>
-          </ElTableColumn>
-        </ElTable>
+    <ElCard shadow="never">
+      <ElTable :data="list" v-loading="loading" border>
+        <ElTableColumn prop="name" label="角色名称" min-width="160" />
+        <ElTableColumn prop="code" label="角色编码" min-width="160" />
+        <ElTableColumn label="状态" width="100" align="center">
+          <template #default="{ row }">
+            <ElTag :type="row.enabled ? 'success' : 'info'">
+              {{ row.enabled ? '启用' : '停用' }}
+            </ElTag>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn label="属性" min-width="180">
+          <template #default="{ row }">
+            <div class="tag-group">
+              <ElTag v-if="row.isSystem" type="danger" effect="plain">系统角色</ElTag>
+              <ElTag v-if="row.isDefault" type="warning" effect="plain">默认角色</ElTag>
+              <span v-if="!row.isSystem && !row.isDefault" class="text-muted">普通角色</span>
+            </div>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn prop="memberCount" label="成员数" width="100" align="center" />
+        <ElTableColumn prop="description" label="描述" min-width="220">
+          <template #default="{ row }">
+            {{ row.description || '-' }}
+          </template>
+        </ElTableColumn>
+        <ElTableColumn prop="updatedAt" label="更新时间" min-width="180">
+          <template #default="{ row }">
+            {{ formatTime(row.updatedAt) }}
+          </template>
+        </ElTableColumn>
+        <ElTableColumn label="操作" min-width="260" fixed="right">
+          <template #default="{ row }">
+            <div class="action-group">
+              <ElButton link type="primary" @click="openEdit(row)">编辑</ElButton>
+              <ElButton link type="primary" @click="openMembers(row)">成员</ElButton>
+              <ElButton
+                link
+                :type="row.enabled ? 'warning' : 'success'"
+                :loading="actionRoleId === row.id"
+                @click="handleToggleStatus(row)"
+              >
+                {{ row.enabled ? '停用' : '启用' }}
+              </ElButton>
+              <ElButton
+                link
+                type="danger"
+                :disabled="row.isSystem"
+                :loading="actionRoleId === row.id"
+                @click="handleRemove(row)"
+              >
+                删除
+              </ElButton>
+            </div>
+          </template>
+        </ElTableColumn>
+      </ElTable>
 
-        <div class="pagination-bar">
-          <ElPagination
-            v-model:current-page="query.page"
-            v-model:page-size="query.pageSize"
-            background
-            layout="total, prev, pager, next, sizes"
-            :page-sizes="[10, 20, 50]"
-            :total="total"
-            @change="fetchList"
-          />
-        </div>
-      </ElCard>
-    </div>
+      <div class="pagination-bar">
+        <ElPagination
+          v-model:current-page="query.page"
+          v-model:page-size="query.pageSize"
+          background
+          layout="total, prev, pager, next, sizes"
+          :page-sizes="[10, 20, 50]"
+          :total="total"
+          @change="fetchList"
+        />
+      </div>
+    </ElCard>
+  </div>
 
-    <RoleFormDialog
-      v-model="formVisible"
-      :mode="formMode"
-      :role="currentRole"
-      :loading="submitLoading"
-      @submit="handleSubmit"
-    />
+  <RoleFormDialog
+    v-model="formVisible"
+    :mode="formMode"
+    :role="currentRole"
+    :loading="submitLoading"
+    @submit="handleSubmit"
+  />
 
-    <RoleMembersDialog v-model="memberVisible" :role="currentMemberRole" @changed="fetchList" />
-  </PageContainer>
+  <RoleMembersDialog v-model="memberVisible" :role="currentMemberRole" @changed="fetchList" />
 </template>
 
 <style scoped lang="scss">

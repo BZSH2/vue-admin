@@ -23,10 +23,9 @@ defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
+  height: 46px;
   font-weight: 600;
   letter-spacing: 0.5px;
   cursor: pointer;
-  border-bottom: 1px solid var(--el-border-color-lighter);
 }
 </style>

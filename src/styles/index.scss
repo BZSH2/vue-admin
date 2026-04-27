@@ -62,3 +62,7 @@ body {
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
 }
+
+* {
+  box-sizing: border-box;
+}

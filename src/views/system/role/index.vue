@@ -6,7 +6,6 @@ import {
   rolesControllerGetUserRole,
   rolesControllerUpdateUserRole,
 } from '@/api/RoleModule/Roles'
-import PageContainer from '@/components/PageContainer.vue'
 import { $baseMessage } from '@/composables/useMessage'
 import { useUserStore } from '@/stores/user'
 
@@ -141,181 +140,179 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageContainer fluid>
-    <div class="system-role-page">
-      <section class="hero-card">
-        <div>
-          <p class="eyebrow">SYSTEM ROLE</p>
-          <h1 class="hero-title">角色管理</h1>
-          <p class="hero-desc">
-            当前文档只提供“按用户 ID
-            查询角色”和“更新指定用户角色”，所以这里的交互重点是快速定位单个用户并完成角色调整。
-          </p>
+  <div class="system-role-page">
+    <section class="hero-card">
+      <div>
+        <p class="eyebrow">SYSTEM ROLE</p>
+        <h1 class="hero-title">角色管理</h1>
+        <p class="hero-desc">
+          当前文档只提供“按用户 ID
+          查询角色”和“更新指定用户角色”，所以这里的交互重点是快速定位单个用户并完成角色调整。
+        </p>
+      </div>
+      <div class="hero-side">
+        <span class="hero-caption">可用角色</span>
+        <strong>{{ availableRoleText }}</strong>
+      </div>
+    </section>
+
+    <div class="content-grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>查询目标用户</h2>
+            <p>接口需要管理员权限，且必须传入明确的用户 ID。</p>
+          </div>
         </div>
-        <div class="hero-side">
-          <span class="hero-caption">可用角色</span>
-          <strong>{{ availableRoleText }}</strong>
-        </div>
-      </section>
 
-      <div class="content-grid">
-        <section class="panel">
-          <div class="panel-head">
-            <div>
-              <h2>查询目标用户</h2>
-              <p>接口需要管理员权限，且必须传入明确的用户 ID。</p>
-            </div>
-          </div>
+        <ElAlert
+          type="warning"
+          :closable="false"
+          title="当前接口不包含用户列表，所以这里采用“输入用户 ID 后单查”的管理方式。"
+        />
 
-          <ElAlert
-            type="warning"
-            :closable="false"
-            title="当前接口不包含用户列表，所以这里采用“输入用户 ID 后单查”的管理方式。"
-          />
-
-          <ElForm
-            ref="queryFormRef"
-            class="query-form"
-            label-position="top"
-            :model="queryForm"
-            :rules="queryRules"
-          >
-            <ElFormItem label="用户 ID" prop="userId">
-              <ElInput
-                v-model="queryForm.userId"
-                clearable
-                placeholder="请输入要查询的用户 ID"
-                @keyup.enter="queryUserRole"
-              >
-                <template #append>
-                  <ElButton :loading="queryingUser" @click="queryUserRole">查询</ElButton>
-                </template>
-              </ElInput>
-            </ElFormItem>
-
-            <div class="query-actions">
-              <ElButton :disabled="!currentUserId" @click="useCurrentUserId"
-                >使用我的用户 ID</ElButton
-              >
-              <ElButton :disabled="!roleDetail" @click="resetResult">清空结果</ElButton>
-            </div>
-          </ElForm>
-
-          <div class="role-chip-list">
-            <span class="chip-label">角色选项</span>
-            <ElSkeleton :loading="loadingOptions" animated>
-              <template #template>
-                <div class="chip-skeleton-row">
-                  <ElSkeletonItem variant="button" />
-                  <ElSkeletonItem variant="button" />
-                </div>
+        <ElForm
+          ref="queryFormRef"
+          class="query-form"
+          label-position="top"
+          :model="queryForm"
+          :rules="queryRules"
+        >
+          <ElFormItem label="用户 ID" prop="userId">
+            <ElInput
+              v-model="queryForm.userId"
+              clearable
+              placeholder="请输入要查询的用户 ID"
+              @keyup.enter="queryUserRole"
+            >
+              <template #append>
+                <ElButton :loading="queryingUser" @click="queryUserRole">查询</ElButton>
               </template>
+            </ElInput>
+          </ElFormItem>
 
-              <template #default>
-                <div class="chip-wrap">
-                  <ElTag
-                    v-for="item in roleOptions"
-                    :key="item.value"
-                    :type="roleTagTypeMap[item.value] || 'info'"
-                    effect="light"
-                    round
-                  >
-                    {{ item.label }} ({{ item.value }})
-                  </ElTag>
-                </div>
-              </template>
-            </ElSkeleton>
+          <div class="query-actions">
+            <ElButton :disabled="!currentUserId" @click="useCurrentUserId"
+              >使用我的用户 ID</ElButton
+            >
+            <ElButton :disabled="!roleDetail" @click="resetResult">清空结果</ElButton>
           </div>
-        </section>
+        </ElForm>
 
-        <section class="panel result-panel">
-          <div class="panel-head">
-            <div>
-              <h2>角色详情与更新</h2>
-              <p>先查询，再修改。保存成功后，本页会自动同步展示最新角色。</p>
-            </div>
-          </div>
-
-          <ElSkeleton :loading="queryingUser" animated>
+        <div class="role-chip-list">
+          <span class="chip-label">角色选项</span>
+          <ElSkeleton :loading="loadingOptions" animated>
             <template #template>
-              <div class="result-skeleton">
-                <ElSkeletonItem variant="text" />
-                <ElSkeletonItem variant="h3" />
-                <ElSkeletonItem variant="text" />
-                <ElSkeletonItem variant="text" />
+              <div class="chip-skeleton-row">
+                <ElSkeletonItem variant="button" />
+                <ElSkeletonItem variant="button" />
               </div>
             </template>
 
             <template #default>
-              <template v-if="roleDetail">
-                <div class="user-summary">
-                  <div class="summary-main">
-                    <div class="summary-name">{{
-                      roleDetail.nickname || roleDetail.phoneNumber
-                    }}</div>
-                    <div class="summary-subtitle">用户 ID {{ roleDetail.userId }}</div>
-                    <div class="summary-subtitle">手机号 {{ roleDetail.phoneNumber }}</div>
-                  </div>
-                  <ElTag :type="roleTagTypeMap[roleDetail.role] || 'info'" effect="dark">
-                    当前角色：{{ roleDetail.role }}
-                  </ElTag>
-                </div>
-
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <span class="detail-label">昵称</span>
-                    <span class="detail-value">{{ roleDetail.nickname || '未提供' }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="detail-label">头像地址</span>
-                    <span class="detail-value">{{ roleDetail.avatar || '未提供' }}</span>
-                  </div>
-                </div>
-
-                <ElForm
-                  ref="updateFormRef"
-                  class="update-form"
-                  label-position="top"
-                  :model="updateForm"
-                  :rules="updateRules"
+              <div class="chip-wrap">
+                <ElTag
+                  v-for="item in roleOptions"
+                  :key="item.value"
+                  :type="roleTagTypeMap[item.value] || 'info'"
+                  effect="light"
+                  round
                 >
-                  <ElFormItem label="目标角色" prop="role">
-                    <ElSelect v-model="updateForm.role" placeholder="请选择目标角色">
-                      <ElOption
-                        v-for="item in roleOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </ElSelect>
-                  </ElFormItem>
-
-                  <div class="query-actions">
-                    <ElButton
-                      :disabled="!roleChanged || savingRole"
-                      @click="updateForm.role = roleDetail.role"
-                    >
-                      恢复当前角色
-                    </ElButton>
-                    <ElButton
-                      type="primary"
-                      :disabled="!roleChanged"
-                      :loading="savingRole"
-                      @click="updateUserRole"
-                    >
-                      保存角色
-                    </ElButton>
-                  </div>
-                </ElForm>
-              </template>
-
-              <ElEmpty description="输入用户 ID 后查询角色详情" />
+                  {{ item.label }} ({{ item.value }})
+                </ElTag>
+              </div>
             </template>
           </ElSkeleton>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <section class="panel result-panel">
+        <div class="panel-head">
+          <div>
+            <h2>角色详情与更新</h2>
+            <p>先查询，再修改。保存成功后，本页会自动同步展示最新角色。</p>
+          </div>
+        </div>
+
+        <ElSkeleton :loading="queryingUser" animated>
+          <template #template>
+            <div class="result-skeleton">
+              <ElSkeletonItem variant="text" />
+              <ElSkeletonItem variant="h3" />
+              <ElSkeletonItem variant="text" />
+              <ElSkeletonItem variant="text" />
+            </div>
+          </template>
+
+          <template #default>
+            <template v-if="roleDetail">
+              <div class="user-summary">
+                <div class="summary-main">
+                  <div class="summary-name">{{
+                    roleDetail.nickname || roleDetail.phoneNumber
+                  }}</div>
+                  <div class="summary-subtitle">用户 ID {{ roleDetail.userId }}</div>
+                  <div class="summary-subtitle">手机号 {{ roleDetail.phoneNumber }}</div>
+                </div>
+                <ElTag :type="roleTagTypeMap[roleDetail.role] || 'info'" effect="dark">
+                  当前角色：{{ roleDetail.role }}
+                </ElTag>
+              </div>
+
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">昵称</span>
+                  <span class="detail-value">{{ roleDetail.nickname || '未提供' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">头像地址</span>
+                  <span class="detail-value">{{ roleDetail.avatar || '未提供' }}</span>
+                </div>
+              </div>
+
+              <ElForm
+                ref="updateFormRef"
+                class="update-form"
+                label-position="top"
+                :model="updateForm"
+                :rules="updateRules"
+              >
+                <ElFormItem label="目标角色" prop="role">
+                  <ElSelect v-model="updateForm.role" placeholder="请选择目标角色">
+                    <ElOption
+                      v-for="item in roleOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </ElSelect>
+                </ElFormItem>
+
+                <div class="query-actions">
+                  <ElButton
+                    :disabled="!roleChanged || savingRole"
+                    @click="updateForm.role = roleDetail.role"
+                  >
+                    恢复当前角色
+                  </ElButton>
+                  <ElButton
+                    type="primary"
+                    :disabled="!roleChanged"
+                    :loading="savingRole"
+                    @click="updateUserRole"
+                  >
+                    保存角色
+                  </ElButton>
+                </div>
+              </ElForm>
+            </template>
+
+            <ElEmpty description="输入用户 ID 后查询角色详情" />
+          </template>
+        </ElSkeleton>
+      </section>
     </div>
-  </PageContainer>
+  </div>
 </template>
 
 <style scoped lang="scss">

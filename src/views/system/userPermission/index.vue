@@ -1,14 +1,10 @@
-<script setup lang="ts">
-import PageContainer from '@/components/PageContainer.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <PageContainer>
-    <div class="user-permission">
-      <div class="user-permission-title">用户权限</div>
-      <div class="user-permission-desc">当前页面内容较少，已补统一页边距与小屏阅读宽度。</div>
-    </div>
-  </PageContainer>
+  <div class="user-permission">
+    <div class="user-permission-title">用户权限</div>
+    <div class="user-permission-desc">当前页面内容较少，已补统一页边距与小屏阅读宽度。</div>
+  </div>
 </template>
 
 <style scoped lang="scss">

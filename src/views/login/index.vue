@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { authControllerLogin, authControllerRegister } from '@/api/LoginModule/Auth'
-import IcpFooter from '@/components/IcpFooter.vue'
+import IcpFooter from '@/components/IcpFooter/index.vue'
 import { setToken } from '@/utils/token'
 import { $baseMessage } from '@/composables/useMessage'
 import { useI18n } from 'vue-i18n'
@@ -149,7 +149,11 @@ function toggleMode() {
           size="large"
         >
           <ElFormItem :label="t('手机号')" prop="phoneNumber">
-            <ElInput v-model="registerForm.phoneNumber" :placeholder="t('请输入手机号')" clearable />
+            <ElInput
+              v-model="registerForm.phoneNumber"
+              :placeholder="t('请输入手机号')"
+              clearable
+            />
           </ElFormItem>
           <ElFormItem :label="t('昵称')" prop="nickname">
             <ElInput v-model="registerForm.nickname" :placeholder="t('请输入昵称')" clearable />
@@ -191,16 +195,16 @@ function toggleMode() {
 
 <style scoped lang="scss">
 .login-page {
+  position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   min-height: 100dvh;
   background: var(--el-bg-color);
 }
 
 .login-container {
-  flex: 1;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   background-color: var(--el-bg-color);
@@ -238,6 +242,10 @@ function toggleMode() {
 }
 
 .login-icp {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
   padding-bottom: calc(10px + env(safe-area-inset-bottom));
 }
 
@@ -258,7 +266,7 @@ function toggleMode() {
 
   .title {
     margin-bottom: 16px;
-    font-size: 20px;
+    font-size: var(--el-font-size-extra-large);
   }
 
   .form-footer {

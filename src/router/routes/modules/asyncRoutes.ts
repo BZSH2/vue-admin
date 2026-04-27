@@ -19,7 +19,7 @@ const asyncRoutes: Route.RouteRecord[] = [
           noClosable: true,
           isLevel1: true,
           noKeepAlive: false,
-          icon: 'menus-amazed',
+          icon: 'menus-orangeCat',
         },
       },
       {
@@ -31,7 +31,7 @@ const asyncRoutes: Route.RouteRecord[] = [
           noClosable: true,
           isLevel1: true,
           noKeepAlive: false,
-          icon: 'menus-blink',
+          icon: 'menus-tibetanMastiff',
         },
         children: [
           {

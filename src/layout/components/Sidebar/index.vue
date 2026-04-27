@@ -30,12 +30,7 @@ const emit = defineEmits<{
       class="control flex cursor-pointer items-center justify-center"
       @click="emit('toggle')"
     >
-      <Icon
-        name="layout-fold"
-        :size="16"
-        :class="props.collapsed ? 'transform-scale-x--100' : ''"
-        class="py-10px"
-      />
+      <Icon name="layout-fold" :size="16" />
     </div>
   </div>
 </template>
@@ -52,7 +47,7 @@ const emit = defineEmits<{
 
 .control {
   display: flex;
-  min-height: 48px;
+  min-height: 36px;
   border-top: 1px solid var(--el-border-color-lighter);
 }
 

@@ -16,8 +16,7 @@ const isIgnorableValue = (value) =>
   value.includes('%') ||
   ['inherit', 'initial', 'unset', 'revert', 'revert-layer'].includes(value)
 
-const plugin = stylelint.createPlugin(ruleName, () => {
-  return (root, result) => {
+const plugin = stylelint.createPlugin(ruleName, () => (root, result) => {
     root.walkDecls('font-size', (decl) => {
       const rawValue = decl.value.trim()
       if (!rawValue || isIgnorableValue(rawValue)) {
@@ -41,8 +40,7 @@ const plugin = stylelint.createPlugin(ruleName, () => {
         message: messages.rejected(rawValue, replacement),
       })
     })
-  }
-})
+  })
 
 plugin.ruleName = ruleName
 plugin.messages = messages

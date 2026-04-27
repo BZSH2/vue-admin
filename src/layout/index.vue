@@ -19,7 +19,7 @@ const {
 } = useResponsiveLayout()
 
 const layoutStyle = computed(() => ({
-  '--va-header-height': isMobile.value ? '52px' : '56px',
+  '--va-header-height': isMobile.value ? '42px' : '46px',
 }))
 
 watch(
@@ -34,7 +34,7 @@ watch(
   <ElContainer class="layout" :style="layoutStyle">
     <ElAside
       v-if="!isMobile"
-      :width="desktopCollapsed ? '72px' : '220px'"
+      :width="desktopCollapsed ? '65px' : '220px'"
       class="aside"
       :class="{ collapsed: desktopCollapsed }"
     >
@@ -97,8 +97,8 @@ watch(
   align-items: center;
   height: var(--va-header-height);
   padding: 0 max(16px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
-  background-color: var(--el-bg-color);
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  background-color: var(--el-bg-color-overlay);
+  box-shadow: 0 1px 4px #00152914;
 }
 
 .main {
@@ -109,6 +109,10 @@ watch(
 
 .content-scroll {
   height: calc(var(--va-app-height) - var(--va-header-height));
+
+  :deep(.el-scrollbar__view) {
+    height: 100%;
+  }
 }
 
 :deep(.mobile-sidebar-drawer .el-drawer) {

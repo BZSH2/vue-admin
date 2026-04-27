@@ -11,7 +11,7 @@ const props = defineProps<{
   collapse: boolean
 }>()
 
-const iconSize = computed(() => (props.collapse ? 20 : 14))
+const iconSize = computed(() => (props.collapse ? 20 : 16))
 
 /**
  * 判断是否为外部链接
@@ -78,7 +78,7 @@ const hasChildren = computed(() => {
       <ElSubMenu :index="fullPath">
         <template #title>
           <Icon v-if="item.meta?.icon" :name="item.meta.icon" :size="iconSize" />
-          <span class="ml-5px">{{ $t(item.meta?.title || '') }}</span>
+          <span class="ml-[5px]">{{ $t(item.meta?.title || '') }}</span>
         </template>
         <MenuItem
           v-for="child in item.children"
@@ -95,7 +95,7 @@ const hasChildren = computed(() => {
       <ElMenuItem :index="fullPath">
         <Icon v-if="item.meta?.icon" :name="item.meta.icon" :size="iconSize" />
         <template #title>
-          <span class="ml-5px">{{ $t(item.meta?.title || '') }}</span>
+          <span class="ml-[5px]">{{ $t(item.meta?.title || '') }}</span>
         </template>
       </ElMenuItem>
     </template>

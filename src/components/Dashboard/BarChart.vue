@@ -16,23 +16,19 @@ const options = ref({
     bottom: '3%',
     containLabel: true,
   },
-  xAxis: [
-    {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      axisTick: {
-        alignWithLabel: true,
-      },
+  xAxis: {
+    type: 'category',
+    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    axisTick: {
+      alignWithLabel: true,
     },
-  ],
-  yAxis: [
-    {
-      type: 'value',
-      axisTick: {
-        show: false,
-      },
+  },
+  yAxis: {
+    type: 'value',
+    axisTick: {
+      show: false,
     },
-  ],
+  },
   series: [
     {
       name: 'pageA',

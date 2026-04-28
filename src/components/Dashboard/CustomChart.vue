@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as echarts from 'echarts'
 import ChartTitle from './ChartTitle.vue'
+import { debounce } from 'lodash-es'
 
 const props = withDefaults(defineProps<ChartProps>(), {
   className: '',
@@ -21,14 +22,33 @@ interface ChartProps {
   options?: Record<string, any>
 }
 
-/** 图表容器 */
+/** 图表容器 DOM 引用 */
 const chartRef = ref<HTMLDivElement | null>(null)
-/** 图表实例 */
-const chartInstance = ref<echarts.ECharts | null>(null)
-/** ResizeObserver 实例 */
+/** ECharts 实例（使用 shallowRef 避免深层响应式代理干扰 ECharts 内部状态） */
+const chartInstance = shallowRef<echarts.ECharts | null>(null)
+/** 容器尺寸变化观察器 */
 let resizeObserver: ResizeObserver | null = null
-/** 容器 */
+/** 侧边栏元素引用，用于监听折叠动画 */
 let sidebarElm: Element | null = null
+
+/** 创建 ECharts 实例并挂载到容器 */
+function createChartInstance() {
+  if (!chartRef.value) {
+    return null
+  }
+  const instance = echarts.init(chartRef.value)
+  chartInstance.value = instance
+  return instance
+}
+
+/** 销毁当前 ECharts 实例，释放资源 */
+function destroyChartInstance() {
+  const instance = chartInstance.value
+  if (instance) {
+    instance.dispose()
+    chartInstance.value = null
+  }
+}
 
 /** 初始化图表 */
 function initChart(options: Record<string, any>) {
@@ -36,41 +56,57 @@ function initChart(options: Record<string, any>) {
     return
   }
 
-  if (!chartInstance.value) {
-    chartInstance.value = echarts.init(chartRef.value)
-    chartInstance.value.setOption(options || {})
+  destroyChartInstance()
+  const instance = createChartInstance()
+  if (instance) {
+    instance.setOption(options || {})
   }
-
   initResizeObserver()
   addCollapseEvent()
 }
 
-/** 刷新图表 */
+/** 刷新图表（销毁重建，确保坐标系完全重置） */
 function refreshChart(options: Record<string, any>) {
-  if (chartInstance.value) {
-    chartInstance.value.setOption(options || {})
+  if (!chartRef.value) {
+    return
+  }
+
+  destroyChartInstance()
+  const instance = createChartInstance()
+  if (instance) {
+    instance.setOption(options || {})
   }
 }
 
+/** 防抖 resize，避免频繁触发导致性能问题 */
+const resizeChart = debounce(() => {
+  if (chartInstance.value && chartRef.value) {
+    try {
+      chartInstance.value.resize()
+    } catch {
+      console.warn('ECharts resize error ignored')
+    }
+  }
+}, 500)
+
+/** 监听容器尺寸变化，自动调整图表大小 */
 function initResizeObserver() {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
   resizeObserver = new ResizeObserver(() => {
     resizeChart()
   })
-
   resizeObserver.observe(chartRef.value as Element)
 }
 
-function resizeChart() {
-  if (chartInstance.value) {
-    chartInstance.value.resize()
-  }
-}
-
+/** 监听侧边栏折叠动画结束，重新适配图表尺寸 */
 function addCollapseEvent() {
   sidebarElm = document.querySelector('.aside-box')
   sidebarElm?.addEventListener('transitionend', resizeChart)
 }
 
+/** 移除侧边栏折叠监听 */
 function removeCollapseEvent() {
   sidebarElm?.removeEventListener('transitionend', resizeChart)
 }
@@ -82,11 +118,12 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (chartInstance.value) {
-    chartInstance.value.dispose()
-    chartInstance.value = null
-    removeCollapseEvent()
+  destroyChartInstance()
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
   }
+  removeCollapseEvent()
 })
 
 defineExpose({

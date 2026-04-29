@@ -29,14 +29,15 @@ const layoutStyle = computed(() => ({
 function onScrollEnd(direction: string) {
   if (direction === 'bottom' && scrollEndPathName.includes(route.name as string)) {
     scrollEndDirection.value++
-    nextTick(() => {
-      reloadScroll()
-    })
+
+    reloadScroll()
   }
 }
 
 function reloadScroll() {
-  scrollbarRef.value?.update()
+  nextTick(() => {
+    scrollbarRef.value?.update()
+  })
 }
 
 provide('scrollEnd', scrollEndDirection)
@@ -46,6 +47,7 @@ watch(
   () => route.fullPath,
   () => {
     closeMobileSidebar()
+    reloadScroll()
   }
 )
 </script>

@@ -2,7 +2,7 @@ export default {
   /** {{ moduleLabel }} */
   prefix: '{{ prefix }}',
   service: [
-    // '*',
+    '*',
 {% for item in service -%}
     // '{{ item.value }}', /** {{ item.label }} */
 {% endfor -%}

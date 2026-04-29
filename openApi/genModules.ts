@@ -6,7 +6,7 @@ import { resolveTypeName } from './generate/utils'
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const serverBase = process.env.OPENAPI_BASE_URL || 'http://localhost:3000'
+const serverBase = process.env.VITE_PROXY_TARGET || 'https://nest.admin.bzsh.fun'
 
 /**
  * 从后端获取可生成的模块定义，并在 openApi/modules 下生成对应 TS 配置文件。
@@ -25,7 +25,9 @@ const serverBase = process.env.OPENAPI_BASE_URL || 'http://localhost:3000'
  * - 保持异常抛出，让上层命令感知失败并退出
  */
 async function main() {
+  console.log('开始生成模块定义', `${serverBase}/api/getModules`)
   const { data } = await axios.get(`${serverBase}/api/getModules`)
+  console.log('获取到的模块定义', data)
   const list: Array<{
     prefix: string
     label?: string

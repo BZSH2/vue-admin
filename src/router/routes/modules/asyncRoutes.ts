@@ -102,6 +102,41 @@ const asyncRoutes: Route.RouteRecord[] = [
           },
         ],
       },
+      {
+        path: '/icons',
+        name: 'Icons',
+        meta: {
+          title: '图标',
+          noClosable: true,
+          isLevel1: true,
+          noKeepAlive: false,
+          icon: 'menus-whiteCat',
+        },
+        children: [
+          {
+            path: '/icons/elementIcon',
+            name: 'ElementIcon',
+            component: () => import('@/views/icons/elementIcon.vue'),
+            meta: {
+              title: '饿了么图标',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
+          {
+            path: '/icons/customIcon',
+            name: 'CustomIcon',
+            component: () => import('@/views/icons/customIcon.vue'),
+            meta: {
+              title: '自定义图标',
+              noClosable: true,
+              isLevel1: true,
+              noKeepAlive: false,
+            },
+          },
+        ],
+      },
     ],
   },
 ]

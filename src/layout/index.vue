@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useResponsiveLayout } from '@/composables/useResponsiveLayout'
 import RouterViewKeepAlive from './components/RouterViewKeepAlive.vue'
 import Header from './components/Header/index.vue'
 import Sidebar from './components/Sidebar/index.vue'
+import { scrollConfig } from '@/config'
+
+const { scrollEndPathName } = scrollConfig
 
 const route = useRoute()
 const {
@@ -17,10 +19,28 @@ const {
   toggleSidebar,
   closeMobileSidebar,
 } = useResponsiveLayout()
-
+/** 此数值变化时 说明触发了触底事件 */
+const scrollEndDirection = ref(0)
+const scrollbarRef = ref<InstanceType<typeof ElScrollbar> | null>(null)
 const layoutStyle = computed(() => ({
   '--va-header-height': isMobile.value ? '42px' : '46px',
 }))
+
+function onScrollEnd(direction: string) {
+  if (direction === 'bottom' && scrollEndPathName.includes(route.name as string)) {
+    scrollEndDirection.value++
+    nextTick(() => {
+      reloadScroll()
+    })
+  }
+}
+
+function reloadScroll() {
+  scrollbarRef.value?.update()
+}
+
+provide('scrollEnd', scrollEndDirection)
+provide('reloadScroll', reloadScroll)
 
 watch(
   () => route.fullPath,
@@ -62,7 +82,12 @@ watch(
         />
       </ElHeader>
       <ElMain class="main">
-        <ElScrollbar class="content-scroll">
+        <ElScrollbar
+          class="content-scroll"
+          @end-reached="onScrollEnd"
+          :distance="300"
+          ref="scrollbarRef"
+        >
           <RouterViewKeepAlive />
         </ElScrollbar>
       </ElMain>

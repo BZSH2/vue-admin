@@ -30,7 +30,12 @@ const emit = defineEmits<{
       class="control flex cursor-pointer items-center justify-center"
       @click="emit('toggle')"
     >
-      <Icon name="layout-fold" :size="16" />
+      <Icon
+        name="layout-fold"
+        class="collapsed-icon"
+        :class="{ 'rotate-collapsed': props.collapsed }"
+        :size="16"
+      />
     </div>
   </div>
 </template>
@@ -54,5 +59,13 @@ const emit = defineEmits<{
 .aside-scroll {
   flex: 1;
   overflow-y: hidden;
+}
+
+.collapsed-icon {
+  transition: transform 220ms ease;
+}
+
+.rotate-collapsed {
+  transform: rotate(180deg);
 }
 </style>

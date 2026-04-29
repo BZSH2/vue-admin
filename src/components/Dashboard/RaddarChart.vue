@@ -64,9 +64,7 @@ const options = ref({
           name: 'Actual Spending',
         },
       ],
-      animationDuration: 500,
-      animationDurationUpdate: 300,
-      animationEasing: 'cubicOut',
+      animationDuration: 3000,
     },
   ],
 })

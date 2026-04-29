@@ -81,9 +81,8 @@ function getOptions() {
         smooth: true,
         type: 'line',
         data: lineChartData[props.active]?.expectedData,
-        animationDuration: 450,
-        animationDurationUpdate: 280,
-        animationEasing: 'cubicOut',
+        animationDuration: 2800,
+        animationEasing: 'cubicInOut',
       },
       {
         name: 'actual',
@@ -100,9 +99,8 @@ function getOptions() {
           color: '#f3f8ff',
         },
         data: lineChartData[props.active]?.actualData,
-        animationDuration: 500,
-        animationDurationUpdate: 300,
-        animationEasing: 'cubicOut',
+        animationDuration: 2800,
+        animationEasing: 'quadraticOut',
       },
     ],
   }

@@ -8,6 +8,7 @@ const asyncRoutes: Route.RouteRecord[] = [
     meta: {
       title: '首页',
       levelHidden: true,
+      noKeepAlive: true,
     },
     children: [
       {
@@ -18,7 +19,7 @@ const asyncRoutes: Route.RouteRecord[] = [
           title: '首页',
           noClosable: true,
           isLevel1: true,
-          noKeepAlive: false,
+          noKeepAlive: true,
           icon: 'menus-orangeCat',
         },
       },

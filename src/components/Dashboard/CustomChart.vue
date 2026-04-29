@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as echarts from 'echarts'
-import ChartTitle from './ChartTitle.vue'
 import { debounce } from 'lodash-es'
+import ChartTitle from './ChartTitle.vue'
 
 const props = withDefaults(defineProps<ChartProps>(), {
   className: '',
@@ -31,11 +31,18 @@ let resizeObserver: ResizeObserver | null = null
 /** 侧边栏元素引用，用于监听折叠动画 */
 let sidebarElm: Element | null = null
 
-/** 创建 ECharts 实例并挂载到容器 */
+/** 创建或复用 ECharts 实例 */
 function createChartInstance() {
   if (!chartRef.value) {
     return null
   }
+
+  const currentInstance = echarts.getInstanceByDom(chartRef.value)
+  if (currentInstance) {
+    chartInstance.value = currentInstance
+    return currentInstance
+  }
+
   const instance = echarts.init(chartRef.value)
   chartInstance.value = instance
   return instance
@@ -50,32 +57,45 @@ function destroyChartInstance() {
   }
 }
 
+/** 将配置写入图表实例 */
+function applyChartOptions(options: Record<string, any>) {
+  const instance = chartInstance.value ?? createChartInstance()
+  if (!instance) {
+    return
+  }
+
+  instance.setOption(options || {}, {
+    notMerge: true,
+    lazyUpdate: true,
+  })
+  instance.resize()
+}
+
 /** 初始化图表 */
-function initChart(options: Record<string, any>) {
+async function initChart(options: Record<string, any>) {
   if (!chartRef.value) {
     return
   }
 
-  destroyChartInstance()
-  const instance = createChartInstance()
-  if (instance) {
-    instance.setOption(options || {})
-  }
-  initResizeObserver()
-  addCollapseEvent()
+  await nextTick()
+  requestAnimationFrame(() => {
+    if (!chartRef.value) {
+      return
+    }
+
+    applyChartOptions(options)
+    initResizeObserver()
+    addCollapseEvent()
+  })
 }
 
-/** 刷新图表（销毁重建，确保坐标系完全重置） */
+/** 刷新图表（复用实例，避免重新初始化造成闪动） */
 function refreshChart(options: Record<string, any>) {
   if (!chartRef.value) {
     return
   }
 
-  destroyChartInstance()
-  const instance = createChartInstance()
-  if (instance) {
-    instance.setOption(options || {})
-  }
+  applyChartOptions(options)
 }
 
 /** 防抖 resize，避免频繁触发导致性能问题 */
@@ -87,33 +107,48 @@ const resizeChart = debounce(() => {
       console.warn('ECharts resize error ignored')
     }
   }
-}, 500)
+}, 80)
 
 /** 监听容器尺寸变化，自动调整图表大小 */
 function initResizeObserver() {
+  if (!chartRef.value) {
+    return
+  }
+
   if (resizeObserver) {
     resizeObserver.disconnect()
   }
+
   resizeObserver = new ResizeObserver(() => {
     resizeChart()
   })
-  resizeObserver.observe(chartRef.value as Element)
+  resizeObserver.observe(chartRef.value)
+}
+
+function onSidebarTransitionEnd(event: Event) {
+  if (!(event instanceof TransitionEvent) || event.propertyName !== 'width') {
+    return
+  }
+
+  resizeChart()
 }
 
 /** 监听侧边栏折叠动画结束，重新适配图表尺寸 */
 function addCollapseEvent() {
+  removeCollapseEvent()
   sidebarElm = document.querySelector('.aside-box')
-  sidebarElm?.addEventListener('transitionend', resizeChart)
+  sidebarElm?.addEventListener('transitionend', onSidebarTransitionEnd)
 }
 
 /** 移除侧边栏折叠监听 */
 function removeCollapseEvent() {
-  sidebarElm?.removeEventListener('transitionend', resizeChart)
+  sidebarElm?.removeEventListener('transitionend', onSidebarTransitionEnd)
+  sidebarElm = null
 }
 
 onMounted(() => {
   if (props.options) {
-    initChart(props.options)
+    void initChart(props.options)
   }
 })
 
@@ -123,6 +158,7 @@ onUnmounted(() => {
     resizeObserver.disconnect()
     resizeObserver = null
   }
+  resizeChart.cancel()
   removeCollapseEvent()
 })
 

@@ -36,7 +36,9 @@ const options = ref({
       stack: 'vistors',
       barWidth: '60%',
       data: [79, 52, 200, 334, 390, 330, 220],
-      animationDuration: 6000,
+      animationDuration: 600,
+      animationDurationUpdate: 320,
+      animationEasing: 'cubicOut',
     },
     {
       name: 'pageB',
@@ -44,7 +46,9 @@ const options = ref({
       stack: 'vistors',
       barWidth: '60%',
       data: [80, 52, 200, 334, 390, 330, 220],
-      animationDuration: 6000,
+      animationDuration: 650,
+      animationDurationUpdate: 340,
+      animationEasing: 'cubicOut',
     },
     {
       name: 'pageC',
@@ -52,12 +56,14 @@ const options = ref({
       stack: 'vistors',
       barWidth: '60%',
       data: [30, 52, 200, 334, 390, 330, 220],
-      animationDuration: 6000,
+      animationDuration: 700,
+      animationDurationUpdate: 360,
+      animationEasing: 'cubicOut',
     },
   ],
 })
 </script>
 
 <template>
-  <CustomChart :title="$t('饼图')" :options="options" />
+  <CustomChart :title="$t('柱状图')" :options="options" />
 </template>

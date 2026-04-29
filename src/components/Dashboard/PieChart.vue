@@ -25,8 +25,9 @@ const options = ref({
         { value: 100, name: 'Gold' },
         { value: 59, name: 'Forecasts' },
       ],
-      animationEasing: 'cubicInOut',
-      animationDuration: 2600,
+      animationEasing: 'cubicOut',
+      animationDuration: 450,
+      animationDurationUpdate: 280,
     },
   ],
 })

@@ -8,6 +8,7 @@ set -euo pipefail
 : "${ACR_PASSWORD:?ACR_PASSWORD is required}"
 
 COMPOSE_FILE="${DEPLOY_PATH}/docker-compose.prod.yml"
+NETWORK_NAME="${ADMIN_SHARED_NETWORK:-admin_shared}"
 
 if [ ! -f "$COMPOSE_FILE" ]; then
   echo "Compose file not found: $COMPOSE_FILE" >&2
@@ -15,6 +16,10 @@ if [ ! -f "$COMPOSE_FILE" ]; then
 fi
 
 cd "$DEPLOY_PATH"
+
+if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+  docker network create "$NETWORK_NAME"
+fi
 
 echo "$ACR_PASSWORD" | docker login "$ACR_REGISTRY" -u "$ACR_USERNAME" --password-stdin
 export DEPLOY_IMAGE

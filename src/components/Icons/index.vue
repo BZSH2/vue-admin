@@ -5,7 +5,7 @@ type IconType = 'element' | 'custom' // 饿了么图标 | 自定义图标
 interface IconItem {
   name: string
   component?: any
-  path: string
+  path?: string
 }
 
 const props = withDefaults(
@@ -47,7 +47,7 @@ async function copyIcon(data: IconItem) {
     <!-- 循环渲染可视区域的数据 -->
     <div v-for="(data, index) in icons" :key="index" class="icon-item" @click="copyIcon(data)">
       <ElIcon v-if="type === 'element'" class="icon-svg"><component :is="data.component" /></ElIcon>
-      <Icon v-else :name="data.path" class="icon-svg" :size="24" />
+      <Icon v-else :name="data.path || ''" class="icon-svg" :size="24" />
       <div class="icon-title">{{ data.name }}</div>
     </div>
   </div>

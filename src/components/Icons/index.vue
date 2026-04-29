@@ -132,9 +132,10 @@ async function copyIcon(data: IconItem) {
   }
 
   &:hover {
-    color: #409eff;
-    background-color: #ecf5ff;
-    border-color: #409eff;
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary);
+    box-shadow: 0 0 10px 0 color-mix(in srgb, var(--el-color-primary) 30%, transparent);
   }
 }
 </style>

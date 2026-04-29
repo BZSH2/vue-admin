@@ -113,6 +113,7 @@ const asyncRoutes: Route.RouteRecord[] = [
           noKeepAlive: false,
           icon: 'menus-whiteCat',
         },
+        redirect: '/icons/elementIcon',
         children: [
           {
             path: '/icons/elementIcon',

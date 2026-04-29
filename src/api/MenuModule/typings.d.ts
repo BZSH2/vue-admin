@@ -1,19 +1,12 @@
 declare namespace MenuModule {
-  type MenuType = 'directory' | 'menu' | 'button'
-
-  interface QueryMenuDto {
-    page?: number
-    pageSize?: number
-    keyword?: string
-    type?: MenuType
-    enabled?: boolean
-  }
-
   interface CreateMenuDto {
+    /** 菜单编码 */
     code: string
+    /** 菜单名称 */
     name: string
+    /** 父级菜单ID */
     parentId?: string | null
-    type: MenuType
+    type: 'directory' | 'menu' | 'button'
     path?: string | null
     component?: string | null
     permission?: string | null
@@ -24,23 +17,40 @@ declare namespace MenuModule {
     remark?: string | null
   }
 
-  interface UpdateMenuDto extends Partial<CreateMenuDto> {}
-
-  interface MenuItem extends CreateMenuDto {
+  interface Menu {
     id: string
-    createdAt: string
-    updatedAt: string
-    children?: MenuItem[]
+    code: string
+    name: string
+    parentId: string | null
+    type: Record<string, any>
+    path: string | null
+    component: string | null
+    permission: string | null
+    icon: string | null
+    sort: number
+    visible: boolean
+    enabled: boolean
+    remark: string | null
+    createdAt: string | Date
+    updatedAt: string | Date
+    deletedAt: string | Date | null
   }
 
-  interface MenuListResult {
-    items: MenuItem[]
-    total: number
-    page: number
-    pageSize: number
-  }
-
-  interface OperationMessageDto {
-    message: string
+  interface UpdateMenuDto {
+    /** 菜单编码 */
+    code?: string
+    /** 菜单名称 */
+    name?: string
+    /** 父级菜单ID */
+    parentId?: string | null
+    type?: 'directory' | 'menu' | 'button'
+    path?: string | null
+    component?: string | null
+    permission?: string | null
+    icon?: string | null
+    sort?: number
+    visible?: boolean
+    enabled?: boolean
+    remark?: string | null
   }
 }

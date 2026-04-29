@@ -7,7 +7,7 @@ import { generatorFolder } from './generate/utils'
 
 class OpenApi {
   private config: OpenApiConfig
-  private serverBase = process.env.OPENAPI_BASE_URL || 'http://localhost:3000'
+  private serverBase = process.env.OPENAPI_BASE_URL || 'https://nest.admin.bzsh.fun'
 
   constructor(config: OpenApiConfig) {
     this.config = config
@@ -29,7 +29,7 @@ class OpenApi {
       })
       return data
     } catch (error) {
-      console.error('postOpenApiJSON error')
+      console.error('postOpenApiJSON error', error)
       return undefined
     }
   }
@@ -37,7 +37,9 @@ class OpenApi {
   public async open() {
     // 1. 获取openapi数据
     const data = await this.postOpenApiJSON()
-    if (!data) {return}
+    if (!data) {
+      return
+    }
 
     // 2. 创建 url/api文件夹
     generatorFolder(this.config.output)

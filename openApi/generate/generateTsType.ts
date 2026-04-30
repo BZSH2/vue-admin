@@ -631,6 +631,18 @@ function buildDependencyGraph(types: TemplateType[]) {
   const typeMap = new Map<string, TemplateType>()
   const dependencies = new Map<string, Set<string>>()
 
+  const addDependencies = (typeName: string, deps: string[]) => {
+    const bucket = dependencies.get(typeName)
+    if (!bucket) {return}
+
+    deps.forEach((dep) => {
+      // 树形结构允许自引用，例如 MenuTreeItemDto.children: MenuTreeItemDto[]
+      if (dep !== typeName) {
+        bucket.add(dep)
+      }
+    })
+  }
+
   types.forEach((type) => {
     typeMap.set(type.typeName, type)
     dependencies.set(type.typeName, new Set())
@@ -638,25 +650,20 @@ function buildDependencyGraph(types: TemplateType[]) {
     // 收集依赖
     if (type.type === 'interface' && type.properties) {
       type.properties.forEach((prop) => {
-        const deps = extractDependenciesFromType(prop.type)
-        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
+        addDependencies(type.typeName, extractDependenciesFromType(prop.type))
       })
     } else if (type.type === 'typeAlias' && type.typeDefinition) {
-      const deps = extractDependenciesFromType(type.typeDefinition)
-      deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
+      addDependencies(type.typeName, extractDependenciesFromType(type.typeDefinition))
     } else if (type.type === 'union' && type.unionTypes) {
       type.unionTypes.forEach((unionType) => {
-        const deps = extractDependenciesFromType(unionType)
-        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
+        addDependencies(type.typeName, extractDependenciesFromType(unionType))
       })
     } else if (type.type === 'intersection' && type.intersectionTypes) {
       type.intersectionTypes.forEach((intersectionType) => {
-        const deps = extractDependenciesFromType(intersectionType)
-        deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
+        addDependencies(type.typeName, extractDependenciesFromType(intersectionType))
       })
     } else if (type.type === 'array' && type.itemType) {
-      const deps = extractDependenciesFromType(type.itemType)
-      deps.forEach((dep) => dependencies.get(type.typeName)!.add(dep))
+      addDependencies(type.typeName, extractDependenciesFromType(type.itemType))
     }
   })
 

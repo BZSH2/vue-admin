@@ -141,5 +141,16 @@
     "bzsh",
     "thirdparty"
   ],
-  "cSpell.words": ["breakline", "echarts", "Forex", "gitee", "overscan", "Raddar", "vistors"]
+  "cSpell.words": [
+    "amap",
+    "breakline",
+    "cssvar",
+    "echarts",
+    "Forex",
+    "gitee",
+    "mapboxgl",
+    "overscan",
+    "Raddar",
+    "vistors"
+  ]
 }

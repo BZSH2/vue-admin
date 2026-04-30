@@ -47,6 +47,34 @@ const asyncRoutes: Route.RouteRecord[] = [
             },
           },
           {
+            path: '/system/project',
+            name: 'Project',
+            meta: {
+              title: '项目管理',
+            },
+            children: [
+              {
+                path: '/system/project/product',
+                name: 'Product',
+                component: () => import('@/views/system/project/product/index.vue'),
+                meta: {
+                  title: '产品管理',
+                },
+              },
+              {
+                path: '/system/project/menu',
+                name: 'Menu',
+                component: () => import('@/views/system/project/menu/index.vue'),
+                meta: {
+                  title: '菜单管理',
+                  noClosable: true,
+                  isLevel1: true,
+                  noKeepAlive: false,
+                },
+              },
+            ],
+          },
+          {
             path: '/system/roleManagement',
             name: 'RoleManagement',
             component: () => import('@/views/system/roleManagement/index.vue'),

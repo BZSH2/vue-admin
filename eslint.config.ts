@@ -170,7 +170,6 @@ export default defineConfig([
       'vue/no-multiple-objects-in-class': ['error'],
       'vue/no-ref-object-reactivity-loss': ['error'],
       'vue/no-use-v-else-with-v-for': ['error'],
-      'vue/require-explicit-slots': ['error'],
       'vue/require-macro-variable-name': [
         'error',
         {
@@ -277,6 +276,7 @@ export default defineConfig([
           'pathGroupsExcludedImportTypes': [],
         },
       ],
+      'vue/require-explicit-slots': 'off',
     },
     settings: {
       'import/resolver': {

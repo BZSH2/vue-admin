@@ -13,6 +13,7 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import config from './src/config'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { lazyImport, VxeResolver } from 'vite-plugin-lazy-import'
 
 type BuildCommand = 'serve' | 'build'
 
@@ -198,6 +199,16 @@ const createPlugins = (
       fullInstall: true,
       defaultSFCLang: 'yaml',
       globalSFCScope: true,
+    }),
+    lazyImport({
+      resolvers: [
+        VxeResolver({
+          libraryName: 'vxe-pc-ui',
+        }),
+        VxeResolver({
+          libraryName: 'vxe-table',
+        }),
+      ],
     }),
   ]
 

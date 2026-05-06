@@ -25,7 +25,7 @@ const totalHeight = computed(() => sourceData.value.length * ITEM_HEIGHT)
 
 const visibleData = computed(() => {
   if (!sourceData.value.length || !containerHeight.value) {
-    return []
+    return [] as Array<{ data: ProductOption; index: number }>
   }
 
   const start = Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT) - OVERSCAN)
@@ -34,10 +34,14 @@ const visibleData = computed(() => {
     Math.ceil((scrollTop.value + containerHeight.value) / ITEM_HEIGHT) + OVERSCAN
   )
 
-  return Array.from({ length: end - start }, (_, offset) => {
-    const index = start + offset
-    return { data: sourceData.value[index], index }
-  })
+  const items: Array<{ data: ProductOption; index: number }> = []
+  for (let index = start; index < end; index += 1) {
+    const data = sourceData.value[index]
+    if (data) {
+      items.push({ data, index })
+    }
+  }
+  return items
 })
 
 function handleScroll({ scrollTop: st }: { scrollTop: number }) {

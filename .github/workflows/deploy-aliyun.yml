@@ -79,13 +79,13 @@ jobs:
 
       - name: Prepare remote directory
         run: |
-          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' 'mkdir -p ${{ env.DEPLOY_PATH }} ${{ env.DEPLOY_PATH }}/deploy'
+          ssh -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}' 'mkdir -p ${{ env.DEPLOY_PATH }}'
 
       - name: Upload deploy files
         run: |
           scp -P '${{ secrets.DEPLOY_PORT }}' docker-compose.prod.yml '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/'
           scp -P '${{ secrets.DEPLOY_PORT }}' deploy/deploy.sh '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/'
-          scp -P '${{ secrets.DEPLOY_PORT }}' deploy/nginx.conf '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/deploy/'
+          scp -P '${{ secrets.DEPLOY_PORT }}' deploy/nginx.conf '${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.DEPLOY_PATH }}/nginx.conf'
 
       - name: Prepare remote deploy env
         run: |

@@ -18,7 +18,7 @@ export function productsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/products`,
     method: 'GET',
     params: {
@@ -32,7 +32,7 @@ export function productsControllerCreate(
   body: ProductModule.CreateProductDto,
   options?: { [key: string]: any }
 ) {
-  return request<ProductModule.Product>({
+  return request<Request.UnwrapApiResponse<ProductModule.Product>>({
     url: `/api/products`,
     method: 'POST',
     headers: {
@@ -51,7 +51,7 @@ export function productsControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<ProductModule.Product>({
+  return request<Request.UnwrapApiResponse<ProductModule.Product>>({
     url: `/api/products/${id}`,
     method: 'GET',
     params: {
@@ -69,7 +69,7 @@ export function productsControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/products/${id}`,
     method: 'DELETE',
     params: {
@@ -88,7 +88,7 @@ export function productsControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/products/${id}`,
     method: 'PATCH',
     headers: {

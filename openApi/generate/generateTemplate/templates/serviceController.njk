@@ -37,7 +37,7 @@ export function {{ api.functionName }}(
   const { {% for param in api.params.path %}{{ param.name }}, {% endfor %} ...queryParams } = params;
   {% endif -%}
 
-  return request<{{ api.responseType }}>({
+  return request<Request.UnwrapApiResponse<{{ api.responseType }}>>({
     url: `{{ api.path | safe }}`,
     method: '{{ api.method | upper }}',
     {%- if api.contentType and not api.bodyInParams %}

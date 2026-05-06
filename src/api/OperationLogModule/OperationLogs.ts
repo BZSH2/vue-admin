@@ -17,7 +17,7 @@ export function operationLogsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/operation-logs`,
     method: 'GET',
     params: {

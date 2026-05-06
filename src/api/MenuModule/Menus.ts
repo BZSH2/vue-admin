@@ -21,7 +21,7 @@ export function menusControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<MenuModule.MenuListResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.MenuListResponseDto>>({
     url: `/api/menus`,
     method: 'GET',
     params: {
@@ -35,7 +35,7 @@ export function menusControllerCreate(
   body: MenuModule.CreateMenuDto,
   options?: { [key: string]: any }
 ) {
-  return request<MenuModule.MenuDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.MenuDetailResponseDto>>({
     url: `/api/menus`,
     method: 'POST',
     headers: {
@@ -64,7 +64,7 @@ export function menusControllerFindTree(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<MenuModule.MenuTreeResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.MenuTreeResponseDto>>({
     url: `/api/menus/tree`,
     method: 'GET',
     params: {
@@ -82,7 +82,7 @@ export function menusControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<MenuModule.MenuDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.MenuDetailResponseDto>>({
     url: `/api/menus/${id}`,
     method: 'GET',
     params: {
@@ -100,7 +100,7 @@ export function menusControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<MenuModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.OperationMessageResponseDto>>({
     url: `/api/menus/${id}`,
     method: 'DELETE',
     params: {
@@ -119,7 +119,7 @@ export function menusControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<MenuModule.MenuDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<MenuModule.MenuDetailResponseDto>>({
     url: `/api/menus/${id}`,
     method: 'PATCH',
     headers: {

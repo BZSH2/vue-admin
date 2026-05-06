@@ -7,7 +7,7 @@ export function authControllerChangePassword(
   body: ProfileModule.ChangePasswordDto,
   options?: { [key: string]: any }
 ) {
-  return request<ProfileModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<ProfileModule.OperationMessageResponseDto>>({
     url: `/api/auth/change-password`,
     method: 'POST',
     headers: {
@@ -19,7 +19,7 @@ export function authControllerChangePassword(
 }
 /** 获取个人信息 GET /api/auth/profile */
 export function authControllerGetProfile(options?: { [key: string]: any }) {
-  return request<ProfileModule.AuthProfileResponseDto>({
+  return request<Request.UnwrapApiResponse<ProfileModule.AuthProfileResponseDto>>({
     url: `/api/auth/profile`,
     method: 'GET',
     ...(options || {}),

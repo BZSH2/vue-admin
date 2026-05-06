@@ -7,7 +7,7 @@ export function openApiControllerPostOpenApiJson(
   body: OpenAPIModule.PostOpenApiDto,
   options?: { [key: string]: any }
 ) {
-  return request<any[]>({
+  return request<Request.UnwrapApiResponse<any[]>>({
     url: `/api/postOpenApiJson`,
     method: 'POST',
     headers: {
@@ -19,7 +19,7 @@ export function openApiControllerPostOpenApiJson(
 }
 /** Get available modules and services GET /api/getModules */
 export function openApiControllerGetModules(options?: { [key: string]: any }) {
-  return request<any[]>({
+  return request<Request.UnwrapApiResponse<any[]>>({
     url: `/api/getModules`,
     method: 'GET',
     ...(options || {}),
@@ -27,7 +27,7 @@ export function openApiControllerGetModules(options?: { [key: string]: any }) {
 }
 /** Get OpenAPI JSON for postOpenApiJson endpoint GET /api/getPostOpenApiJsonDefinition */
 export function openApiControllerGetPostOpenApiJsonDefinition(options?: { [key: string]: any }) {
-  return request<any[]>({
+  return request<Request.UnwrapApiResponse<any[]>>({
     url: `/api/getPostOpenApiJsonDefinition`,
     method: 'GET',
     ...(options || {}),

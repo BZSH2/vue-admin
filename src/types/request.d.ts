@@ -57,5 +57,11 @@ declare global {
       /** 业务是否成功 */
       success?: boolean
     }
+
+    /**
+     * request 层会自动把标准业务响应解包为 data。
+     * 例如 ApiResponse<User> 在页面侧实际拿到的是 User。
+     */
+    export type UnwrapApiResponse<T> = T extends ApiResponse<infer U> ? U : T
   }
 }

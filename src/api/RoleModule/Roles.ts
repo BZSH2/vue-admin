@@ -18,7 +18,7 @@ export function rolesControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<RoleModule.RoleListResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleListResponseDto>>({
     url: `/api/roles`,
     method: 'GET',
     params: {
@@ -32,7 +32,7 @@ export function rolesControllerCreate(
   body: RoleModule.CreateRoleDto,
   options?: { [key: string]: any }
 ) {
-  return request<RoleModule.RoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleDetailResponseDto>>({
     url: `/api/roles`,
     method: 'POST',
     headers: {
@@ -44,7 +44,7 @@ export function rolesControllerCreate(
 }
 /** 获取可分配角色选项列表 GET /api/roles/options */
 export function rolesControllerGetOptions(options?: { [key: string]: any }) {
-  return request<RoleModule.RoleOptionsResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleOptionsResponseDto>>({
     url: `/api/roles/options`,
     method: 'GET',
     ...(options || {}),
@@ -59,7 +59,7 @@ export function rolesControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.RoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleDetailResponseDto>>({
     url: `/api/roles/${id}`,
     method: 'GET',
     params: {
@@ -77,7 +77,7 @@ export function rolesControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.OperationMessageResponseDto>>({
     url: `/api/roles/${id}`,
     method: 'DELETE',
     params: {
@@ -96,7 +96,7 @@ export function rolesControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.RoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleDetailResponseDto>>({
     url: `/api/roles/${id}`,
     method: 'PATCH',
     headers: {
@@ -119,7 +119,7 @@ export function rolesControllerUpdateStatus(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.RoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleDetailResponseDto>>({
     url: `/api/roles/${id}/status`,
     method: 'PATCH',
     headers: {
@@ -149,7 +149,7 @@ export function rolesControllerFindUsers(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.RoleMemberListResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.RoleMemberListResponseDto>>({
     url: `/api/roles/${id}/users`,
     method: 'GET',
     params: {
@@ -168,7 +168,7 @@ export function rolesControllerAddUser(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<RoleModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.OperationMessageResponseDto>>({
     url: `/api/roles/${id}/users`,
     method: 'POST',
     headers: {
@@ -192,7 +192,7 @@ export function rolesControllerRemoveUser(
   options?: { [key: string]: any }
 ) {
   const { id, userId, ...queryParams } = params
-  return request<RoleModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.OperationMessageResponseDto>>({
     url: `/api/roles/${id}/users/${userId}`,
     method: 'DELETE',
     params: {
@@ -210,7 +210,7 @@ export function rolesControllerGetUserRole(
   options?: { [key: string]: any }
 ) {
   const { userId, ...queryParams } = params
-  return request<RoleModule.UserRoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.UserRoleDetailResponseDto>>({
     url: `/api/roles/users/${userId}`,
     method: 'GET',
     params: {
@@ -229,7 +229,7 @@ export function rolesControllerUpdateUserRole(
   options?: { [key: string]: any }
 ) {
   const { userId, ...queryParams } = params
-  return request<RoleModule.UserRoleDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<RoleModule.UserRoleDetailResponseDto>>({
     url: `/api/roles/users/${userId}`,
     method: 'PATCH',
     headers: {

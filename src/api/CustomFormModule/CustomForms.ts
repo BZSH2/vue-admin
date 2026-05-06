@@ -15,7 +15,7 @@ export function customFormsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<CustomFormModule.CustomFormListResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.CustomFormListResponseDto>>({
     url: `/api/custom-forms`,
     method: 'GET',
     params: {
@@ -29,7 +29,7 @@ export function customFormsControllerCreate(
   body: CustomFormModule.CreateCustomFormDto,
   options?: { [key: string]: any }
 ) {
-  return request<CustomFormModule.CustomFormDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.CustomFormDetailResponseDto>>({
     url: `/api/custom-forms`,
     method: 'POST',
     headers: {
@@ -48,7 +48,7 @@ export function customFormsControllerFindByCode(
   options?: { [key: string]: any }
 ) {
   const { code, ...queryParams } = params
-  return request<CustomFormModule.CustomFormDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.CustomFormDetailResponseDto>>({
     url: `/api/custom-forms/code/${code}`,
     method: 'GET',
     params: {
@@ -66,7 +66,7 @@ export function customFormsControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<CustomFormModule.CustomFormDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.CustomFormDetailResponseDto>>({
     url: `/api/custom-forms/${id}`,
     method: 'GET',
     params: {
@@ -84,7 +84,7 @@ export function customFormsControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<CustomFormModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.OperationMessageResponseDto>>({
     url: `/api/custom-forms/${id}`,
     method: 'DELETE',
     params: {
@@ -103,7 +103,7 @@ export function customFormsControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<CustomFormModule.CustomFormDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<CustomFormModule.CustomFormDetailResponseDto>>({
     url: `/api/custom-forms/${id}`,
     method: 'PATCH',
     headers: {

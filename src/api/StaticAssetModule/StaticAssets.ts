@@ -23,7 +23,7 @@ export function staticAssetsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<StaticAssetModule.StaticAssetListResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.StaticAssetListResponseDto>>({
     url: `/api/static-assets`,
     method: 'GET',
     params: {
@@ -34,7 +34,7 @@ export function staticAssetsControllerFindAll(
 }
 /** 获取静态资源目录分组 GET /api/static-assets/folders */
 export function staticAssetsControllerFindFolders(options?: { [key: string]: any }) {
-  return request<StaticAssetModule.StaticAssetFolderOptionsResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.StaticAssetFolderOptionsResponseDto>>({
     url: `/api/static-assets/folders`,
     method: 'GET',
     ...(options || {}),
@@ -49,7 +49,7 @@ export function staticAssetsControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<StaticAssetModule.StaticAssetDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.StaticAssetDetailResponseDto>>({
     url: `/api/static-assets/${id}`,
     method: 'GET',
     params: {
@@ -67,7 +67,7 @@ export function staticAssetsControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<StaticAssetModule.OperationMessageResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.OperationMessageResponseDto>>({
     url: `/api/static-assets/${id}`,
     method: 'DELETE',
     params: {
@@ -86,7 +86,7 @@ export function staticAssetsControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<StaticAssetModule.StaticAssetDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.StaticAssetDetailResponseDto>>({
     url: `/api/static-assets/${id}`,
     method: 'PATCH',
     headers: {
@@ -101,7 +101,7 @@ export function staticAssetsControllerUpdate(
 }
 /** 上传静态资源 POST /api/static-assets/upload */
 export function staticAssetsControllerUpload(options?: { [key: string]: any }) {
-  return request<StaticAssetModule.StaticAssetDetailResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.StaticAssetDetailResponseDto>>({
     url: `/api/static-assets/upload`,
     method: 'POST',
     ...(options || {}),
@@ -112,7 +112,7 @@ export function staticAssetsControllerBatchRemove(
   body: StaticAssetModule.BatchDeleteStaticAssetsDto,
   options?: { [key: string]: any }
 ) {
-  return request<StaticAssetModule.BatchDeleteStaticAssetsResponseDto>({
+  return request<Request.UnwrapApiResponse<StaticAssetModule.BatchDeleteStaticAssetsResponseDto>>({
     url: `/api/static-assets/batch`,
     method: 'DELETE',
     params: {

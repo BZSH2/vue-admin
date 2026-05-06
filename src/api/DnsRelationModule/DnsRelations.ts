@@ -19,7 +19,7 @@ export function dnsRelationsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/dns-relations`,
     method: 'GET',
     params: {
@@ -33,7 +33,7 @@ export function dnsRelationsControllerCreate(
   body: DnsRelationModule.CreateDnsRelationDto,
   options?: { [key: string]: any }
 ) {
-  return request<DnsRelationModule.DnsRelation>({
+  return request<Request.UnwrapApiResponse<DnsRelationModule.DnsRelation>>({
     url: `/api/dns-relations`,
     method: 'POST',
     headers: {
@@ -52,7 +52,7 @@ export function dnsRelationsControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<DnsRelationModule.DnsRelation>({
+  return request<Request.UnwrapApiResponse<DnsRelationModule.DnsRelation>>({
     url: `/api/dns-relations/${id}`,
     method: 'GET',
     params: {
@@ -70,7 +70,7 @@ export function dnsRelationsControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/dns-relations/${id}`,
     method: 'DELETE',
     params: {
@@ -89,7 +89,7 @@ export function dnsRelationsControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/dns-relations/${id}`,
     method: 'PATCH',
     headers: {

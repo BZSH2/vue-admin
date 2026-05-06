@@ -17,7 +17,7 @@ export function systemConfigsControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/configs`,
     method: 'GET',
     params: {
@@ -31,7 +31,7 @@ export function systemConfigsControllerCreate(
   body: SystemConfigModule.CreateSystemConfigDto,
   options?: { [key: string]: any }
 ) {
-  return request<SystemConfigModule.SystemConfig>({
+  return request<Request.UnwrapApiResponse<SystemConfigModule.SystemConfig>>({
     url: `/api/configs`,
     method: 'POST',
     headers: {
@@ -50,7 +50,7 @@ export function systemConfigsControllerFindByKey(
   options?: { [key: string]: any }
 ) {
   const { key, ...queryParams } = params
-  return request<SystemConfigModule.SystemConfig>({
+  return request<Request.UnwrapApiResponse<SystemConfigModule.SystemConfig>>({
     url: `/api/configs/key/${key}`,
     method: 'GET',
     params: {
@@ -68,7 +68,7 @@ export function systemConfigsControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<SystemConfigModule.SystemConfig>({
+  return request<Request.UnwrapApiResponse<SystemConfigModule.SystemConfig>>({
     url: `/api/configs/${id}`,
     method: 'GET',
     params: {
@@ -86,7 +86,7 @@ export function systemConfigsControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/configs/${id}`,
     method: 'DELETE',
     params: {
@@ -105,7 +105,7 @@ export function systemConfigsControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<Request.UnwrapApiResponse<any>>({
     url: `/api/configs/${id}`,
     method: 'PATCH',
     headers: {

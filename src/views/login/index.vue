@@ -60,7 +60,7 @@ async function onLogin() {
       phoneNumber: form.phoneNumber,
       password: form.password,
     })
-    const token = result?.accessToken || result?.token || result?.data?.accessToken || ''
+    const token = result?.data?.accessToken || result?.accessToken || result?.token || ''
 
     if (token) {
       setToken(String(token))

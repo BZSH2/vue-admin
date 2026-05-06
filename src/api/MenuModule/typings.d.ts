@@ -147,26 +147,6 @@ declare namespace MenuModule {
     deletedAt: string | Date | null
   }
 
-  type QueryMenuDto = {
-    page?: number
-    pageSize?: number
-    keyword?: string
-    productId?: string
-    type?: 'directory' | 'menu' | 'button'
-    enabled?: boolean
-  }
-
-  type MenuItem = MenuDetailDto & {
-    children?: MenuItem[]
-  }
-
-  interface MenuListResult {
-    items: MenuTreeItemDto[]
-    total: number
-    page: number
-    pageSize: number
-  }
-
   interface MenuTreeResponseDto {
     /** 业务状态码 */
     code: number
@@ -208,4 +188,19 @@ declare namespace MenuModule {
     enabled?: boolean
     remark?: string | null
   }
+
+  interface QueryMenuDto {
+    page?: number
+    pageSize?: number
+    keyword?: string
+    productId?: string
+    type?: 'directory' | 'menu' | 'button'
+    enabled?: boolean
+  }
+
+  type MenuItem = MenuDetailDto & {
+    children?: MenuItem[]
+  }
+
+  type MenuListResult = MenuListDto
 }

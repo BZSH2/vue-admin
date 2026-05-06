@@ -17,7 +17,7 @@ declare namespace {{ namespace }} {
           {%- endif %}
         {%- endfor %}
       }
-    
+
     {# ==================== 枚举类型 ==================== #}
     {%- elseif type.type === 'enum' %}
       {%- if type.description %}
@@ -28,35 +28,35 @@ declare namespace {{ namespace }} {
           {{ value }} = {% if type.valueType === 'string' %}"{{ value }}"{% else %}{{ value }}{% endif %},
         {%- endfor %}
       }
-    
+
     {# ==================== 类型别名 ==================== #}
     {%- elseif type.type === 'typeAlias' %}
       {%- if type.description %}
         /** {{ type.description }} */
       {%- endif %}
       {%- if type.isExport %}export {% endif %}type {{ type.typeName }} = {{ type.typeDefinition }};
-    
+
     {# ==================== 联合类型 ==================== #}
     {%- elseif type.type === 'union' %}
       {%- if type.description %}
         /** {{ type.description }} */
       {%- endif %}
       type {{ type.typeName }} = {{ type.unionTypes | join(' | ') }};
-    
+
     {# ==================== 交叉类型 ==================== #}
     {%- elseif type.type === 'intersection' %}
       {%- if type.description %}
         /** {{ type.description }} */
       {%- endif %}
       type {{ type.typeName }} = {{ type.intersectionTypes | join(' & ') }};
-    
+
     {# ==================== 数组类型 ==================== #}
     {%- elseif type.type === 'array' %}
       {%- if type.description %}
         /** {{ type.description }} */
       {%- endif %}
       {%- if type.isExport %}export {% endif %}type {{ type.typeName }} = {{ type.itemType }}[];
-    
+
     {# ==================== 基础类型 ==================== #}
     {%- else %}
       {%- if type.description %}
@@ -65,4 +65,109 @@ declare namespace {{ namespace }} {
       type {{ type.typeName }} = {{ type.dataType }};
     {%- endif %}
   {% endfor %}
+
+  {# ===== 前端兼容别名：让 pnpm openApi 后直接可 build ===== #}
+  {%- if namespace === 'MenuModule' %}
+  interface QueryMenuDto {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    productId?: string;
+    type?: 'directory' | 'menu' | 'button';
+    enabled?: boolean;
+  }
+
+  type MenuItem = MenuDetailDto & {
+    children?: MenuItem[];
+  };
+
+  type MenuListResult = MenuListDto;
+  {%- endif %}
+
+  {%- if namespace === 'RoleModule' %}
+  interface QueryRoleDto {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    enabled?: boolean;
+  }
+
+  type RoleListResult = RoleListDto;
+  type RoleMemberListResult = RoleMemberListDto;
+  {%- endif %}
+
+  {%- if namespace === 'LoginLogModule' %}
+  interface QueryLoginLogDto {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    success?: boolean;
+  }
+
+  interface LoginLogItem {
+    id: string;
+    phoneNumber: string;
+    success: boolean;
+    ip?: string | null;
+    failureReason?: string | null;
+    userAgent?: string | null;
+    createdAt: string | Date;
+  }
+
+  interface LoginLogListResult {
+    items: LoginLogItem[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }
+  {%- endif %}
+
+  {%- if namespace === 'OperationLogModule' %}
+  interface QueryOperationLogDto {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    method?: string;
+  }
+
+  interface OperationLogItem {
+    id: string;
+    moduleName?: string | null;
+    operatorPhoneNumber?: string | null;
+    method: string;
+    path: string;
+    statusCode: number;
+    durationMs: number;
+    createdAt: string | Date;
+  }
+
+  interface OperationLogListResult {
+    items: OperationLogItem[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }
+  {%- endif %}
+
+  {%- if namespace === 'SystemConfigModule' %}
+  interface QuerySystemConfigDto {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    groupName?: string;
+  }
+
+  interface SystemConfigItem extends CreateSystemConfigDto {
+    id: string;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+  }
+
+  interface SystemConfigListResult {
+    items: SystemConfigItem[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }
+  {%- endif %}
 }

@@ -39,13 +39,6 @@ declare namespace RoleModule {
     data: RoleListDto
   }
 
-  type QueryRoleDto = {
-    page?: number
-    pageSize?: number
-    keyword?: string
-    enabled?: boolean
-  }
-
   interface CreateRoleDto {
     /** 角色编码，仅支持字母、数字、下划线和中划线 */
     code: string
@@ -145,9 +138,6 @@ declare namespace RoleModule {
     data: RoleMemberListDto
   }
 
-  type RoleListResult = RoleListDto
-  type RoleMemberListResult = RoleMemberListDto
-
   interface CreateRoleUserDto {
     /** 用户ID */
     userId: string
@@ -178,4 +168,14 @@ declare namespace RoleModule {
     /** 目标角色 */
     role: 'admin' | 'user'
   }
+
+  interface QueryRoleDto {
+    page?: number
+    pageSize?: number
+    keyword?: string
+    enabled?: boolean
+  }
+
+  type RoleListResult = RoleListDto
+  type RoleMemberListResult = RoleMemberListDto
 }

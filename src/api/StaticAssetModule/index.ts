@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
-// API 更新时间：2026/4/29 14:15:23
-// API 唯一标识：1777443323594
+// API 更新时间：5/6/2026, 12:02:03 PM
+// API 唯一标识：1778040123141
 
 import * as StaticAssets from './StaticAssets'
 

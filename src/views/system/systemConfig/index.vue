@@ -82,7 +82,7 @@ async function handleSubmit(
       await systemConfigsControllerCreate(payload as SystemConfigModule.CreateSystemConfigDto)
       $baseMessage('参数创建成功')
     } else if (currentItem.value?.id) {
-      await systemConfigsControllerUpdate(currentItem.value.id, payload)
+      await systemConfigsControllerUpdate({ id: currentItem.value.id }, payload)
       $baseMessage('参数更新成功')
     }
     formVisible.value = false
@@ -102,7 +102,7 @@ async function handleRemove(item: SystemConfigModule.SystemConfigItem) {
   }
   actionId.value = item.id
   try {
-    await systemConfigsControllerRemove(item.id)
+    await systemConfigsControllerRemove({ id: item.id })
     $baseMessage('参数删除成功')
     await fetchList()
   } finally {

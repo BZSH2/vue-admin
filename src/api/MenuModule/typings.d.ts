@@ -156,7 +156,9 @@ declare namespace MenuModule {
     enabled?: boolean
   }
 
-  type MenuItem = MenuDetailDto
+  type MenuItem = MenuDetailDto & {
+    children?: MenuItem[]
+  }
 
   interface MenuListResult {
     items: MenuTreeItemDto[]

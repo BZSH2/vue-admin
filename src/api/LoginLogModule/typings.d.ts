@@ -8,13 +8,12 @@ declare namespace LoginLogModule {
 
   interface LoginLogItem {
     id: string
-    userId?: string | null
     phoneNumber: string
     success: boolean
     ip?: string | null
-    userAgent?: string | null
     failureReason?: string | null
-    createdAt: string
+    userAgent?: string | null
+    createdAt: string | Date
   }
 
   interface LoginLogListResult {

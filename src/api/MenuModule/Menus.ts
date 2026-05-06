@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/utils/request'
 
-/** 分页查询菜单列表 GET /api/menus */
+/** 查询菜单树列表 GET /api/menus */
 export function menusControllerFindAll(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: {
@@ -11,6 +11,8 @@ export function menusControllerFindAll(
     pageSize?: number
 
     keyword?: string
+    /** 所属产品ID */
+    productId?: string
 
     type?: 'directory' | 'menu' | 'button'
 
@@ -19,7 +21,7 @@ export function menusControllerFindAll(
   options?: { [key: string]: any }
 ) {
   const { ...queryParams } = params
-  return request<any>({
+  return request<MenuModule.MenuListResponseDto>({
     url: `/api/menus`,
     method: 'GET',
     params: {
@@ -33,7 +35,7 @@ export function menusControllerCreate(
   body: MenuModule.CreateMenuDto,
   options?: { [key: string]: any }
 ) {
-  return request<MenuModule.Menu>({
+  return request<MenuModule.MenuDetailResponseDto>({
     url: `/api/menus`,
     method: 'POST',
     headers: {
@@ -44,10 +46,30 @@ export function menusControllerCreate(
   })
 }
 /** 查询菜单树 GET /api/menus/tree */
-export function menusControllerFindTree(options?: { [key: string]: any }) {
-  return request<any[]>({
+export function menusControllerFindTree(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: {
+    page?: number
+
+    pageSize?: number
+
+    keyword?: string
+    /** 所属产品ID */
+    productId?: string
+
+    type?: 'directory' | 'menu' | 'button'
+
+    enabled?: boolean
+  },
+  options?: { [key: string]: any }
+) {
+  const { ...queryParams } = params
+  return request<MenuModule.MenuTreeResponseDto>({
     url: `/api/menus/tree`,
     method: 'GET',
+    params: {
+      ...queryParams,
+    },
     ...(options || {}),
   })
 }
@@ -60,7 +82,7 @@ export function menusControllerFindOne(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<MenuModule.Menu>({
+  return request<MenuModule.MenuDetailResponseDto>({
     url: `/api/menus/${id}`,
     method: 'GET',
     params: {
@@ -78,7 +100,7 @@ export function menusControllerRemove(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<MenuModule.OperationMessageResponseDto>({
     url: `/api/menus/${id}`,
     method: 'DELETE',
     params: {
@@ -97,7 +119,7 @@ export function menusControllerUpdate(
   options?: { [key: string]: any }
 ) {
   const { id, ...queryParams } = params
-  return request<any>({
+  return request<MenuModule.MenuDetailResponseDto>({
     url: `/api/menus/${id}`,
     method: 'PATCH',
     headers: {

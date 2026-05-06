@@ -53,10 +53,6 @@ declare namespace LoginModule {
     /** 响应消息 */
     message: string
     data: AuthTokensDto
-    /** 兼容直接解包的返回 */
-    accessToken?: string
-    /** 兼容历史字段 */
-    token?: string
   }
 
   interface OperationMessageDto {

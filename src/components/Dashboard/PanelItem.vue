@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import CountTo from '@/components/CountTo/index.vue'
+
 defineProps({
   content: {
     type: String,
@@ -30,7 +32,9 @@ defineProps({
     </div>
     <div class="panel-item-content">
       <div class="title">{{ title }}</div>
-      <div class="content">{{ content }}</div>
+      <div class="content">
+        <CountTo :startVal="0" :endVal="Number(content)" :duration="2000" />
+      </div>
     </div>
   </div>
 </template>

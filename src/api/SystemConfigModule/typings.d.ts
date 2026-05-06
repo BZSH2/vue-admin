@@ -1,35 +1,41 @@
 declare namespace SystemConfigModule {
+  type ValueType = 'string' | 'number' | 'boolean' | 'json'
+
+  interface QuerySystemConfigDto {
+    page?: number
+    pageSize?: number
+    keyword?: string
+    groupName?: string
+  }
+
   interface CreateSystemConfigDto {
     key: string
     name: string
-    valueType: 'string' | 'number' | 'boolean' | 'json'
+    valueType: ValueType
     value: string
     groupName?: string | null
     isSystem?: boolean
     remark?: string | null
   }
 
-  interface SystemConfig {
+  interface UpdateSystemConfigDto extends Partial<CreateSystemConfigDto> {}
+
+  interface SystemConfigItem extends CreateSystemConfigDto {
     id: string
-    key: string
-    name: string
-    valueType: Record<string, any>
-    value: string
-    groupName: string | null
-    isSystem: boolean
-    remark: string | null
-    createdAt: string | Date
-    updatedAt: string | Date
-    deletedAt: string | Date | null
+    createdAt: string
+    updatedAt: string
   }
 
-  interface UpdateSystemConfigDto {
-    key?: string
-    name?: string
-    valueType?: 'string' | 'number' | 'boolean' | 'json'
-    value?: string
-    groupName?: string | null
-    isSystem?: boolean
-    remark?: string | null
+  type SystemConfig = SystemConfigItem
+
+  interface SystemConfigListResult {
+    items: SystemConfigItem[]
+    total: number
+    page: number
+    pageSize: number
+  }
+
+  interface OperationMessageDto {
+    message: string
   }
 }

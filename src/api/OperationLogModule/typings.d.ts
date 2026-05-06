@@ -8,18 +8,13 @@ declare namespace OperationLogModule {
 
   interface OperationLogItem {
     id: string
-    operatorUserId?: string | null
-    operatorPhoneNumber?: string | null
     moduleName?: string | null
+    operatorPhoneNumber?: string | null
     method: string
     path: string
     statusCode: number
     durationMs: number
-    ip?: string | null
-    userAgent?: string | null
-    requestSummary?: string | null
-    responseSummary?: string | null
-    createdAt: string
+    createdAt: string | Date
   }
 
   interface OperationLogListResult {

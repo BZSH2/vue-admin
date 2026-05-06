@@ -113,7 +113,7 @@ onMounted(() => {
   font-size: var(--va-font-size-sm);
   font-weight: 500;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px dashed #f0f0f0;
 
   &:hover {
     color: var(--va-color-primary);

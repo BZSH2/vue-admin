@@ -1,5 +1,11 @@
+<script setup lang="ts">
+const props = defineProps<{
+  code: string
+}>()
+</script>
+
 <template>
-  <div class="menu-content">222</div>
+  <div class="menu-content">{{ code }}</div>
 </template>
 
 <style scoped lang="scss">

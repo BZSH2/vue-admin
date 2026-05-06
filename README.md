@@ -19,6 +19,7 @@
 - [换肤系统说明](docs/THEME.md)
 - [SVG 图标系统](docs/ICONS.md)
 - [测试指南（Vitest + Playwright）](docs/TESTS.md)
+- [AI Skill 集成说明](docs/SKILLS.md)
 
 ## 项目一句话目录
 
